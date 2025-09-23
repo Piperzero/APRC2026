@@ -1,0 +1,937 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Conference 2025 - Interactive Wireframe</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: #f8f9fa;
+        }
+
+        /* Header & Navigation */
+        .header {
+            background: #1e40af; /* change from 2c3e50/dark blue n gray to 1e40af/deep blue */
+            color: white;
+            padding: 1rem 0;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            min-height: 100px; /* Set minimum height */
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 1rem 2rem;
+            display: flex;
+            /* justify-content: space-between; 
+            align-items: center; */
+            flex-direction: column;
+            gap: 1rem;
+            
+        }
+
+        .header-top {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        /* .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+        } */
+        .logo-section {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .org-logo {
+            height: 60px;
+            width: auto;
+        }
+
+        .conference-title {
+            font-size: 1.4rem;
+            font-weight: bold;
+            color: white;
+        }
+
+        .header-nav {
+            align-self: flex-start; /* Aligns nav to left */
+        }
+
+        .nav-menu {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+            margin: 0;
+            padding: 0;
+        }
+
+        .nav-menu li {
+            cursor: pointer;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            transition: background 0.3s;
+        }
+
+        .nav-menu li:hover {
+            background: #2563eb; /* change from 34495e to 2563eb/lighter blue on hover */
+        }
+
+        .nav-menu li.active {
+            background: #3498db; /* change from 3498db to 60a5fa/light blue for active item */
+        }
+
+        /* Main Content */
+        .main-content {
+            margin-top: 160px; /* Adjust based on actual header height */
+            min-height: calc(100vh - 160px);
+        }
+
+        .section {
+            display: none;
+            padding: 3rem 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .section.active {
+            display: block;
+        }
+
+        /* Hero Section */
+        .hero {
+            text-align: center;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 4rem 2rem;
+            margin: -3rem -2rem 3rem -2rem;
+        }
+
+        .chairman-photo-img {
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            /* background: #ddd;*/
+            margin: 0 auto 2rem;
+            /* display: flex; 
+            align-items: center;
+            justify-content: center;
+            font-size: 0.9rem;
+            color: #666; */
+            display: block;
+            object-fit: cover;
+            border: 4px solid rgba(255,255,255,0.3);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        }
+
+        .welcome-title {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .welcome-subtitle {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+            opacity: 0.9;
+        }
+
+        .cta-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            background: #3498db;
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: all 0.3s;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn:hover {
+            background: #2980b9;
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            border: 2px solid white;
+        }
+
+        .btn-secondary:hover {
+            background: white;
+            color: #667eea;
+        }
+
+        /* Content Cards */
+        .content-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+
+        .card {
+            background: white;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            border: 2px dashed #ddd;
+        }
+
+        .card h3 {
+            color: #2c3e50;
+            margin-bottom: 1rem;
+        }
+
+        .wireframe-label {
+            background: #e74c3c;
+            color: white;
+            padding: 0.2rem 0.5rem;
+            border-radius: 3px;
+            font-size: 0.8rem;
+            display: inline-block;
+            margin-bottom: 1rem;
+        }
+
+        /* Form Styles */
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: bold;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 1rem;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            font-size: 1rem;
+        }
+
+        /* Schedule Table */
+        .schedule-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .schedule-table th,
+        .schedule-table td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .schedule-table th {
+            background: #3498db;
+            color: white;
+        }
+
+        #schedule h2 {
+            margin-top: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        /* Speaker Cards */
+        .speakers-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+        }
+
+        .speaker-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+
+        .speaker-photo {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background: #ddd;
+            margin: 0 auto 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            color: #666;
+        }
+
+        /* Map Container */
+        /* .map-container {
+            background: white;
+            border-radius: 10px;
+            padding: 2rem;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        } */
+        .map-container iframe {
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .map-placeholder {
+            background: #ecf0f1;
+            border: 2px dashed #bdc3c7;
+            height: 300px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 5px;
+            color: #7f8c8d;
+            font-size: 1.1rem;
+        }
+
+        /* Status Messages */
+        .status-message {
+            background: #d4edda;
+            color: #155724;
+            padding: 1rem;
+            border-radius: 5px;
+            margin: 1rem 0;
+            border: 1px solid #c3e6cb;
+            display: none;
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .nav-menu {
+                flex-direction: column;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                width: 100%;
+                background: #2c3e50;
+                display: none;
+            }
+
+            .nav-menu.active {
+                display: flex;
+            }
+
+            .nav-container {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .welcome-title {
+                font-size: 2rem;
+            }
+
+            .cta-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+        }
+
+        /* Footer */
+        .footer {
+            background: #1e40af; /* change from 2c3e50 to 1e40af to match deep blue of header */
+            color: white;
+            text-align: center;
+            padding: 2rem;
+            margin-top: 3rem;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="nav-container">
+            <div class="header-top">
+                 <img src="IADI2.png" alt="IADI" class="org-logo">
+                 <div class="conference-title">Asia Pacific Regional Conference 2026</div>
+            </div>     
+
+            <nav>
+                <ul class="nav-menu">
+                    <li class="nav-item active" onclick="showSection('home')">Home</li>
+                    <li class="nav-item" onclick="showSection('about')">About</li>
+                    <li class="nav-item" onclick="showSection('schedule')">Schedule</li>
+                    <li class="nav-item" onclick="showSection('speakers')">Speakers</li>
+                    <li class="nav-item" onclick="showSection('registration')">Register</li>
+                    <li class="nav-item" onclick="showSection('location')">Location</li>
+                    <li class="nav-item" onclick="showSection('contact')">Contact</li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Home Section -->
+        <section id="home" class="section active">
+            <div class="hero">
+                <!-- <div class="chairman-photo">Chairman Photo</div> -->
+                <img src="APRC_chairman.png"
+                     alt="APRC Chairman"
+                     class='chairman-photo-img'>
+                <h1 class="welcome-title">Welcome to APRC 2026</h1>
+                <p class="welcome-subtitle">International Conference on [Your Topic] • May 6-8 2026 • Kuala Lumpur, Malaysia</p>
+                <div class="cta-buttons">
+                    <button class="btn" onclick="showSection('registration')">Register Now</button>
+                    <button class="btn btn-secondary" onclick="showSection('schedule')">View Schedule</button>
+                </div>
+            </div>
+
+            <div class="content-grid">
+                <div class="card">
+                    <div class="wireframe-label">MODULE 1</div>
+                    <h3>📅 Event Information</h3>
+                    <p>Core conference details, dates, objectives, and key information. This module handles all static content about the event itself.</p>
+                    <button class="btn" onclick="showSection('about')">Explore Module</button>
+                </div>
+
+                <div class="card">
+                    <div class="wireframe-label">MODULE 2</div>
+                    <h3>📋 Registration System</h3>
+                    <p>Participant registration, form handling, and attendee management. Demonstrates form processing and data collection capabilities.</p>
+                    <button class="btn" onclick="showSection('registration')">Test Registration</button>
+                </div>
+
+                <div class="card">
+                    <div class="wireframe-label">MODULE 3</div>
+                    <h3>🎤 Speaker Profiles</h3>
+                    <p>Speaker bios, photos, session information, and expertise areas. Shows how professional profiles will be displayed.</p>
+                    <button class="btn" onclick="showSection('speakers')">View Speakers</button>
+                </div>
+
+                <div class="card">
+                    <div class="wireframe-label">MODULE 4</div>
+                    <h3>⏰ Schedule Management</h3>
+                    <p>Interactive agenda, session timings, and event calendar. Demonstrates how conference timeline will be organized.</p>
+                    <button class="btn" onclick="showSection('schedule')">Check Schedule</button>
+                </div>
+
+                <div class="card">
+                    <div class="wireframe-label">MODULE 5</div>
+                    <h3>📍 Location & Tourism</h3>
+                    <p>Venue information, city attractions, and travel details. Shows integration of maps and local information.</p>
+                    <button class="btn" onclick="showSection('location')">Explore Location</button>
+                </div>
+
+                <div class="card">
+                    <div class="wireframe-label">MODULE 6</div>
+                    <h3>💬 Communication</h3>
+                    <p>Contact forms, inquiries, and information requests. Demonstrates how attendee communication will be handled.</p>
+                    <button class="btn" onclick="showSection('contact')">Contact Us</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- About Section -->
+        <section id="about" class="section">
+            <h1>About APRC 2026</h1>
+            <div class="wireframe-label">EVENT INFORMATION MODULE</div>
+            
+            <div class="content-grid">
+                <div class="card">
+                    <h3>Conference Objectives</h3>
+                    <ul>
+                        <li>Foster stronger regional collaboration</li>
+                        <li>Exchange insights via open dialogues</li>
+                        <li>Enhance resilience among IADI and APRC members</li>
+                        <li>Generate actionable roadmaps towards resiliency</li>
+                    </ul>
+                </div>
+
+                <div class="card">
+                    <h3>Event Details</h3>
+                    <p><strong>Date:</strong> May 6-8, 2026</p>
+                    <p><strong>Venue:</strong> Grand Hyatt Hotel, KL</p>
+                    <p><strong>Expected Attendees:</strong> 150+ professionals</p>
+                    <p><strong>Languages:</strong> English, Local Language</p>
+                </div>
+
+                <div class="card">
+                    <h3>Key Topics</h3>
+                    <ul>
+                        <li>Deposit Insurance Systems</li>
+                        <li>Financial Stability</li>
+                        <li>Risk Management</li>
+                        <li>Regulatory Frameworks</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Schedule Section -->
+        <section id="schedule" class="section">
+            <h1>Conference Schedule</h1>
+            <div class="wireframe-label">SCHEDULE MANAGEMENT MODULE</div>
+
+            <h2>Day 1 (6th May 2026, Wednesday)</h2>
+            <table class="schedule-table">
+                <thead>
+                    <tr>
+                        <th>Time</th>
+                        <th>Details</th>
+                        <th>Venue</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>08:30 - 09:00</td>
+                        <td>Registration & Morning Coffee (30mins)</td>
+                        <td>Hotel Conference/Meeting Room</td>
+                    </tr>
+                    <tr>
+                        <td>09:30 - 12:00</td>
+                        <td>
+                            - Research Technical Committee (RTC) (60mins)<br>
+                            - Coffee Break (30mins)<br>
+                            - Training & Assistance Technical Committee (TATC) (60mins)<br>
+                            - Hackathon - Core Principles Gap Mapping<br>
+                        </td>                    
+                        <td>Breakout Rooms A & B</td>
+                    </tr>
+                    <tr>
+                        <td>12:00 - 14:00</td>
+                        <td>Lunch (120mins)</td>
+                        <td>Hotel Restaurant</td>
+                    </tr>
+                    <tr>
+                        <td>14:00 - 17:45</td>
+                        <td>
+                            - APRC Annual Meeting (60mins)<br>
+                            - Handover ceremony of APRC (15mins)<br>
+                            - APRC CEO Dialogue (in-camera session) (limited to 2 representatives per APRC member organization)(120mins)<br>
+                            - 330pm-530pm: Hackathon - continuation<br>
+                        </td>
+                        <td>Breakout Rooms A & B</td>
+                    </tr>
+                    <tr>
+                        <td>19:00 - 21:00</td>
+                        <td>Welcome Dinner</td>
+                        <td>Hotel Luncheon</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h2>Day 2 (7th May 2026, Thursday)</h2>
+            <table class="schedule-table">
+               <thead>
+                    <tr>
+                        <th>Time</th>
+                        <th>Details</th>
+                        <th>Venue</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>08:30 - 09:00</td>
+                        <td>Registration (30mins)</td>
+                        <td>Hotel Ballroom Entrance</td>
+                    </tr>
+                    <tr>
+                        <td>09:00 - 12:30</td>
+                        <td>
+                            - Welcoming Remarks by PIDM Chairman<br>
+                            - Opening Remarks by BNM Governor/Deputy<br>
+                            - Keynote Speech by IADI President & Chair of the EXCO<br>
+                            - Group Photo & Coffee Break<br>
+                            - International Conference: Session 1<br>
+                            - Coffee Break<br>
+                            - International Conference: Session 2<br>
+                        </td>                    
+                        <td>Hotel Ballroom</td>
+                    </tr>
+                    <tr>
+                        <td>12:30 - 14:00</td>
+                        <td>Lunch (90mins)</td>
+                        <td>Hotel Restaurant</td>
+                    </tr>
+                    <tr>
+                        <td>14:00 - 17:30</td>
+                        <td>
+                            - International Conference: Session 3 (Simulation Lab: Crisis in Real-time!) (90mins)<br>
+                            - Coffee Break (15mins)<br>
+                            - International Conference: Session 4<br>
+                            - Wrap-up & Futures Vision Board<br>
+                            - Closing Remarks: Honoring PIDM CEO (or during farewell dinner)<br>
+                        </td>
+                        <td>Hotel Ballroom</td>
+                    </tr>
+                    <tr>
+                        <td>19:00 - 21:30</td>
+                        <td>Farewell Dinner for participants</td>
+                        <td>External venue (TBC)</td>
+                    </tr>
+                </tbody> 
+            </table>
+        </section>
+
+        <!-- Speakers Section -->
+        <section id="speakers" class="section">
+            <h1>Featured Speakers</h1>
+            <div class="wireframe-label">SPEAKER PROFILES MODULE</div>
+
+            <div class="speakers-grid">
+                <div class="speaker-card">
+                    <div class="speaker-photo">Speaker 1 Photo</div>
+                    <h3>Ms. Priscilla Koo Wilken</h3>
+                    <p><strong>Senior Economist, BIS</strong></p>
+                    <p>Leading researcher in economics development, FMI and central banking.</p>
+                </div>
+
+                <div class="speaker-card">
+                    <div class="speaker-photo">Speaker 2 Photo</div>
+                    <h3>Mr. Michael Hsu</h3>
+                    <p><strong>OCC</strong></p>
+                    <p>Don't know what he does exactly, but comes from 3-letter agency.</p>
+                </div>
+
+                <div class="speaker-card">
+                    <div class="speaker-photo">Speaker 3 Photo</div>
+                    <h3>Ms. Maha El Dimachki</h3>
+                    <p><strong>Head, BIS Innovation Hub, Singapore Center</strong></p>
+                    <p>Nice lady who knows about innovation in the financial ecosystem and she talked in NRS 2025.</p>
+                </div>
+
+                <div class="speaker-card">
+                    <div class="speaker-photo">Speaker 4 Photo</div>
+                    <h3>Mr. Suhaimi Ali</h3>
+                    <p><strong>Assistant Governor, BNM</strong></p>
+                    <p>Regulatory expert in fintech applications and innovations.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Registration Section -->
+        <section id="registration" class="section">
+            <h1>Conference Registration</h1>
+            <div class="wireframe-label">REGISTRATION SYSTEM MODULE</div>
+
+            <div class="content-grid">
+                <div class="card">
+                    <h3>Registration Form</h3>
+                    <form id="registrationForm" onsubmit="handleRegistration(event)">
+                        <div class="form-group">
+                            <label for="fullName">Full Name *</label>
+                            <input type="text" id="fullName" name="fullName" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="email">Email Address *</label>
+                            <input type="email" id="email" name="email" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="organization">Organization</label>
+                            <input type="text" id="organization" name="organization">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="category">Participant Category *</label>
+                            <select id="category" name="category" required>
+                                <option value="">Select Category</option>
+                                <option value="member">IADI Member</option>
+                                <option value="observer">Observer</option>
+                                <option value="guest">Guest Speaker</option>
+                                <option value="media">Media</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="dietary">Dietary Requirements</label>
+                            <textarea id="dietary" name="dietary" rows="3"></textarea>
+                        </div>
+
+                        <button type="submit" class="btn">Submit Registration</button>
+                    </form>
+
+                    <div id="registrationStatus" class="status-message"></div>
+                </div>
+
+                <div class="card">
+                    <h3>Registration Information</h3>
+                    <p><strong>Early Bird Deadline:</strong> Apr 8, 2026</p>
+                    <p><strong>Regular Registration:</strong> Until May 8, 2026</p>
+                    <p><strong>On-site Registration:</strong> Subject to availability</p>
+                    
+                    <h4>Fees (Wireframe - No actual payment)</h4>
+                    <ul>
+                        <li>IADI Members: Free</li>
+                        <li>Observers: $200</li>
+                        <li>Students: $50</li>
+                    </ul>
+
+                    <h4>What's Included</h4>
+                    <ul>
+                        <li>Conference materials</li>
+                        <li>Welcome reception</li>
+                        <li>Coffee breaks</li>
+                        <li>Networking lunch</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Location Section -->
+        <section id="location" class="section">
+            <h1>Venue & Location</h1>
+            <div class="wireframe-label">LOCATION & TOURISM MODULE</div>
+
+            <div class="content-grid">
+                <div class="card">
+                    <h3>Conference Venue</h3>
+                    <p><strong>Grand Ballroom, Grand Hyatt Hotel</strong></p>
+                    <p>12 Jalan Pinang<br>
+                    Kuala Lumpur, 50450 Malaysia</p>
+                    
+                    <div class="map-container">
+                        <!-- <div class="map-placeholder">
+                            🗺️ Interactive Google Maps<br>
+                            (Will show venue location)
+                        </div> -->
+                        <iframe 
+                            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d4310.57027648233!2d101.70958647530624!3d3.1536139531244864!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x31cc37d463fa3ec9%3A0x1df56b16c8bfdbe8!2sGrand%20Hyatt%20Kuala%20Lumpur!5e1!3m2!1sen!2smy!4v1758556351173!5m2!1sen!2smy" 
+                            width="100%" 
+                            height="300" 
+                            style="border:0;" 
+                            allowfullscreen="" 
+                            loading="lazy" 
+                            referrerpolicy="no-referrer-when-downgrade">
+                        </iframe>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3>Getting There</h3>
+                    <h4>From Airport</h4>
+                    <p>• Taxi: 50 minutes, ~$40<br>
+                    • Airport Express: 20 minutes<br>
+                    • Hotel Shuttle: Available</p>
+
+                    <h4>Public Transport</h4>
+                    <p>• ERL KLIA, Conference Station<br>
+                    • Bus Routes: 15, 23, 45<br>
+                    • Walking distance from hotels</p>
+                </div>
+
+                <div class="card">
+                    <h3>Accommodation</h3>
+                    <h4>Partner Hotels</h4>
+                    <p>• Grand Hyatt Hotel (5★)<br>
+                    • Traders Hotel (4★)<br>
+                    • Impiana Hotel (3★)</p>
+                    
+                    <p><em>Special conference rates available</em></p>
+                </div>
+
+                <div class="card">
+                    <h3>Local Attractions</h3>
+                    <h4>Must-Visit Places</h4>
+                    <p>• Historic City Center<br>
+                    • National Museum<br>
+                    • Petronas Twin Towers<br>
+                    • Shopping District</p>
+
+                    <h4>Dining</h4>
+                    <p>• Local Cuisine Tours<br>
+                    • International Restaurants<br>
+                    • Conference Venue Dining</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Contact Section -->
+        <section id="contact" class="section">
+            <h1>Contact & Information</h1>
+            <div class="wireframe-label">COMMUNICATION MODULE</div>
+
+            <div class="content-grid">
+                <div class="card">
+                    <h3>Contact Form</h3>
+                    <form id="contactForm" onsubmit="handleContact(event)">
+                        <div class="form-group">
+                            <label for="contactName">Name *</label>
+                            <input type="text" id="contactName" name="contactName" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="contactEmail">Email *</label>
+                            <input type="email" id="contactEmail" name="contactEmail" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="subject">Subject *</label>
+                            <select id="subject" name="subject" required>
+                                <option value="">Select Subject</option>
+                                <option value="registration">Registration Query</option>
+                                <option value="program">Program Information</option>
+                                <option value="accommodation">Accommodation</option>
+                                <option value="media">Media Inquiry</option>
+                                <option value="other">Other</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="message">Message *</label>
+                            <textarea id="message" name="message" rows="5" required></textarea>
+                        </div>
+
+                        <button type="submit" class="btn">Send Message</button>
+                    </form>
+
+                    <div id="contactStatus" class="status-message"></div>
+                </div>
+
+                <div class="card">
+                    <h3>Conference Secretariat</h3>
+                    <p><strong>Phone:</strong> +(60)19 333-8900<br>
+                    <strong>Email:</strong> leeumen@pidm.gov.my<br>
+                    <strong>Fax:</strong> +(60)3 2424 8710</p>
+
+                    <p><strong>Office Hours:</strong><br>
+                    Monday-Friday: 8:30 AM - 5:30 PM<br>
+                    Saturday: 9:00 AM - 1:00 PM</p>
+
+                    <h4>Emergency Contact</h4>
+                    <p><strong>24/7 Hotline:</strong> +(60)19 222-1010</p>
+                </div>
+
+                <div class="card">
+                    <h3>Follow Us</h3>
+                    <p>Stay updated with conference news:</p>
+                    <div style="margin: 1rem 0;">
+                        <button class="btn" style="margin: 0.25rem;">📘 Facebook</button>
+                        <button class="btn" style="margin: 0.25rem;">🐦 Twitter</button>
+                        <button class="btn" style="margin: 0.25rem;">💼 LinkedIn</button>
+                    </div>
+
+                    <h4>Newsletter</h4>
+                    <div style="display: flex; gap: 0.5rem; margin-top: 1rem;">
+                        <input type="email" placeholder="your.email@example.com" style="flex: 1;">
+                        <button class="btn">Subscribe</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <p>&copy; APRC 2026 Organizing Committee | Privacy Policy | Terms of Service</p>
+        <p><em>This is an interactive wireframe demonstrating website functionality</em></p>
+    </footer>
+
+    <script>
+        // Navigation functionality
+        function showSection(sectionId) {
+            // Hide all sections
+            document.querySelectorAll('.section').forEach(section => {
+                section.classList.remove('active');
+            });
+            
+            // Remove active class from all nav items
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            
+            // Show selected section
+            document.getElementById(sectionId).classList.add('active');
+            
+            // Add active class to clicked nav item
+            event.target.classList.add('active');
+            
+            // Scroll to top
+            window.scrollTo(0, 0);
+        }
+
+        // Registration form handling
+        function handleRegistration(event) {
+            event.preventDefault();
+            
+            const formData = new FormData(event.target);
+            const data = {};
+            formData.forEach((value, key) => {
+                data[key] = value;
+            });
+            
+            // Show status message
+            const statusDiv = document.getElementById('registrationStatus');
+            statusDiv.style.display = 'block';
+            statusDiv.innerHTML = `
+                <strong>✅ Registration Submitted Successfully!</strong><br>
+                <small>In production, this would:</small><br>
+                • Save to database: ${JSON.stringify(data, null, 2)}<br>
+                • Send confirmation email<br>
+                • Process payment if required<br>
+                • Generate registration ID
+            `;
+            
+            // Reset form
+            event.target.reset();
+        }
+
+        // Contact form handling
+        function handleContact(event) {
+            event.preventDefault();
+            
+            const formData = new FormData(event.target);
+            const data = {};
+            formData.forEach((value, key) => {
+                data[key] = value;
+            });
+            
+            // Show status message
+            const statusDiv = document.getElementById('contactStatus');
+            statusDiv.style.display = 'block';
+            statusDiv.innerHTML = `
+                <strong>✅ Message Sent Successfully!</strong><br>
+                <small>In production, this would:</small><br>
+                • Email to conference team<br>
+                • Auto-reply to sender<br>
+                • Log in support system<br>
+                • Generate ticket ID
+            `;
+            
+            // Reset form
+            event.target.reset();
+        }
+
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('Conference Wireframe Loaded');
+            console.log('All navigation and form functionality active');
+        });
+    </script>
+</body>
+</html>
