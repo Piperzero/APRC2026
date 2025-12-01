@@ -619,7 +619,8 @@
                             clearInterval(interval);
                             setShowCompleted(true);
                             // Wait 5 seconds before moving to next step, so user can read
-                            setTimeout(onComplete, 5000);
+                            // Updated: Auto advance removed - user now controls when to continue
+                            // setTimeout(onComplete, 5000);
                             return 100;
                         }
                         return prev + 0.5; // Much slower progress (was +2, now +0.5)
@@ -745,8 +746,11 @@
                                 onClick={onComplete}
                                 className="bg-green-600 text-white px-6 py-3 rounded-lg hover:bg-green-700 transition-colors font-semibold"
                             >
-                                View Results Now <i className="fas fa-arrow-right ml-2"></i>
+                                Continue to Assessment Results <i className="fas fa-arrow-right ml-2"></i> 
                             </button>
+                            <p className="text-sm text-gray-500 mt-2">
+                                Review the analysis when you're ready
+                            </p>    
                         </div>
                     )}
                 </div>
