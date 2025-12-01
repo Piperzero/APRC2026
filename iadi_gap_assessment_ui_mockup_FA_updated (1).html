@@ -1,0 +1,1503 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IADI Core Principles Compliance Compass (CPCC)</title>
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        /* Custom styling for the mockup */
+        .gradient-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .card-shadow {
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        .upload-zone {
+            border: 2px dashed #cbd5e0;
+            transition: all 0.3s ease;
+        }
+
+        .upload-zone:hover {
+            border-color: #667eea;
+            background-color: #f7fafc;
+        }
+
+        .progress-ring {
+            stroke-dasharray: 251.2;
+            stroke-dashoffset: 251.2;
+            transition: stroke-dashoffset 0.5s ease;
+        }
+
+        .animate-fade-in {
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+
+<body class="bg-gray-50">
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect } = React;
+
+        // Main App Component
+        function IADIGapAssessmentApp() {
+            const [currentStep, setCurrentStep] = useState('intro');
+            const [uploadedDocs, setUploadedDocs] = useState([]);
+            const [analysisProgress, setAnalysisProgress] = useState(0);
+            const [selectedPrinciple, setSelectedPrinciple] = useState(null);
+            const [assessmentResults, setAssessmentResults] = useState(null);
+            const [selectedCPReference, setSelectedCPReference] = useState('CP1');
+
+            // Sample data for the mockup
+            const corePrinciples = [
+                { id: 'CP1', title: 'Public Policy Objectives', status: 'completed', score: 85 },
+                { id: 'CP2', title: 'Mandate and Powers', status: 'completed', score: 92 },
+                { id: 'CP3', title: 'Independence', status: 'in-progress', score: 76 },
+                { id: 'CP4', title: 'Cross-border Issues', status: 'pending', score: 0 },
+                { id: 'CP5', title: 'Governance', status: 'pending', score: 0 },
+            ];
+
+            const sampleResults = {
+                CP2: {
+                    overall: { status: 'Largely Compliant', confidence: 83.2, color: 'green' },
+                    criteria: [
+                        {
+                            id: 'EC1',
+                            text: 'Mandate and powers formally specified in law',
+                            status: 'Fully Compliant',
+                            confidence: 94,
+                            evidence: 'Found in PIDM Act 2011, Section 5-7',
+                            gaps: []
+                        },
+                        {
+                            id: 'EC2',
+                            text: 'Mandate aligned with safety-net participants',
+                            status: 'Largely Compliant',
+                            confidence: 78,
+                            evidence: 'Section 15 coordination provisions',
+                            gaps: ['Need clearer crisis management roles']
+                        }
+                    ]
+                }
+            };
+
+            return (
+                <div className="min-h-screen bg-gray-50">
+                    {/* Header */}
+                    <Header />
+
+                    {/* Navigation */}
+                    <Navigation currentStep={currentStep} setCurrentStep={setCurrentStep} />
+
+                    {/* Main Content */}
+                    <main className="max-w-7xl mx-auto px-4 py-8">
+                        {currentStep === 'intro' && (
+                            <IntroStep
+                                onGetStarted={() => setCurrentStep('upload')}
+                                onViewPrinciples={() => setCurrentStep('core-principles')}
+                            />
+                        )}
+
+                        {currentStep === 'core-principles' && (
+                            <CorePrinciplesStep
+                                selectedPrinciple={selectedCPReference}
+                                setSelectedPrinciple={setSelectedCPReference}
+                            />
+                        )}
+
+                        {currentStep === 'upload' && (
+                            <UploadStep
+                                uploadedDocs={uploadedDocs}
+                                setUploadedDocs={setUploadedDocs}
+                                onNext={() => setCurrentStep('analysis')}
+                            />
+                        )}
+
+                        {currentStep === 'analysis' && (
+                            <AnalysisStep
+                                progress={analysisProgress}
+                                setProgress={setAnalysisProgress}
+                                onComplete={() => setCurrentStep('results')}
+                            />
+                        )}
+
+                        {currentStep === 'results' && (
+                            <ResultsStep
+                                principles={corePrinciples}
+                                selectedPrinciple={selectedPrinciple}
+                                setSelectedPrinciple={setSelectedPrinciple}
+                                results={sampleResults}
+                            />
+                        )}
+
+                        {currentStep === 'report' && (
+                            <ReportStep results={sampleResults} />
+                        )}
+                    </main>
+                </div>
+            );
+        }
+
+        // Header Component
+        function Header() {
+            return (
+                <header className="bg-white shadow-sm border-b">
+                    <div className="max-w-7xl mx-auto px-4 py-4">
+                        <div className="flex items-center justify-between">
+                            <div className="flex items-center space-x-3">
+                                <div className="w-10 h-10 bg-blue-600 rounded-lg flex items-center justify-center">
+                                    <i className="fas fa-shield-alt text-white"></i>
+                                </div>
+                                <div>
+                                    <h1 className="text-xl font-bold text-gray-900">IADI Core Principles Compliance Compass</h1>
+                                    <p className="text-sm text-gray-500">CPCC - Core Principle Alignment Analysis Tool</p>
+                                </div>
+                            </div>
+                            <div className="flex items-center space-x-4">
+                                <button className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors">
+                                    <i className="fas fa-download mr-2"></i>Export Report
+                                </button>
+                                <div className="w-8 h-8 bg-gray-300 rounded-full"></div>
+                            </div>
+                        </div>
+                    </div>
+                </header>
+            );
+        }
+
+        // Navigation Component
+        function Navigation({ currentStep, setCurrentStep }) {
+            const steps = [
+                { id: 'intro', label: 'Get Started', icon: 'fas fa-home' },
+                { id: 'core-principles', label: 'IADI Core Principles', icon: 'fas fa-book' },
+                { id: 'upload', label: 'Upload Documents', icon: 'fas fa-upload' },
+                { id: 'analysis', label: 'AI Analysis', icon: 'fas fa-brain' },
+                { id: 'results', label: 'Assessment Results', icon: 'fas fa-chart-line' },
+                { id: 'report', label: 'Final Report', icon: 'fas fa-file-alt' }
+            ];
+
+            return (
+                <nav className="bg-white border-b">
+                    <div className="max-w-7xl mx-auto px-4">
+                        <div className="flex space-x-8">
+                            {steps.map((step, index) => (
+                                <button
+                                    key={step.id}
+                                    onClick={() => setCurrentStep(step.id)}
+                                    className={`flex items-center space-x-2 py-4 border-b-2 transition-colors ${currentStep === step.id
+                                        ? 'border-blue-600 text-blue-600'
+                                        : 'border-transparent text-gray-500 hover:text-gray-700'
+                                        }`}
+                                >
+                                    <i className={step.icon}></i>
+                                    <span className="font-medium">{step.label}</span>
+                                </button>
+                            ))}
+                        </div>
+                    </div>
+                </nav>
+            );
+        }
+
+        // Introduction Step Component
+        function IntroStep({ onGetStarted, onViewPrinciples }) {
+            return (
+                <div className="animate-fade-in">
+                    {/* Hero Section */}
+                    <div className="text-center mb-8">
+                        <div className="w-20 h-20 bg-gradient-to-br from-blue-600 to-purple-600 rounded-2xl flex items-center justify-center mx-auto mb-6">
+                            <i className="fas fa-shield-alt text-4xl text-white"></i>
+                        </div>
+                        <h1 className="text-4xl font-bold text-gray-900 mb-4">
+                            Welcome to IADI Core Principles Compliance Compass
+                        </h1>
+                        <p className="text-xl text-gray-600 max-w-3xl mx-auto mb-8">
+                            Core Principle Alignment Analysis Tool for Deposit Insurance Systems
+                        </p>
+
+                        {/* Primary Get Started Button */}
+                        <button
+                            onClick={onGetStarted}
+                            className="bg-blue-600 text-white px-8 py-4 rounded-lg hover:bg-blue-700 transition-all transform hover:scale-105 font-semibold text-lg shadow-lg"
+                        >
+                            <i className="fas fa-rocket mr-2"></i>
+                            Get Started
+                        </button>
+                        <p className="text-gray-500 text-sm mt-3">
+                            Ready to assess your compliance? Click to begin the process.
+                        </p>
+
+                        {/* Divider */}
+                        <div className="mt-8 mb-8">
+                            <p className="text-gray-400 text-sm">
+                                <i className="fas fa-chevron-down mr-2"></i>
+                                Or scroll down to learn more about how it works
+                            </p>
+                        </div>
+                    </div>
+
+                    {/* Purpose Section */}
+                    <div className="max-w-4xl mx-auto mb-12">
+                        <div className="bg-white rounded-lg card-shadow p-8">
+                            <h2 className="text-2xl font-bold text-gray-900 mb-4 flex items-center">
+                                <i className="fas fa-bullseye text-blue-600 mr-3"></i>
+                                Purpose
+                            </h2>
+                            <p className="text-gray-700 leading-relaxed mb-4">
+                                The Core Principles for Effective Deposit Insurance Systems are the international standard for deposit insurance, setting out the key components of effective deposit insurance systems. Originally issued in 2009 by IADI and the Basel Committee on Banking Supervision, they were revised in 2014 and most recently updated in 2024 to address structural changes in the industry, digital innovation, and lessons from recent banking turmoil.
+                            </p>
+                            <p className="text-gray-700 leading-relaxed mb-4">
+                                The Core Principles serve as a benchmark for jurisdictions to assess the quality of their deposit insurance systems and identify gaps in their practices. They are used by the IMF and World Bank in the Financial Sector Assessment Program (FSAP) to evaluate the effectiveness of deposit insurance systems worldwide.
+                            </p>
+                            <p className="text-gray-700 leading-relaxed mb-4">
+                                The IADI Core Principles Compliance Compass (CPCC) is an AI-powered tool designed to streamline this assessment process. It analyzes your regulatory documents, policies, and assessment materials to provide comprehensive gap analysis, compliance scoring, and actionable recommendations aligned with the Core Principles.
+                            </p>
+                            <div className="mt-6 text-center">
+                                <button
+                                    onClick={onViewPrinciples}
+                                    className="bg-purple-600 text-white px-6 py-3 rounded-lg hover:bg-purple-700 transition-all transform hover:scale-105 font-semibold shadow-md"
+                                >
+                                    <i className="fas fa-book mr-2"></i>
+                                    View IADI Core Principles
+                                </button>
+                                <p className="text-gray-500 text-sm mt-2">
+                                    Read the full Core Principles and their essential criteria
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* What You'll Need Section */}
+                    <div className="max-w-4xl mx-auto mb-12">
+                        <div className="bg-white rounded-lg card-shadow p-8">
+                            <h2 className="text-2xl font-bold text-gray-900 mb-6 flex items-center">
+                                <i className="fas fa-clipboard-list text-blue-600 mr-3"></i>
+                                What You'll Need
+                            </h2>
+                            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                                <div className="text-center p-4 bg-blue-50 rounded-lg">
+                                    <i className="fas fa-gavel text-3xl text-blue-600 mb-3"></i>
+                                    <h3 className="font-semibold text-gray-900 mb-2">Primary Legislation</h3>
+                                    <p className="text-sm text-gray-600">
+                                        Deposit insurance acts, banking laws, and regulatory frameworks
+                                    </p>
+                                </div>
+                                <div className="text-center p-4 bg-green-50 rounded-lg">
+                                    <i className="fas fa-file-contract text-3xl text-green-600 mb-3"></i>
+                                    <h3 className="font-semibold text-gray-900 mb-2">Internal Policies</h3>
+                                    <p className="text-sm text-gray-600">
+                                        Organizational policies, procedures, and operational guidelines
+                                    </p>
+                                </div>
+                                <div className="text-center p-4 bg-purple-50 rounded-lg">
+                                    <i className="fas fa-chart-bar text-3xl text-purple-600 mb-3"></i>
+                                    <h3 className="font-semibold text-gray-900 mb-2">Assessment Reports</h3>
+                                    <p className="text-sm text-gray-600">
+                                        Previous FSAP reports, self-assessments, and compliance reviews
+                                    </p>
+                                </div>
+                            </div>
+                            <div className="mt-6 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
+                                <div className="flex items-start">
+                                    <i className="fas fa-info-circle text-yellow-600 mt-1 mr-3"></i>
+                                    <div>
+                                        <p className="text-sm text-yellow-800 font-medium mb-1">Supported Formats</p>
+                                        <p className="text-sm text-yellow-700">
+                                            PDF, Word (.doc, .docx), and Excel (.xls, .xlsx) files up to 50MB each
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* How It Works Section */}
+                    <div className="max-w-4xl mx-auto mb-12">
+                        <div className="bg-white rounded-lg card-shadow p-8">
+                            <h2 className="text-2xl font-bold text-gray-900 mb-6 flex items-center">
+                                <i className="fas fa-route text-blue-600 mr-3"></i>
+                                How It Works
+                            </h2>
+                            <div className="space-y-6">
+                                <div className="flex items-start">
+                                    <div className="w-10 h-10 bg-blue-600 text-white rounded-full flex items-center justify-center font-bold mr-4 flex-shrink-0">
+                                        1
+                                    </div>
+                                    <div>
+                                        <h3 className="font-semibold text-gray-900 mb-1">Upload Your Documents</h3>
+                                        <p className="text-gray-600">
+                                            Upload your regulatory documents, policies, and assessment materials. Our system
+                                            automatically categorizes them for efficient processing.
+                                        </p>
+                                    </div>
+                                </div>
+                                <div className="flex items-start">
+                                    <div className="w-10 h-10 bg-blue-600 text-white rounded-full flex items-center justify-center font-bold mr-4 flex-shrink-0">
+                                        2
+                                    </div>
+                                    <div>
+                                        <h3 className="font-semibold text-gray-900 mb-1">AI Analysis</h3>
+                                        <p className="text-gray-600">
+                                            Our advanced AI engine processes your documents, extracts relevant information, and
+                                            analyzes compliance against all 18 IADI Core Principles and their essential criteria.
+                                        </p>
+                                    </div>
+                                </div>
+                                <div className="flex items-start">
+                                    <div className="w-10 h-10 bg-blue-600 text-white rounded-full flex items-center justify-center font-bold mr-4 flex-shrink-0">
+                                        3
+                                    </div>
+                                    <div>
+                                        <h3 className="font-semibold text-gray-900 mb-1">Review Assessment Results</h3>
+                                        <p className="text-gray-600">
+                                            Explore detailed compliance assessments for each Core Principle, including compliance
+                                            ratings, confidence scores, evidence references, and identified gaps.
+                                        </p>
+                                    </div>
+                                </div>
+                                <div className="flex items-start">
+                                    <div className="w-10 h-10 bg-blue-600 text-white rounded-full flex items-center justify-center font-bold mr-4 flex-shrink-0">
+                                        4
+                                    </div>
+                                    <div>
+                                        <h3 className="font-semibold text-gray-900 mb-1">Generate Final Report</h3>
+                                        <p className="text-gray-600">
+                                            Download comprehensive reports in PDF or Excel format, ready for stakeholder review,
+                                            regulatory submissions, or internal improvement planning.
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Key Features */}
+                    <div className="max-w-4xl mx-auto mb-12">
+                        <div className="bg-gradient-to-br from-blue-600 to-purple-600 rounded-lg card-shadow p-8 text-white">
+                            <h2 className="text-2xl font-bold mb-6 flex items-center">
+                                <i className="fas fa-star mr-3"></i>
+                                Key Features
+                            </h2>
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div className="flex items-start">
+                                    <i className="fas fa-check-circle mr-3 mt-1"></i>
+                                    <p>Automated compliance assessment against all 18 IADI Core Principles</p>
+                                </div>
+                                <div className="flex items-start">
+                                    <i className="fas fa-check-circle mr-3 mt-1"></i>
+                                    <p>AI-powered document analysis and evidence extraction</p>
+                                </div>
+                                <div className="flex items-start">
+                                    <i className="fas fa-check-circle mr-3 mt-1"></i>
+                                    <p>Detailed gap analysis with actionable recommendations</p>
+                                </div>
+                                <div className="flex items-start">
+                                    <i className="fas fa-check-circle mr-3 mt-1"></i>
+                                    <p>Confidence scoring for transparency and reliability</p>
+                                </div>
+                                <div className="flex items-start">
+                                    <i className="fas fa-check-circle mr-3 mt-1"></i>
+                                    <p>Comprehensive reporting in multiple formats</p>
+                                </div>
+                                <div className="flex items-start">
+                                    <i className="fas fa-check-circle mr-3 mt-1"></i>
+                                    <p>Secure document processing and data handling</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Get Started Button */}
+                    <div className="text-center">
+                        <button
+                            onClick={onGetStarted}
+                            className="bg-blue-600 text-white px-8 py-4 rounded-lg hover:bg-blue-700 transition-all transform hover:scale-105 font-semibold text-lg shadow-lg"
+                        >
+                            <i className="fas fa-rocket mr-2"></i>
+                            Get Started
+                        </button>
+                        <p className="text-gray-500 text-sm mt-4">
+                            Ready to assess your compliance? Click to begin the process.
+                        </p>
+                    </div>
+                </div>
+            );
+        }
+
+        // Core Principles Reference Step Component
+        function CorePrinciplesStep({ selectedPrinciple, setSelectedPrinciple }) {
+            // All 18 IADI Core Principles with Essential Criteria
+            const allCorePrinciples = [
+                {
+                    id: 'CP1',
+                    title: 'Public Policy Objectives',
+                    principle: 'A deposit insurance system should have clear, simple and achievable public policy objectives that are formally specified and publicly disclosed.',
+                    essentialCriteria: [
+                        'The public policy objectives of the deposit insurance system are clearly defined, formally specified in relevant legislation or other official documents, and publicly disclosed.',
+                        'The public policy objectives are consistent with the broader financial safety net framework and the overall financial system policy.',
+                        'The deposit insurance system\'s mandate is aligned with its public policy objectives.'
+                    ],
+                    interpretation: 'This principle establishes that deposit insurance must have well-defined goals that support financial stability and depositor protection. The objectives should be transparent and aligned with the broader financial safety net.',
+                    recommendedDocs: [
+                        'Deposit Insurance Act or enabling legislation',
+                        'Policy statements on deposit insurance objectives',
+                        'Financial stability framework documents',
+                        'Annual reports and strategic plans'
+                    ]
+                },
+                {
+                    id: 'CP2',
+                    title: 'Mandate and Powers',
+                    principle: 'The mandate and powers of the deposit insurer should be clearly defined and formally specified, and appropriate for the effective achievement of its public policy objectives.',
+                    essentialCriteria: [
+                        'The deposit insurer\'s mandate and powers are clearly defined and formally specified in legislation or other legal instruments.',
+                        'The mandate and powers are appropriate and sufficient for the deposit insurer to achieve its public policy objectives.',
+                        'The deposit insurer has the legal capacity to fulfill its mandate, including the power to enter into contracts, acquire and dispose of property, and sue and be sued.',
+                        'The deposit insurer\'s mandate and powers are aligned and coordinated with those of other financial safety net participants.'
+                    ],
+                    interpretation: 'The deposit insurer must have clear legal authority and sufficient powers to carry out its functions effectively. This includes operational autonomy and coordination mechanisms with other safety net participants.',
+                    recommendedDocs: [
+                        'Deposit Insurance Act with detailed mandate provisions',
+                        'Memoranda of Understanding (MOUs) with central bank, supervisor, and resolution authority',
+                        'Organizational charter or bylaws',
+                        'Legal opinions on powers and authority'
+                    ]
+                },
+                {
+                    id: 'CP3',
+                    title: 'Independence',
+                    principle: 'The deposit insurer should be operationally independent, transparent, accountable and insulated from undue political and industry influence.',
+                    essentialCriteria: [
+                        'The deposit insurer is operationally independent in the performance of its functions and exercise of its powers.',
+                        'The deposit insurer has autonomy in decision-making on matters within its mandate.',
+                        'The deposit insurer is transparent in its operations and decision-making processes.',
+                        'The deposit insurer is accountable to the legislature, government, or other appropriate authority.',
+                        'The deposit insurer is insulated from undue political and industry influence.'
+                    ],
+                    interpretation: 'Operational independence ensures the deposit insurer can make decisions based on technical and professional considerations without political interference, while maintaining accountability and transparency.',
+                    recommendedDocs: [
+                        'Governance framework documents',
+                        'Board appointment and removal procedures',
+                        'Annual reports and disclosure policies',
+                        'Accountability framework and reporting requirements',
+                        'Conflict of interest policies'
+                    ]
+                },
+                {
+                    id: 'CP4',
+                    title: 'Cross-border Issues',
+                    principle: 'A framework for the cross-border resolution of deposit insurance issues should be in place.',
+                    essentialCriteria: [
+                        'The deposit insurer has arrangements in place to address cross-border deposit insurance issues.',
+                        'The deposit insurer participates in cross-border cooperation and information-sharing arrangements with relevant foreign authorities.',
+                        'The legal and regulatory framework addresses the treatment of foreign currency deposits and deposits of foreign branches.'
+                    ],
+                    interpretation: 'With increasing globalization of banking, deposit insurers need frameworks to handle cross-border situations, including information sharing and coordination with foreign counterparts.',
+                    recommendedDocs: [
+                        'Cross-border cooperation agreements',
+                        'Information sharing MOUs with foreign deposit insurers',
+                        'Policies on foreign currency deposits',
+                        'Crisis management group participation records'
+                    ]
+                },
+                {
+                    id: 'CP5',
+                    title: 'Governance',
+                    principle: 'A deposit insurance system should be governed in accordance with high standards of corporate governance, including a clear organizational structure, effective decision-making processes, and appropriate accountability mechanisms.',
+                    essentialCriteria: [
+                        'The deposit insurer has a clear organizational structure with well-defined roles and responsibilities.',
+                        'The deposit insurer has an effective board or governing body with appropriate expertise and independence.',
+                        'The deposit insurer has sound decision-making processes and internal controls.',
+                        'The deposit insurer has appropriate accountability mechanisms, including internal and external audit functions.',
+                        'The deposit insurer has policies and procedures to address conflicts of interest.'
+                    ],
+                    interpretation: 'Strong governance ensures effective oversight, sound decision-making, and accountability. This includes having a competent board, clear organizational structure, and robust internal controls.',
+                    recommendedDocs: [
+                        'Board charter and governance manual',
+                        'Organizational chart and role descriptions',
+                        'Internal audit reports and external audit opinions',
+                        'Risk management framework',
+                        'Ethics and conflict of interest policies'
+                    ]
+                },
+                {
+                    id: 'CP6',
+                    title: 'Relationships with Other Safety Net Participants',
+                    principle: 'There should be a clear framework for the timely and effective coordination and information sharing between the deposit insurer and other financial safety net participants.',
+                    essentialCriteria: [
+                        'There is a formal framework for coordination and information sharing between the deposit insurer and other safety net participants.',
+                        'The deposit insurer has timely access to information necessary to fulfill its mandate.',
+                        'There are mechanisms for regular communication and coordination with other safety net participants.',
+                        'The roles and responsibilities of each safety net participant are clearly defined and understood.'
+                    ],
+                    interpretation: 'Effective deposit insurance requires seamless coordination with supervisors, central banks, and resolution authorities. Clear communication channels and information-sharing protocols are essential.',
+                    recommendedDocs: [
+                        'MOUs with supervisor, central bank, and resolution authority',
+                        'Information sharing agreements and protocols',
+                        'Crisis management committee documentation',
+                        'Joint contingency planning documents'
+                    ]
+                },
+                {
+                    id: 'CP7',
+                    title: 'Compulsory Membership',
+                    principle: 'Membership in the deposit insurance system should be compulsory for all financial institutions accepting deposits from the public.',
+                    essentialCriteria: [
+                        'Membership in the deposit insurance system is compulsory for all institutions that accept deposits from the public.',
+                        'The criteria for membership are clearly defined and publicly disclosed.',
+                        'There are appropriate mechanisms to ensure compliance with membership requirements.'
+                    ],
+                    interpretation: 'Compulsory membership prevents adverse selection and ensures all depositors have equal protection. It maintains public confidence and prevents competitive disadvantages.',
+                    recommendedDocs: [
+                        'Deposit Insurance Act provisions on membership',
+                        'List of member institutions',
+                        'Membership criteria and application procedures',
+                        'Enforcement mechanisms for non-compliance'
+                    ]
+                },
+                {
+                    id: 'CP8',
+                    title: 'Coverage',
+                    principle: 'The deposit insurance system should have a clearly defined and publicly disclosed coverage policy that is simple, transparent, and limited in scope.',
+                    essentialCriteria: [
+                        'The scope of coverage is clearly defined, including which deposits and depositors are covered.',
+                        'The coverage limit is clearly specified and publicly disclosed.',
+                        'The coverage policy is simple and easy for depositors to understand.',
+                        'The coverage level is limited to protect small depositors while minimizing moral hazard.',
+                        'The coverage policy is reviewed periodically to ensure it remains appropriate.'
+                    ],
+                    interpretation: 'Clear coverage rules help depositors understand their protection level. Coverage should balance depositor protection with moral hazard concerns, typically protecting small savers while encouraging market discipline for large depositors.',
+                    recommendedDocs: [
+                        'Coverage policy documents and public disclosures',
+                        'Deposit insurance brochures and educational materials',
+                        'Coverage limit determination methodology',
+                        'Periodic coverage reviews and assessments',
+                        'Public awareness campaign materials'
+                    ]
+                },
+                {
+                    id: 'CP9',
+                    title: 'Funding',
+                    principle: 'The deposit insurer should have access to funding arrangements that are adequate to ensure the prompt reimbursement of depositors\' claims.',
+                    essentialCriteria: [
+                        'The deposit insurer has a clear funding mechanism that ensures adequate financial resources.',
+                        'The deposit insurer has access to emergency funding arrangements if needed.',
+                        'The funding arrangements are transparent and publicly disclosed.',
+                        'There are mechanisms to ensure that the deposit insurance fund is maintained at an adequate level.',
+                        'The deposit insurer has the capacity to borrow if necessary to fulfill its obligations.'
+                    ],
+                    interpretation: 'Adequate funding is crucial for credibility. This includes ex-ante funding (premiums), backup funding arrangements, and access to emergency liquidity to ensure prompt payout capability.',
+                    recommendedDocs: [
+                        'Fund management policy and investment guidelines',
+                        'Premium assessment methodology and rates',
+                        'Backup funding agreements (government, central bank)',
+                        'Fund adequacy assessments and stress tests',
+                        'Borrowing authority documentation'
+                    ]
+                },
+                {
+                    id: 'CP10',
+                    title: 'Public Awareness',
+                    principle: 'The deposit insurer should have in place effective arrangements to ensure that the public is informed on an ongoing basis about the benefits and limitations of the deposit insurance system.',
+                    essentialCriteria: [
+                        'The deposit insurer has a public awareness program to educate depositors about deposit insurance.',
+                        'Information about deposit insurance coverage is readily available and easily accessible to the public.',
+                        'Member institutions are required to display information about deposit insurance coverage.',
+                        'The deposit insurer monitors the effectiveness of its public awareness efforts.'
+                    ],
+                    interpretation: 'Public awareness ensures depositors understand their protection, which is essential for maintaining confidence. This includes ongoing education campaigns and clear disclosure requirements for member institutions.',
+                    recommendedDocs: [
+                        'Public awareness strategy and campaigns',
+                        'Educational materials and brochures',
+                        'Website content and FAQs',
+                        'Member institution disclosure requirements',
+                        'Public awareness effectiveness surveys'
+                    ]
+                },
+                {
+                    id: 'CP11',
+                    title: 'Selected Legal Issues',
+                    principle: 'The legal framework should provide the deposit insurer with the legal powers and operational capacity to fulfill its mandate effectively.',
+                    essentialCriteria: [
+                        'The deposit insurer has clear legal protection for its staff and decision-makers acting in good faith.',
+                        'The deposit insurer has legal powers to access information necessary to fulfill its mandate.',
+                        'The legal framework addresses the treatment of depositor claims in insolvency proceedings.',
+                        'The deposit insurer has the legal capacity to take timely action in crisis situations.'
+                    ],
+                    interpretation: 'A robust legal framework protects the deposit insurer and its staff, ensures access to necessary information, and provides clear legal standing in insolvency proceedings.',
+                    recommendedDocs: [
+                        'Legal protection provisions in legislation',
+                        'Information access and confidentiality rules',
+                        'Depositor preference provisions',
+                        'Legal opinions on powers and immunities',
+                        'Crisis intervention legal framework'
+                    ]
+                },
+                {
+                    id: 'CP12',
+                    title: 'Dealing with Parties at Fault in a Bank Failure',
+                    principle: 'The deposit insurer should have the ability to hold parties accountable for their actions that contributed to a bank failure.',
+                    essentialCriteria: [
+                        'The deposit insurer has the legal authority to pursue claims against parties responsible for bank failures.',
+                        'There are mechanisms to recover losses from directors, officers, and other responsible parties.',
+                        'The deposit insurer can share information with law enforcement and other authorities.',
+                        'The legal framework supports the deposit insurer in pursuing recoveries.'
+                    ],
+                    interpretation: 'Accountability mechanisms deter misconduct and help recover losses. The deposit insurer should have powers to pursue claims against directors, officers, auditors, and other parties at fault.',
+                    recommendedDocs: [
+                        'Legal provisions on liability and recovery',
+                        'Procedures for pursuing claims against responsible parties',
+                        'Information sharing agreements with law enforcement',
+                        'Recovery case examples and outcomes',
+                        'Professional indemnity insurance requirements'
+                    ]
+                },
+                {
+                    id: 'CP13',
+                    title: 'Early Detection and Timely Intervention',
+                    principle: 'The deposit insurer should be part of a framework that provides for the early detection of, and timely intervention in, troubled banks.',
+                    essentialCriteria: [
+                        'The deposit insurer has access to information for early detection of problem banks.',
+                        'There are mechanisms for timely information sharing between the deposit insurer and supervisor.',
+                        'The deposit insurer participates in the early intervention process.',
+                        'The deposit insurer has the capacity to assess risks to the deposit insurance fund.'
+                    ],
+                    interpretation: 'Early detection and intervention minimize losses to the deposit insurance fund. This requires timely information from supervisors and participation in intervention decisions.',
+                    recommendedDocs: [
+                        'Early warning system documentation',
+                        'Information sharing protocols with supervisor',
+                        'Risk assessment methodologies',
+                        'Intervention framework and procedures',
+                        'Problem bank monitoring reports'
+                    ]
+                },
+                {
+                    id: 'CP14',
+                    title: 'Effective Resolution Processes',
+                    principle: 'The deposit insurer should be part of an effective resolution framework for banks that provides for the timely resolution of banks.',
+                    essentialCriteria: [
+                        'The deposit insurer has a clearly defined role in the bank resolution process.',
+                        'The deposit insurer has access to resolution tools appropriate to its mandate.',
+                        'There are mechanisms for coordination between the deposit insurer and resolution authority.',
+                        'The deposit insurer can contribute to resolution planning and execution.',
+                        'The legal framework supports timely resolution actions.'
+                    ],
+                    interpretation: 'Effective resolution minimizes disruption and costs. The deposit insurer\'s role may range from paybox to providing resolution funding or acting as resolution authority.',
+                    recommendedDocs: [
+                        'Resolution framework legislation and regulations',
+                        'Resolution tools and powers documentation',
+                        'Resolution planning procedures',
+                        'Coordination arrangements with resolution authority',
+                        'Resolution case studies and lessons learned'
+                    ]
+                },
+                {
+                    id: 'CP15',
+                    title: 'Reimbursing Depositors',
+                    principle: 'The deposit insurer should have the capacity to reimburse depositors\' claims promptly.',
+                    essentialCriteria: [
+                        'The deposit insurer has systems and processes to reimburse depositors promptly.',
+                        'The deposit insurer has access to accurate depositor information.',
+                        'The reimbursement process is clearly defined and tested regularly.',
+                        'The deposit insurer has contingency plans for various payout scenarios.',
+                        'The target timeframe for reimbursement is clearly specified and achievable.'
+                    ],
+                    interpretation: 'Prompt reimbursement is essential for maintaining public confidence. This requires robust systems, accurate data, regular testing, and clear procedures.',
+                    recommendedDocs: [
+                        'Payout procedures and manuals',
+                        'Depositor information systems documentation',
+                        'Payout testing and simulation results',
+                        'Contingency plans for different scenarios',
+                        'Service level agreements with service providers'
+                    ]
+                },
+                {
+                    id: 'CP16',
+                    title: 'Recoveries',
+                    principle: 'The deposit insurer should share in the proceeds of recoveries from the estate of a failed bank.',
+                    essentialCriteria: [
+                        'The deposit insurer has a claim on the assets of failed banks for amounts paid to depositors.',
+                        'The deposit insurer\'s claim has appropriate priority in insolvency proceedings.',
+                        'There are mechanisms to maximize recoveries from failed bank estates.',
+                        'The deposit insurer actively participates in the liquidation process to protect its interests.'
+                    ],
+                    interpretation: 'Recovery rights help offset deposit insurance costs and promote fairness. The deposit insurer should be subrogated to depositor claims and have appropriate priority.',
+                    recommendedDocs: [
+                        'Subrogation and recovery provisions in legislation',
+                        'Liquidation participation procedures',
+                        'Asset recovery strategies and policies',
+                        'Recovery tracking and reporting systems',
+                        'Historical recovery rates and analysis'
+                    ]
+                },
+                {
+                    id: 'CP17',
+                    title: 'Reimbursing Depositors in Foreign Currency',
+                    principle: 'Where foreign currency deposits are covered, the deposit insurer should have the capacity to reimburse such deposits.',
+                    essentialCriteria: [
+                        'The treatment of foreign currency deposits is clearly defined in the coverage policy.',
+                        'The deposit insurer has the capacity to reimburse foreign currency deposits if covered.',
+                        'There are arrangements to manage foreign exchange risk.',
+                        'The reimbursement process for foreign currency deposits is clearly specified.'
+                    ],
+                    interpretation: 'If foreign currency deposits are covered, the deposit insurer must have mechanisms to handle currency conversion, foreign exchange risk, and reimbursement logistics.',
+                    recommendedDocs: [
+                        'Foreign currency deposit coverage policy',
+                        'Foreign exchange risk management procedures',
+                        'Currency conversion methodologies',
+                        'Foreign currency liquidity arrangements',
+                        'Reimbursement procedures for foreign currency deposits'
+                    ]
+                },
+                {
+                    id: 'CP18',
+                    title: 'Business Continuity',
+                    principle: 'The deposit insurer should have in place effective business continuity arrangements to ensure operational resilience.',
+                    essentialCriteria: [
+                        'The deposit insurer has a comprehensive business continuity plan.',
+                        'The business continuity plan is tested regularly and updated as needed.',
+                        'There are arrangements to ensure continuity of critical functions.',
+                        'The deposit insurer has backup systems and alternative work arrangements.',
+                        'The business continuity plan addresses various disruption scenarios.'
+                    ],
+                    interpretation: 'Business continuity ensures the deposit insurer can continue operations during disruptions. This is critical given the time-sensitive nature of deposit insurance functions.',
+                    recommendedDocs: [
+                        'Business continuity plan and procedures',
+                        'Disaster recovery plans',
+                        'Business continuity testing results',
+                        'IT system backup and redundancy documentation',
+                        'Crisis communication plans'
+                    ]
+                }
+            ];
+
+            const currentPrinciple = allCorePrinciples.find(cp => cp.id === selectedPrinciple) || allCorePrinciples[0];
+
+            return (
+                <div className="animate-fade-in">
+                    <div className="text-center mb-8">
+                        <h2 className="text-3xl font-bold text-gray-900 mb-4">IADI Core Principles for Effective Deposit Insurance Systems</h2>
+                        <p className="text-lg text-gray-600">
+                            Reference guide to all 18 Core Principles with essential criteria and documentation guidance
+                        </p>
+                    </div>
+
+                    <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                        {/* Left Side Menu - Core Principles List */}
+                        <div className="lg:col-span-2">
+                            <div className="bg-white rounded-lg card-shadow p-4 sticky top-4">
+                                <h3 className="text-lg font-semibold text-gray-900 mb-4">Core Principles</h3>
+                                <div className="space-y-2 max-h-[600px] overflow-y-auto">
+                                    {allCorePrinciples.map((cp) => (
+                                        <button
+                                            key={cp.id}
+                                            onClick={() => setSelectedPrinciple(cp.id)}
+                                            className={`w-full text-left p-3 rounded-lg border transition-colors ${selectedPrinciple === cp.id
+                                                ? 'border-purple-500 bg-purple-50 text-purple-900'
+                                                : 'border-gray-200 bg-white hover:border-gray-300 hover:bg-gray-50'
+                                                }`}
+                                        >
+                                            <div className="font-medium text-sm">{cp.id}</div>
+                                            <div className="text-xs mt-1 line-clamp-2">{cp.title}</div>
+                                        </button>
+                                    ))}
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* SECTION 1 - Verbatim Extract from Main Document */}
+                        <div className="lg:col-span-5">
+                            <div className="bg-white rounded-lg card-shadow p-6">
+                                <div className="mb-4 pb-3 border-b border-gray-200">
+                                    <h3 className="text-sm font-semibold text-gray-500 uppercase tracking-wide">Section 1: Core Principle Extract</h3>
+                                </div>
+
+                                {/* Principle Header */}
+                                <div className="mb-6">
+                                    <div className="flex items-center mb-3">
+                                        <span className="bg-purple-600 text-white px-3 py-1 rounded-full text-sm font-semibold mr-3">
+                                            {currentPrinciple.id}
+                                        </span>
+                                        <h3 className="text-xl font-bold text-gray-900">{currentPrinciple.title}</h3>
+                                    </div>
+                                    <div className="bg-gray-50 border-l-4 border-purple-600 p-4 rounded">
+                                        <p className="text-gray-700 italic leading-relaxed">
+                                            "{currentPrinciple.principle}"
+                                        </p>
+                                    </div>
+                                </div>
+
+                                {/* Essential Criteria */}
+                                <div>
+                                    <h4 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+                                        <i className="fas fa-check-circle text-purple-600 mr-2"></i>
+                                        Essential Criteria
+                                    </h4>
+                                    <div className="bg-purple-50 rounded-lg p-4 border border-purple-100">
+                                        <ul className="space-y-3">
+                                            {currentPrinciple.essentialCriteria.map((criteria, index) => (
+                                                <li key={index} className="flex items-start">
+                                                    <span className="bg-purple-600 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs font-bold mr-3 mt-0.5 flex-shrink-0">
+                                                        {index + 1}
+                                                    </span>
+                                                    <span className="text-gray-700 leading-relaxed text-sm">{criteria}</span>
+                                                </li>
+                                            ))}
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* SECTION 2 - Summary, Interpretation and Recommended Documentation */}
+                        <div className="lg:col-span-5">
+                            <div className="bg-white rounded-lg card-shadow p-6">
+                                <div className="mb-4 pb-3 border-b border-gray-200">
+                                    <h3 className="text-sm font-semibold text-gray-500 uppercase tracking-wide">Section 2: Guidance & Documentation</h3>
+                                </div>
+
+                                {/* Interpretation */}
+                                <div className="mb-6">
+                                    <h4 className="text-lg font-semibold text-gray-900 mb-3 flex items-center">
+                                        <i className="fas fa-lightbulb text-blue-600 mr-2"></i>
+                                        Summary & Interpretation
+                                    </h4>
+                                    <div className="bg-blue-50 rounded-lg p-4 border border-blue-100">
+                                        <p className="text-gray-700 leading-relaxed text-sm">
+                                            {currentPrinciple.interpretation}
+                                        </p>
+                                    </div>
+                                </div>
+
+                                {/* Recommended Documentation */}
+                                <div>
+                                    <h4 className="text-lg font-semibold text-gray-900 mb-3 flex items-center">
+                                        <i className="fas fa-file-alt text-green-600 mr-2"></i>
+                                        Recommended Documentation
+                                    </h4>
+                                    <div className="bg-green-50 rounded-lg p-4 border border-green-100">
+                                        <p className="text-xs text-gray-600 mb-3 font-medium">
+                                            To assess compliance with this principle, consider uploading the following types of documents:
+                                        </p>
+                                        <ul className="space-y-2">
+                                            {currentPrinciple.recommendedDocs.map((doc, index) => (
+                                                <li key={index} className="flex items-start">
+                                                    <i className="fas fa-file-pdf text-green-600 mr-2 mt-1 text-xs"></i>
+                                                    <span className="text-gray-700 text-sm">{doc}</span>
+                                                </li>
+                                            ))}
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Navigation Buttons - Full Width */}
+                    <div className="bg-white rounded-lg card-shadow p-6 mt-6">
+                        <div className="flex justify-between items-center">
+                            <button
+                                onClick={() => {
+                                    const currentIndex = allCorePrinciples.findIndex(cp => cp.id === selectedPrinciple);
+                                    if (currentIndex > 0) {
+                                        setSelectedPrinciple(allCorePrinciples[currentIndex - 1].id);
+                                    }
+                                }}
+                                disabled={selectedPrinciple === 'CP1'}
+                                className={`px-4 py-2 rounded-lg font-medium transition-colors ${selectedPrinciple === 'CP1'
+                                    ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
+                                    : 'bg-purple-600 text-white hover:bg-purple-700'
+                                    }`}
+                            >
+                                <i className="fas fa-arrow-left mr-2"></i>
+                                Previous
+                            </button>
+                            <span className="text-gray-500 text-sm">
+                                {selectedPrinciple} of CP18
+                            </span>
+                            <button
+                                onClick={() => {
+                                    const currentIndex = allCorePrinciples.findIndex(cp => cp.id === selectedPrinciple);
+                                    if (currentIndex < allCorePrinciples.length - 1) {
+                                        setSelectedPrinciple(allCorePrinciples[currentIndex + 1].id);
+                                    }
+                                }}
+                                disabled={selectedPrinciple === 'CP18'}
+                                className={`px-4 py-2 rounded-lg font-medium transition-colors ${selectedPrinciple === 'CP18'
+                                    ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
+                                    : 'bg-purple-600 text-white hover:bg-purple-700'
+                                    }`}
+                            >
+                                Next
+                                <i className="fas fa-arrow-right ml-2"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            );
+        }
+
+        // Upload Step Component
+        function UploadStep({ uploadedDocs, setUploadedDocs, onNext }) {
+            const handleFileUpload = (files) => {
+                const newDocs = Array.from(files).map(file => ({
+                    id: Math.random().toString(36),
+                    name: file.name,
+                    size: file.size,
+                    type: file.type,
+                    status: 'uploaded'
+                }));
+                setUploadedDocs(prev => [...prev, ...newDocs]);
+            };
+
+            return (
+                <div className="animate-fade-in">
+                    <div className="text-center mb-8">
+                        <h2 className="text-3xl font-bold text-gray-900 mb-4">Upload Your Documents</h2>
+                        <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+                            Upload your regulatory documents, policies, and assessment materials.
+                            Our AI will analyze them against IADI Core Principles.
+                        </p>
+                    </div>
+
+                    {/* Expected Document Types - NOW ON TOP */}
+                    <div className="max-w-4xl mx-auto">
+                        {/* Document Categories - View/Filter Only */}
+                        {uploadedDocs.length > 0 && (
+                            <div className="mb-6">
+                                <h3 className="text-lg font-semibold text-gray-900 mb-2">Document Categories</h3>
+                                <p className="text-gray-600 mb-4">Your uploaded documents have been automatically categorized. Click to view by category:</p>
+                            </div>
+                        )}
+                        {uploadedDocs.length === 0 && (
+                            <div className="mb-6">
+                                <h3 className="text-lg font-semibold text-gray-900 mb-2">Expected Document Types</h3>
+                                <p className="text-gray-600 mb-4">These are the types of documents our AI will categorize and analyze:</p>
+                            </div>
+                        )}
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                            {[
+                                {
+                                    title: 'Primary Legislation',
+                                    description: 'Deposit insurance acts, banking laws',
+                                    icon: 'fas fa-gavel',
+                                    examples: 'PIDM Act, DI Law, Banking Act',
+                                    count: uploadedDocs.filter(doc => doc.name.toLowerCase().includes('act') || doc.name.toLowerCase().includes('law')).length,
+                                    filterKey: 'legislation'
+                                },
+                                {
+                                    title: 'Internal Policies',
+                                    description: 'Organizational policies and procedures',
+                                    icon: 'fas fa-file-contract',
+                                    examples: 'Policy manuals, procedures, guidelines',
+                                    count: uploadedDocs.filter(doc => doc.name.toLowerCase().includes('policy') || doc.name.toLowerCase().includes('manual')).length,
+                                    filterKey: 'policies'
+                                },
+                                {
+                                    title: 'Assessment Reports',
+                                    description: 'Previous FSAP, self-assessments',
+                                    icon: 'fas fa-chart-bar',
+                                    examples: 'FSAP reports, internal assessments',
+                                    count: uploadedDocs.filter(doc => doc.name.toLowerCase().includes('fsap') || doc.name.toLowerCase().includes('assessment')).length,
+                                    filterKey: 'assessments'
+                                }
+                            ].map((type, index) => (
+                                <div
+                                    key={index}
+                                    className={`p-6 rounded-lg card-shadow border-2 transition-all duration-200 ${uploadedDocs.length > 0
+                                        ? 'bg-white hover:bg-blue-50 hover:border-blue-200 border-gray-200 cursor-pointer'
+                                        : 'bg-gray-50 border-gray-200'
+                                        }`}
+                                    onClick={() => {
+                                        if (uploadedDocs.length > 0) {
+                                            // In production: filter documents by category
+                                            alert(`Showing ${type.count} ${type.title} documents`);
+                                        }
+                                    }}
+                                >
+                                    <div className="text-center">
+                                        <i className={`${type.icon} text-2xl ${uploadedDocs.length > 0 ? 'text-blue-600' : 'text-gray-400'} mb-3`}></i>
+                                        <h4 className="font-semibold text-gray-900 mb-2">{type.title}</h4>
+                                        <p className="text-gray-600 text-sm mb-3">{type.description}</p>
+                                        <p className="text-xs text-gray-500 mb-3">{type.examples}</p>
+
+                                        {uploadedDocs.length > 0 ? (
+                                            <div>
+                                                {type.count > 0 ? (
+                                                    <span className="inline-block bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm font-medium mb-2">
+                                                        {type.count} document{type.count !== 1 ? 's' : ''}
+                                                    </span>
+                                                ) : (
+                                                    <span className="inline-block bg-gray-100 text-gray-600 px-3 py-1 rounded-full text-sm mb-2">
+                                                        No documents
+                                                    </span>
+                                                )}
+                                                <p className="text-xs text-blue-600 font-medium">
+                                                    {type.count > 0 ? 'Click to view →' : 'Upload more documents'}
+                                                </p>
+                                            </div>
+                                        ) : (
+                                            <span className="text-xs text-gray-400">
+                                                Will be auto-detected
+                                            </span>
+                                        )}
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+
+                        {/* Upload Zone - NOW BELOW Expected Document Types */}
+                        <div
+                            className="upload-zone rounded-lg p-12 text-center mb-8"
+                            onDrop={(e) => {
+                                e.preventDefault();
+                                handleFileUpload(e.dataTransfer.files);
+                            }}
+                            onDragOver={(e) => e.preventDefault()}
+                        >
+                            <i className="fas fa-cloud-upload-alt text-4xl text-gray-400 mb-4"></i>
+                            <h3 className="text-xl font-semibold text-gray-700 mb-2">
+                                Drag and drop files here
+                            </h3>
+                            <p className="text-gray-500 mb-4">or click to browse</p>
+                            <input
+                                type="file"
+                                multiple
+                                className="hidden"
+                                id="file-upload"
+                                onChange={(e) => handleFileUpload(e.target.files)}
+                            />
+                            <label
+                                htmlFor="file-upload"
+                                className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 cursor-pointer inline-block transition-colors"
+                            >
+                                Choose Files
+                            </label>
+                            <p className="text-sm text-gray-400 mt-4">
+                                Supports PDF, Word, Excel files up to 50MB each
+                            </p>
+                        </div>
+
+                        {/* Uploaded Documents List */}
+                        {uploadedDocs.length > 0 && (
+                            <div className="bg-white rounded-lg card-shadow">
+                                <div className="p-6 border-b">
+                                    <h3 className="text-lg font-semibold text-gray-900">
+                                        Uploaded Documents ({uploadedDocs.length})
+                                    </h3>
+                                </div>
+                                <div className="divide-y">
+                                    {uploadedDocs.map((doc) => (
+                                        <div key={doc.id} className="p-4 flex items-center justify-between">
+                                            <div className="flex items-center space-x-3">
+                                                <i className="fas fa-file-pdf text-red-500"></i>
+                                                <div>
+                                                    <p className="font-medium text-gray-900">{doc.name}</p>
+                                                    <p className="text-sm text-gray-500">
+                                                        {(doc.size / 1024 / 1024).toFixed(2)} MB
+                                                    </p>
+                                                </div>
+                                            </div>
+                                            <div className="flex items-center space-x-2">
+                                                <span className="bg-green-100 text-green-800 px-2 py-1 rounded-full text-xs">
+                                                    <i className="fas fa-check mr-1"></i>Uploaded
+                                                </span>
+                                                <button className="text-gray-400 hover:text-red-500">
+                                                    <i className="fas fa-trash"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                                <div className="p-6 bg-gray-50 rounded-b-lg">
+                                    <button
+                                        onClick={onNext}
+                                        className="w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 transition-colors font-semibold"
+                                    >
+                                        Start AI Analysis <i className="fas fa-arrow-right ml-2"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        )}
+                    </div>
+                </div>
+            );
+        }
+
+        // Analysis Step Component
+        function AnalysisStep({ progress, setProgress, onComplete }) {
+            const [showCompleted, setShowCompleted] = useState(false);
+
+            useEffect(() => {
+                const interval = setInterval(() => {
+                    setProgress(prev => {
+                        if (prev >= 100) {
+                            clearInterval(interval);
+                            setShowCompleted(true);
+                            // Wait 5 seconds before moving to next step, so user can read
+                            // Updated: Auto advance removed - user now controls when to continue
+                            // setTimeout(onComplete, 5000);
+                            return 100;
+                        }
+                        return prev + 0.5; // Much slower progress (was +2, now +0.5)
+                    });
+                }, 200); // Slower interval (was 100ms, now 200ms)
+
+                return () => clearInterval(interval);
+            }, []);
+
+            const analysisSteps = [
+                { label: 'Document Processing', status: progress > 10 ? 'completed' : 'active' },
+                { label: 'Content Extraction', status: progress > 30 ? 'completed' : progress > 10 ? 'active' : 'pending' },
+                { label: 'AI Analysis', status: progress > 60 ? 'completed' : progress > 30 ? 'active' : 'pending' },
+                { label: 'Gap Assessment', status: progress > 90 ? 'completed' : progress > 60 ? 'active' : 'pending' },
+            ];
+
+            return (
+                <div className="animate-fade-in max-w-4xl mx-auto">
+                    <div className="text-center mb-12">
+                        <h2 className="text-3xl font-bold text-gray-900 mb-4">AI Analysis in Progress</h2>
+                        <p className="text-lg text-gray-600">
+                            Our AI is analyzing your documents against IADI Core Principles...
+                        </p>
+                    </div>
+
+                    {/* Progress Circle */}
+                    <div className="text-center mb-12">
+                        <div className="relative inline-block">
+                            <svg className="w-32 h-32 transform -rotate-90">
+                                <circle
+                                    cx="64" cy="64" r="40"
+                                    stroke="currentColor"
+                                    strokeWidth="8"
+                                    fill="transparent"
+                                    className="text-gray-200"
+                                />
+                                <circle
+                                    cx="64" cy="64" r="40"
+                                    stroke="currentColor"
+                                    strokeWidth="8"
+                                    fill="transparent"
+                                    strokeDasharray="251.2"
+                                    strokeDashoffset={251.2 - (progress / 100) * 251.2}
+                                    className="text-blue-600 transition-all duration-500"
+                                />
+                            </svg>
+                            <div className="absolute inset-0 flex items-center justify-center">
+                                <span className="text-2xl font-bold text-gray-900">{Math.round(progress)}%</span>
+                            </div>
+                        </div>
+                        {showCompleted && (
+                            <div className="mt-4 animate-fade-in">
+                                <div className="bg-green-100 text-green-800 px-4 py-2 rounded-full inline-block mb-2">
+                                    <i className="fas fa-check mr-2"></i>Analysis Complete!
+                                </div>
+                                <p className="text-sm text-gray-600">
+                                    {/* Proceeding to results in a few seconds... <i className="fas fa-spinner fa-spin ml-1"></i>*/}
+                                    Click the button below when you're ready to view results.
+                                </p>
+                            </div>
+                        )}
+                    </div>
+
+                    {/* Analysis Steps */}
+                    <div className="space-y-4">
+                        {analysisSteps.map((step, index) => (
+                            <div key={index} className="flex items-center space-x-4 p-4 bg-white rounded-lg card-shadow">
+                                <div className={`w-10 h-10 rounded-full flex items-center justify-center ${step.status === 'completed' ? 'bg-green-100 text-green-600' :
+                                    step.status === 'active' ? 'bg-blue-100 text-blue-600' :
+                                        'bg-gray-100 text-gray-400'
+                                    }`}>
+                                    {step.status === 'completed' ? (
+                                        <i className="fas fa-check"></i>
+                                    ) : step.status === 'active' ? (
+                                        <i className="fas fa-spinner fa-spin"></i>
+                                    ) : (
+                                        <i className="fas fa-clock"></i>
+                                    )}
+                                </div>
+                                <div className="flex-1">
+                                    <h4 className="font-semibold text-gray-900">{step.label}</h4>
+                                </div>
+                                <div className={`px-3 py-1 rounded-full text-xs font-medium ${step.status === 'completed' ? 'bg-green-100 text-green-800' :
+                                    step.status === 'active' ? 'bg-blue-100 text-blue-800' :
+                                        'bg-gray-100 text-gray-600'
+                                    }`}>
+                                    {step.status === 'completed' ? 'Complete' :
+                                        step.status === 'active' ? 'Processing' : 'Pending'}
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+
+                    {/* Real-time Updates */}
+                    <div className="mt-8 bg-blue-50 border border-blue-200 rounded-lg p-4">
+                        <div className="flex items-start space-x-3">
+                            <i className="fas fa-info-circle text-blue-600 mt-1"></i>
+                            <div>
+                                <h4 className="font-semibold text-blue-900 mb-2">Analysis Updates</h4>
+                                <div className="space-y-1 text-sm text-blue-800">
+                                    {progress > 10 && <p>✓ Processed 3 documents successfully</p>}
+                                    {progress > 30 && <p>✓ Extracted text from 156 pages</p>}
+                                    {progress > 60 && <p>✓ Analyzed against 18 Core Principles</p>}
+                                    {progress > 90 && <p>✓ Generated compliance assessment</p>}
+                                    {showCompleted && (
+                                        <div className="mt-3 p-3 bg-white rounded border-l-4 border-green-500">
+                                            <p className="font-medium text-green-800">🎉 Analysis successfully completed!</p>
+                                            <p className="text-green-700 text-xs mt-1">
+                                                • Analyzed 156 pages across 3 documents<br />
+                                                • Assessed compliance with 5 Core Principles<br />
+                                                • Generated 847 evidence references<br />
+                                                • Identified 3 areas for improvement
+                                            </p>
+                                        </div>
+                                    )}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {showCompleted && (
+                        <div className="mt-6 text-center">
+                            <button
+                                onClick={onComplete}
+                                className="bg-green-600 text-white px-6 py-3 rounded-lg hover:bg-green-700 transition-colors font-semibold"
+                            >
+                                Continue to Assessment Results <i className="fas fa-arrow-right ml-2"></i>
+                            </button>
+                            <p className="text-sm text-gray-500 mt-2">
+                                Review the analysis when you're ready
+                            </p>
+                        </div>
+                    )}
+                </div>
+            );
+        }
+
+        // Results Step Component
+        function ResultsStep({ principles, selectedPrinciple, setSelectedPrinciple, results }) {
+            return (
+                <div className="animate-fade-in">
+                    <div className="text-center mb-8">
+                        <h2 className="text-3xl font-bold text-gray-900 mb-4">Assessment Results</h2>
+                        <p className="text-lg text-gray-600">
+                            Review your compliance assessment against IADI Core Principles
+                        </p>
+                    </div>
+
+                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                        {/* Principles List */}
+                        <div className="lg:col-span-1">
+                            <h3 className="text-lg font-semibold text-gray-900 mb-4">Core Principles</h3>
+                            <div className="space-y-2">
+                                {principles.map((principle) => (
+                                    <button
+                                        key={principle.id}
+                                        onClick={() => setSelectedPrinciple(principle.id)}
+                                        className={`w-full text-left p-4 rounded-lg border transition-colors ${selectedPrinciple === principle.id
+                                            ? 'border-blue-500 bg-blue-50'
+                                            : 'border-gray-200 bg-white hover:border-gray-300'
+                                            }`}
+                                    >
+                                        <div className="flex items-center justify-between">
+                                            <div>
+                                                <h4 className="font-medium text-gray-900">{principle.id}</h4>
+                                                <p className="text-sm text-gray-600">{principle.title}</p>
+                                            </div>
+                                            <div className="flex items-center space-x-2">
+                                                {principle.status === 'completed' && (
+                                                    <>
+                                                        <span className="text-sm font-medium text-green-600">
+                                                            {principle.score}%
+                                                        </span>
+                                                        <i className="fas fa-check-circle text-green-500"></i>
+                                                    </>
+                                                )}
+                                                {principle.status === 'in-progress' && (
+                                                    <i className="fas fa-clock text-yellow-500"></i>
+                                                )}
+                                                {principle.status === 'pending' && (
+                                                    <i className="fas fa-minus-circle text-gray-400"></i>
+                                                )}
+                                            </div>
+                                        </div>
+                                    </button>
+                                ))}
+                            </div>
+                        </div>
+
+                        {/* Detailed Results */}
+                        <div className="lg:col-span-2">
+                            {selectedPrinciple && results[selectedPrinciple] ? (
+                                <PrincipleDetails principle={selectedPrinciple} data={results[selectedPrinciple]} />
+                            ) : (
+                                <div className="bg-white rounded-lg card-shadow p-8 text-center">
+                                    <i className="fas fa-arrow-left text-4xl text-gray-300 mb-4"></i>
+                                    <h3 className="text-lg font-medium text-gray-900 mb-2">
+                                        Select a Core Principle
+                                    </h3>
+                                    <p className="text-gray-600">
+                                        Choose a principle from the list to view detailed assessment results
+                                    </p>
+                                </div>
+                            )}
+                        </div>
+                    </div>
+                </div>
+            );
+        }
+
+        // Principle Details Component
+        function PrincipleDetails({ principle, data }) {
+            return (
+                <div className="space-y-6">
+                    {/* Overall Status */}
+                    <div className="bg-white rounded-lg card-shadow p-6">
+                        <h3 className="text-lg font-semibold text-gray-900 mb-4">
+                            {principle}: Overall Assessment
+                        </h3>
+                        <div className="flex items-center justify-between">
+                            <div>
+                                <span className={`inline-block px-3 py-1 rounded-full text-sm font-medium ${data.overall.color === 'green' ? 'bg-green-100 text-green-800' :
+                                    data.overall.color === 'yellow' ? 'bg-yellow-100 text-yellow-800' :
+                                        'bg-red-100 text-red-800'
+                                    }`}>
+                                    {data.overall.status}
+                                </span>
+                                <p className="text-sm text-gray-600 mt-1">
+                                    {data.overall.confidence}% confidence
+                                </p>
+                            </div>
+                            <div className="text-right">
+                                <div className="text-2xl font-bold text-gray-900">
+                                    {data.overall.confidence}%
+                                </div>
+                                <div className="text-sm text-gray-500">Compliance Score</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Essential Criteria */}
+                    <div className="space-y-4">
+                        <h3 className="text-lg font-semibold text-gray-900">Essential Criteria</h3>
+                        {data.criteria.map((criterion) => (
+                            <div key={criterion.id} className="bg-white rounded-lg card-shadow p-6">
+                                <div className="flex items-start justify-between mb-4">
+                                    <div className="flex-1">
+                                        <h4 className="font-medium text-gray-900 mb-1">
+                                            {criterion.id}: {criterion.text}
+                                        </h4>
+                                        <span className={`inline-block px-2 py-1 rounded-full text-xs font-medium ${criterion.status === 'Fully Compliant' ? 'bg-green-100 text-green-800' :
+                                            criterion.status === 'Largely Compliant' ? 'bg-yellow-100 text-yellow-800' :
+                                                'bg-red-100 text-red-800'
+                                            }`}>
+                                            {criterion.status}
+                                        </span>
+                                    </div>
+                                    <div className="text-right">
+                                        <div className="text-lg font-semibold text-gray-900">
+                                            {criterion.confidence}%
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div className="space-y-3">
+                                    <div>
+                                        <h5 className="text-sm font-medium text-gray-700 mb-1">Evidence Found:</h5>
+                                        <p className="text-sm text-gray-600">{criterion.evidence}</p>
+                                    </div>
+
+                                    {criterion.gaps.length > 0 && (
+                                        <div>
+                                            <h5 className="text-sm font-medium text-gray-700 mb-1">Areas for Improvement:</h5>
+                                            <ul className="list-disc list-inside space-y-1">
+                                                {criterion.gaps.map((gap, index) => (
+                                                    <li key={index} className="text-sm text-red-600">{gap}</li>
+                                                ))}
+                                            </ul>
+                                        </div>
+                                    )}
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            );
+        }
+
+        // Report Step Component
+        function ReportStep({ results }) {
+            return (
+                <div className="animate-fade-in max-w-4xl mx-auto">
+                    <div className="text-center mb-8">
+                        <h2 className="text-3xl font-bold text-gray-900 mb-4">Final Assessment Report</h2>
+                        <p className="text-lg text-gray-600">
+                            Complete compliance report ready for download and sharing
+                        </p>
+                    </div>
+
+                    <div className="bg-white rounded-lg card-shadow p-8">
+                        <h3 className="text-xl font-semibold text-gray-900 mb-6">Executive Summary</h3>
+                        <p className="text-gray-600 mb-6">
+                            This report presents a comprehensive assessment of compliance with IADI Core Principles
+                            for Effective Deposit Insurance Systems, based on AI analysis of submitted documentation.
+                        </p>
+
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                            <div className="text-center p-4 bg-green-50 rounded-lg">
+                                <div className="text-2xl font-bold text-green-600">85%</div>
+                                <div className="text-sm text-gray-600">Overall Compliance</div>
+                            </div>
+                            <div className="text-center p-4 bg-blue-50 rounded-lg">
+                                <div className="text-2xl font-bold text-blue-600">5</div>
+                                <div className="text-sm text-gray-600">Principles Assessed</div>
+                            </div>
+                            <div className="text-center p-4 bg-yellow-50 rounded-lg">
+                                <div className="text-2xl font-bold text-yellow-600">3</div>
+                                <div className="text-sm text-gray-600">Areas for Improvement</div>
+                            </div>
+                        </div>
+
+                        <div className="flex flex-wrap gap-4">
+                            <button className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors">
+                                <i className="fas fa-download mr-2"></i>Download PDF Report
+                            </button>
+                            <button className="bg-green-600 text-white px-6 py-3 rounded-lg hover:bg-green-700 transition-colors">
+                                <i className="fas fa-file-excel mr-2"></i>Export to Excel
+                            </button>
+                            <button className="border border-gray-300 text-gray-700 px-6 py-3 rounded-lg hover:bg-gray-50 transition-colors">
+                                <i className="fas fa-share mr-2"></i>Share Results
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            );
+        }
+
+        // Render the App
+        ReactDOM.render(<IADIGapAssessmentApp />, document.getElementById('root'));
+    </script>
+</body>
+
+</html>
