@@ -1,0 +1,961 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IADI Core Principles Compliance Compass (CPCC)</title>
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        /* Custom styling for the mockup */
+        .gradient-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .card-shadow {
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        .upload-zone {
+            border: 2px dashed #cbd5e0;
+            transition: all 0.3s ease;
+        }
+
+        .upload-zone:hover {
+            border-color: #667eea;
+            background-color: #f7fafc;
+        }
+
+        .progress-ring {
+            stroke-dasharray: 251.2;
+            stroke-dashoffset: 251.2;
+            transition: stroke-dashoffset 0.5s ease;
+        }
+
+        .animate-fade-in {
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+
+<body class="bg-gray-50">
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect } = React;
+
+        // Main App Component
+        function IADIGapAssessmentApp() {
+            const [currentStep, setCurrentStep] = useState('intro');
+            const [uploadedDocs, setUploadedDocs] = useState([]);
+            const [analysisProgress, setAnalysisProgress] = useState(0);
+            const [selectedPrinciple, setSelectedPrinciple] = useState(null);
+            const [assessmentResults, setAssessmentResults] = useState(null);
+
+            // Sample data for the mockup
+            const corePrinciples = [
+                { id: 'CP1', title: 'Public Policy Objectives', status: 'completed', score: 85 },
+                { id: 'CP2', title: 'Mandate and Powers', status: 'completed', score: 92 },
+                { id: 'CP3', title: 'Independence', status: 'in-progress', score: 76 },
+                { id: 'CP4', title: 'Cross-border Issues', status: 'pending', score: 0 },
+                { id: 'CP5', title: 'Governance', status: 'pending', score: 0 },
+            ];
+
+            const sampleResults = {
+                CP2: {
+                    overall: { status: 'Largely Compliant', confidence: 83.2, color: 'green' },
+                    criteria: [
+                        {
+                            id: 'EC1',
+                            text: 'Mandate and powers formally specified in law',
+                            status: 'Fully Compliant',
+                            confidence: 94,
+                            evidence: 'Found in PIDM Act 2011, Section 5-7',
+                            gaps: []
+                        },
+                        {
+                            id: 'EC2',
+                            text: 'Mandate aligned with safety-net participants',
+                            status: 'Largely Compliant',
+                            confidence: 78,
+                            evidence: 'Section 15 coordination provisions',
+                            gaps: ['Need clearer crisis management roles']
+                        }
+                    ]
+                }
+            };
+
+            return (
+                <div className="min-h-screen bg-gray-50">
+                    {/* Header */}
+                    <Header />
+
+                    {/* Navigation */}
+                    <Navigation currentStep={currentStep} setCurrentStep={setCurrentStep} />
+
+                    {/* Main Content */}
+                    <main className="max-w-7xl mx-auto px-4 py-8">
+                        {currentStep === 'intro' && (
+                            <IntroStep onGetStarted={() => setCurrentStep('upload')} />
+                        )}
+
+                        {currentStep === 'upload' && (
+                            <UploadStep
+                                uploadedDocs={uploadedDocs}
+                                setUploadedDocs={setUploadedDocs}
+                                onNext={() => setCurrentStep('analysis')}
+                            />
+                        )}
+
+                        {currentStep === 'analysis' && (
+                            <AnalysisStep
+                                progress={analysisProgress}
+                                setProgress={setAnalysisProgress}
+                                onComplete={() => setCurrentStep('results')}
+                            />
+                        )}
+
+                        {currentStep === 'results' && (
+                            <ResultsStep
+                                principles={corePrinciples}
+                                selectedPrinciple={selectedPrinciple}
+                                setSelectedPrinciple={setSelectedPrinciple}
+                                results={sampleResults}
+                            />
+                        )}
+
+                        {currentStep === 'report' && (
+                            <ReportStep results={sampleResults} />
+                        )}
+                    </main>
+                </div>
+            );
+        }
+
+        // Header Component
+        function Header() {
+            return (
+                <header className="bg-white shadow-sm border-b">
+                    <div className="max-w-7xl mx-auto px-4 py-4">
+                        <div className="flex items-center justify-between">
+                            <div className="flex items-center space-x-3">
+                                <div className="w-10 h-10 bg-blue-600 rounded-lg flex items-center justify-center">
+                                    <i className="fas fa-shield-alt text-white"></i>
+                                </div>
+                                <div>
+                                    <h1 className="text-xl font-bold text-gray-900">IADI Core Principles Compliance Compass</h1>
+                                    <p className="text-sm text-gray-500">CPCC - Core Principle Alignment Analysis Tool</p>
+                                </div>
+                            </div>
+                            <div className="flex items-center space-x-4">
+                                <button className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors">
+                                    <i className="fas fa-download mr-2"></i>Export Report
+                                </button>
+                                <div className="w-8 h-8 bg-gray-300 rounded-full"></div>
+                            </div>
+                        </div>
+                    </div>
+                </header>
+            );
+        }
+
+        // Navigation Component
+        function Navigation({ currentStep, setCurrentStep }) {
+            const steps = [
+                { id: 'intro', label: 'Get Started', icon: 'fas fa-home' },
+                { id: 'upload', label: 'Upload Documents', icon: 'fas fa-upload' },
+                { id: 'analysis', label: 'AI Analysis', icon: 'fas fa-brain' },
+                { id: 'results', label: 'Assessment Results', icon: 'fas fa-chart-line' },
+                { id: 'report', label: 'Final Report', icon: 'fas fa-file-alt' }
+            ];
+
+            return (
+                <nav className="bg-white border-b">
+                    <div className="max-w-7xl mx-auto px-4">
+                        <div className="flex space-x-8">
+                            {steps.map((step, index) => (
+                                <button
+                                    key={step.id}
+                                    onClick={() => setCurrentStep(step.id)}
+                                    className={`flex items-center space-x-2 py-4 border-b-2 transition-colors ${currentStep === step.id
+                                        ? 'border-blue-600 text-blue-600'
+                                        : 'border-transparent text-gray-500 hover:text-gray-700'
+                                        }`}
+                                >
+                                    <i className={step.icon}></i>
+                                    <span className="font-medium">{step.label}</span>
+                                </button>
+                            ))}
+                        </div>
+                    </div>
+                </nav>
+            );
+        }
+
+        // Introduction Step Component
+        function IntroStep({ onGetStarted }) {
+            return (
+                <div className="animate-fade-in">
+                    {/* Hero Section */}
+                    <div className="text-center mb-8">
+                        <div className="w-20 h-20 bg-gradient-to-br from-blue-600 to-purple-600 rounded-2xl flex items-center justify-center mx-auto mb-6">
+                            <i className="fas fa-shield-alt text-4xl text-white"></i>
+                        </div>
+                        <h1 className="text-4xl font-bold text-gray-900 mb-4">
+                            Welcome to IADI Core Principles Compliance Compass
+                        </h1>
+                        <p className="text-xl text-gray-600 max-w-3xl mx-auto mb-8">
+                            Core Principle Alignment Analysis Tool for Deposit Insurance Systems
+                        </p>
+
+                        {/* Primary Get Started Button */}
+                        <button
+                            onClick={onGetStarted}
+                            className="bg-blue-600 text-white px-8 py-4 rounded-lg hover:bg-blue-700 transition-all transform hover:scale-105 font-semibold text-lg shadow-lg"
+                        >
+                            <i className="fas fa-rocket mr-2"></i>
+                            Get Started
+                        </button>
+                        <p className="text-gray-500 text-sm mt-3">
+                            Ready to assess your compliance? Click to begin the process.
+                        </p>
+
+                        {/* Divider */}
+                        <div className="mt-8 mb-8">
+                            <p className="text-gray-400 text-sm">
+                                <i className="fas fa-chevron-down mr-2"></i>
+                                Or scroll down to learn more about how it works
+                            </p>
+                        </div>
+                    </div>
+
+                    {/* Purpose Section */}
+                    <div className="max-w-4xl mx-auto mb-12">
+                        <div className="bg-white rounded-lg card-shadow p-8">
+                            <h2 className="text-2xl font-bold text-gray-900 mb-4 flex items-center">
+                                <i className="fas fa-bullseye text-blue-600 mr-3"></i>
+                                Purpose
+                            </h2>
+                            <p className="text-gray-700 leading-relaxed mb-4">
+                                The IADI Core Principles Compliance Compass (CPCC) is an advanced AI-powered tool designed to help
+                                deposit insurance organizations assess their compliance with the International Association of Deposit
+                                Insurers (IADI) Core Principles for Effective Deposit Insurance Systems.
+                            </p>
+                            <p className="text-gray-700 leading-relaxed">
+                                Our intelligent system analyzes your regulatory documents, policies, and assessment materials to provide
+                                comprehensive gap analysis, compliance scoring, and actionable recommendations for improvement.
+                            </p>
+                        </div>
+                    </div>
+
+                    {/* What You'll Need Section */}
+                    <div className="max-w-4xl mx-auto mb-12">
+                        <div className="bg-white rounded-lg card-shadow p-8">
+                            <h2 className="text-2xl font-bold text-gray-900 mb-6 flex items-center">
+                                <i className="fas fa-clipboard-list text-blue-600 mr-3"></i>
+                                What You'll Need
+                            </h2>
+                            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                                <div className="text-center p-4 bg-blue-50 rounded-lg">
+                                    <i className="fas fa-gavel text-3xl text-blue-600 mb-3"></i>
+                                    <h3 className="font-semibold text-gray-900 mb-2">Primary Legislation</h3>
+                                    <p className="text-sm text-gray-600">
+                                        Deposit insurance acts, banking laws, and regulatory frameworks
+                                    </p>
+                                </div>
+                                <div className="text-center p-4 bg-green-50 rounded-lg">
+                                    <i className="fas fa-file-contract text-3xl text-green-600 mb-3"></i>
+                                    <h3 className="font-semibold text-gray-900 mb-2">Internal Policies</h3>
+                                    <p className="text-sm text-gray-600">
+                                        Organizational policies, procedures, and operational guidelines
+                                    </p>
+                                </div>
+                                <div className="text-center p-4 bg-purple-50 rounded-lg">
+                                    <i className="fas fa-chart-bar text-3xl text-purple-600 mb-3"></i>
+                                    <h3 className="font-semibold text-gray-900 mb-2">Assessment Reports</h3>
+                                    <p className="text-sm text-gray-600">
+                                        Previous FSAP reports, self-assessments, and compliance reviews
+                                    </p>
+                                </div>
+                            </div>
+                            <div className="mt-6 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
+                                <div className="flex items-start">
+                                    <i className="fas fa-info-circle text-yellow-600 mt-1 mr-3"></i>
+                                    <div>
+                                        <p className="text-sm text-yellow-800 font-medium mb-1">Supported Formats</p>
+                                        <p className="text-sm text-yellow-700">
+                                            PDF, Word (.doc, .docx), and Excel (.xls, .xlsx) files up to 50MB each
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* How It Works Section */}
+                    <div className="max-w-4xl mx-auto mb-12">
+                        <div className="bg-white rounded-lg card-shadow p-8">
+                            <h2 className="text-2xl font-bold text-gray-900 mb-6 flex items-center">
+                                <i className="fas fa-route text-blue-600 mr-3"></i>
+                                How It Works
+                            </h2>
+                            <div className="space-y-6">
+                                <div className="flex items-start">
+                                    <div className="w-10 h-10 bg-blue-600 text-white rounded-full flex items-center justify-center font-bold mr-4 flex-shrink-0">
+                                        1
+                                    </div>
+                                    <div>
+                                        <h3 className="font-semibold text-gray-900 mb-1">Upload Your Documents</h3>
+                                        <p className="text-gray-600">
+                                            Upload your regulatory documents, policies, and assessment materials. Our system
+                                            automatically categorizes them for efficient processing.
+                                        </p>
+                                    </div>
+                                </div>
+                                <div className="flex items-start">
+                                    <div className="w-10 h-10 bg-blue-600 text-white rounded-full flex items-center justify-center font-bold mr-4 flex-shrink-0">
+                                        2
+                                    </div>
+                                    <div>
+                                        <h3 className="font-semibold text-gray-900 mb-1">AI Analysis</h3>
+                                        <p className="text-gray-600">
+                                            Our advanced AI engine processes your documents, extracts relevant information, and
+                                            analyzes compliance against all 18 IADI Core Principles and their essential criteria.
+                                        </p>
+                                    </div>
+                                </div>
+                                <div className="flex items-start">
+                                    <div className="w-10 h-10 bg-blue-600 text-white rounded-full flex items-center justify-center font-bold mr-4 flex-shrink-0">
+                                        3
+                                    </div>
+                                    <div>
+                                        <h3 className="font-semibold text-gray-900 mb-1">Review Assessment Results</h3>
+                                        <p className="text-gray-600">
+                                            Explore detailed compliance assessments for each Core Principle, including compliance
+                                            ratings, confidence scores, evidence references, and identified gaps.
+                                        </p>
+                                    </div>
+                                </div>
+                                <div className="flex items-start">
+                                    <div className="w-10 h-10 bg-blue-600 text-white rounded-full flex items-center justify-center font-bold mr-4 flex-shrink-0">
+                                        4
+                                    </div>
+                                    <div>
+                                        <h3 className="font-semibold text-gray-900 mb-1">Generate Final Report</h3>
+                                        <p className="text-gray-600">
+                                            Download comprehensive reports in PDF or Excel format, ready for stakeholder review,
+                                            regulatory submissions, or internal improvement planning.
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Key Features */}
+                    <div className="max-w-4xl mx-auto mb-12">
+                        <div className="bg-gradient-to-br from-blue-600 to-purple-600 rounded-lg card-shadow p-8 text-white">
+                            <h2 className="text-2xl font-bold mb-6 flex items-center">
+                                <i className="fas fa-star mr-3"></i>
+                                Key Features
+                            </h2>
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div className="flex items-start">
+                                    <i className="fas fa-check-circle mr-3 mt-1"></i>
+                                    <p>Automated compliance assessment against all 18 IADI Core Principles</p>
+                                </div>
+                                <div className="flex items-start">
+                                    <i className="fas fa-check-circle mr-3 mt-1"></i>
+                                    <p>AI-powered document analysis and evidence extraction</p>
+                                </div>
+                                <div className="flex items-start">
+                                    <i className="fas fa-check-circle mr-3 mt-1"></i>
+                                    <p>Detailed gap analysis with actionable recommendations</p>
+                                </div>
+                                <div className="flex items-start">
+                                    <i className="fas fa-check-circle mr-3 mt-1"></i>
+                                    <p>Confidence scoring for transparency and reliability</p>
+                                </div>
+                                <div className="flex items-start">
+                                    <i className="fas fa-check-circle mr-3 mt-1"></i>
+                                    <p>Comprehensive reporting in multiple formats</p>
+                                </div>
+                                <div className="flex items-start">
+                                    <i className="fas fa-check-circle mr-3 mt-1"></i>
+                                    <p>Secure document processing and data handling</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Get Started Button */}
+                    <div className="text-center">
+                        <button
+                            onClick={onGetStarted}
+                            className="bg-blue-600 text-white px-8 py-4 rounded-lg hover:bg-blue-700 transition-all transform hover:scale-105 font-semibold text-lg shadow-lg"
+                        >
+                            <i className="fas fa-rocket mr-2"></i>
+                            Get Started
+                        </button>
+                        <p className="text-gray-500 text-sm mt-4">
+                            Ready to assess your compliance? Click to begin the process.
+                        </p>
+                    </div>
+                </div>
+            );
+        }
+
+        // Upload Step Component
+        function UploadStep({ uploadedDocs, setUploadedDocs, onNext }) {
+            const handleFileUpload = (files) => {
+                const newDocs = Array.from(files).map(file => ({
+                    id: Math.random().toString(36),
+                    name: file.name,
+                    size: file.size,
+                    type: file.type,
+                    status: 'uploaded'
+                }));
+                setUploadedDocs(prev => [...prev, ...newDocs]);
+            };
+
+            return (
+                <div className="animate-fade-in">
+                    <div className="text-center mb-8">
+                        <h2 className="text-3xl font-bold text-gray-900 mb-4">Upload Your Documents</h2>
+                        <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+                            Upload your regulatory documents, policies, and assessment materials.
+                            Our AI will analyze them against IADI Core Principles.
+                        </p>
+                    </div>
+
+                    {/* Expected Document Types - NOW ON TOP */}
+                    <div className="max-w-4xl mx-auto">
+                        {/* Document Categories - View/Filter Only */}
+                        {uploadedDocs.length > 0 && (
+                            <div className="mb-6">
+                                <h3 className="text-lg font-semibold text-gray-900 mb-2">Document Categories</h3>
+                                <p className="text-gray-600 mb-4">Your uploaded documents have been automatically categorized. Click to view by category:</p>
+                            </div>
+                        )}
+                        {uploadedDocs.length === 0 && (
+                            <div className="mb-6">
+                                <h3 className="text-lg font-semibold text-gray-900 mb-2">Expected Document Types</h3>
+                                <p className="text-gray-600 mb-4">These are the types of documents our AI will categorize and analyze:</p>
+                            </div>
+                        )}
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                            {[
+                                {
+                                    title: 'Primary Legislation',
+                                    description: 'Deposit insurance acts, banking laws',
+                                    icon: 'fas fa-gavel',
+                                    examples: 'PIDM Act, DI Law, Banking Act',
+                                    count: uploadedDocs.filter(doc => doc.name.toLowerCase().includes('act') || doc.name.toLowerCase().includes('law')).length,
+                                    filterKey: 'legislation'
+                                },
+                                {
+                                    title: 'Internal Policies',
+                                    description: 'Organizational policies and procedures',
+                                    icon: 'fas fa-file-contract',
+                                    examples: 'Policy manuals, procedures, guidelines',
+                                    count: uploadedDocs.filter(doc => doc.name.toLowerCase().includes('policy') || doc.name.toLowerCase().includes('manual')).length,
+                                    filterKey: 'policies'
+                                },
+                                {
+                                    title: 'Assessment Reports',
+                                    description: 'Previous FSAP, self-assessments',
+                                    icon: 'fas fa-chart-bar',
+                                    examples: 'FSAP reports, internal assessments',
+                                    count: uploadedDocs.filter(doc => doc.name.toLowerCase().includes('fsap') || doc.name.toLowerCase().includes('assessment')).length,
+                                    filterKey: 'assessments'
+                                }
+                            ].map((type, index) => (
+                                <div
+                                    key={index}
+                                    className={`p-6 rounded-lg card-shadow border-2 transition-all duration-200 ${uploadedDocs.length > 0
+                                        ? 'bg-white hover:bg-blue-50 hover:border-blue-200 border-gray-200 cursor-pointer'
+                                        : 'bg-gray-50 border-gray-200'
+                                        }`}
+                                    onClick={() => {
+                                        if (uploadedDocs.length > 0) {
+                                            // In production: filter documents by category
+                                            alert(`Showing ${type.count} ${type.title} documents`);
+                                        }
+                                    }}
+                                >
+                                    <div className="text-center">
+                                        <i className={`${type.icon} text-2xl ${uploadedDocs.length > 0 ? 'text-blue-600' : 'text-gray-400'} mb-3`}></i>
+                                        <h4 className="font-semibold text-gray-900 mb-2">{type.title}</h4>
+                                        <p className="text-gray-600 text-sm mb-3">{type.description}</p>
+                                        <p className="text-xs text-gray-500 mb-3">{type.examples}</p>
+
+                                        {uploadedDocs.length > 0 ? (
+                                            <div>
+                                                {type.count > 0 ? (
+                                                    <span className="inline-block bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm font-medium mb-2">
+                                                        {type.count} document{type.count !== 1 ? 's' : ''}
+                                                    </span>
+                                                ) : (
+                                                    <span className="inline-block bg-gray-100 text-gray-600 px-3 py-1 rounded-full text-sm mb-2">
+                                                        No documents
+                                                    </span>
+                                                )}
+                                                <p className="text-xs text-blue-600 font-medium">
+                                                    {type.count > 0 ? 'Click to view →' : 'Upload more documents'}
+                                                </p>
+                                            </div>
+                                        ) : (
+                                            <span className="text-xs text-gray-400">
+                                                Will be auto-detected
+                                            </span>
+                                        )}
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+
+                        {/* Upload Zone - NOW BELOW Expected Document Types */}
+                        <div
+                            className="upload-zone rounded-lg p-12 text-center mb-8"
+                            onDrop={(e) => {
+                                e.preventDefault();
+                                handleFileUpload(e.dataTransfer.files);
+                            }}
+                            onDragOver={(e) => e.preventDefault()}
+                        >
+                            <i className="fas fa-cloud-upload-alt text-4xl text-gray-400 mb-4"></i>
+                            <h3 className="text-xl font-semibold text-gray-700 mb-2">
+                                Drag and drop files here
+                            </h3>
+                            <p className="text-gray-500 mb-4">or click to browse</p>
+                            <input
+                                type="file"
+                                multiple
+                                className="hidden"
+                                id="file-upload"
+                                onChange={(e) => handleFileUpload(e.target.files)}
+                            />
+                            <label
+                                htmlFor="file-upload"
+                                className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 cursor-pointer inline-block transition-colors"
+                            >
+                                Choose Files
+                            </label>
+                            <p className="text-sm text-gray-400 mt-4">
+                                Supports PDF, Word, Excel files up to 50MB each
+                            </p>
+                        </div>
+
+                        {/* Uploaded Documents List */}
+                        {uploadedDocs.length > 0 && (
+                            <div className="bg-white rounded-lg card-shadow">
+                                <div className="p-6 border-b">
+                                    <h3 className="text-lg font-semibold text-gray-900">
+                                        Uploaded Documents ({uploadedDocs.length})
+                                    </h3>
+                                </div>
+                                <div className="divide-y">
+                                    {uploadedDocs.map((doc) => (
+                                        <div key={doc.id} className="p-4 flex items-center justify-between">
+                                            <div className="flex items-center space-x-3">
+                                                <i className="fas fa-file-pdf text-red-500"></i>
+                                                <div>
+                                                    <p className="font-medium text-gray-900">{doc.name}</p>
+                                                    <p className="text-sm text-gray-500">
+                                                        {(doc.size / 1024 / 1024).toFixed(2)} MB
+                                                    </p>
+                                                </div>
+                                            </div>
+                                            <div className="flex items-center space-x-2">
+                                                <span className="bg-green-100 text-green-800 px-2 py-1 rounded-full text-xs">
+                                                    <i className="fas fa-check mr-1"></i>Uploaded
+                                                </span>
+                                                <button className="text-gray-400 hover:text-red-500">
+                                                    <i className="fas fa-trash"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                                <div className="p-6 bg-gray-50 rounded-b-lg">
+                                    <button
+                                        onClick={onNext}
+                                        className="w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 transition-colors font-semibold"
+                                    >
+                                        Start AI Analysis <i className="fas fa-arrow-right ml-2"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        )}
+                    </div>
+                </div>
+            );
+        }
+
+        // Analysis Step Component
+        function AnalysisStep({ progress, setProgress, onComplete }) {
+            const [showCompleted, setShowCompleted] = useState(false);
+
+            useEffect(() => {
+                const interval = setInterval(() => {
+                    setProgress(prev => {
+                        if (prev >= 100) {
+                            clearInterval(interval);
+                            setShowCompleted(true);
+                            // Wait 5 seconds before moving to next step, so user can read
+                            setTimeout(onComplete, 5000);
+                            return 100;
+                        }
+                        return prev + 0.5; // Much slower progress (was +2, now +0.5)
+                    });
+                }, 200); // Slower interval (was 100ms, now 200ms)
+
+                return () => clearInterval(interval);
+            }, []);
+
+            const analysisSteps = [
+                { label: 'Document Processing', status: progress > 10 ? 'completed' : 'active' },
+                { label: 'Content Extraction', status: progress > 30 ? 'completed' : progress > 10 ? 'active' : 'pending' },
+                { label: 'AI Analysis', status: progress > 60 ? 'completed' : progress > 30 ? 'active' : 'pending' },
+                { label: 'Gap Assessment', status: progress > 90 ? 'completed' : progress > 60 ? 'active' : 'pending' },
+            ];
+
+            return (
+                <div className="animate-fade-in max-w-4xl mx-auto">
+                    <div className="text-center mb-12">
+                        <h2 className="text-3xl font-bold text-gray-900 mb-4">AI Analysis in Progress</h2>
+                        <p className="text-lg text-gray-600">
+                            Our AI is analyzing your documents against IADI Core Principles...
+                        </p>
+                    </div>
+
+                    {/* Progress Circle */}
+                    <div className="text-center mb-12">
+                        <div className="relative inline-block">
+                            <svg className="w-32 h-32 transform -rotate-90">
+                                <circle
+                                    cx="64" cy="64" r="40"
+                                    stroke="currentColor"
+                                    strokeWidth="8"
+                                    fill="transparent"
+                                    className="text-gray-200"
+                                />
+                                <circle
+                                    cx="64" cy="64" r="40"
+                                    stroke="currentColor"
+                                    strokeWidth="8"
+                                    fill="transparent"
+                                    strokeDasharray="251.2"
+                                    strokeDashoffset={251.2 - (progress / 100) * 251.2}
+                                    className="text-blue-600 transition-all duration-500"
+                                />
+                            </svg>
+                            <div className="absolute inset-0 flex items-center justify-center">
+                                <span className="text-2xl font-bold text-gray-900">{Math.round(progress)}%</span>
+                            </div>
+                        </div>
+                        {showCompleted && (
+                            <div className="mt-4 animate-fade-in">
+                                <div className="bg-green-100 text-green-800 px-4 py-2 rounded-full inline-block mb-2">
+                                    <i className="fas fa-check mr-2"></i>Analysis Complete!
+                                </div>
+                                <p className="text-sm text-gray-600">
+                                    Proceeding to results in a few seconds... <i className="fas fa-spinner fa-spin ml-1"></i>
+                                </p>
+                            </div>
+                        )}
+                    </div>
+
+                    {/* Analysis Steps */}
+                    <div className="space-y-4">
+                        {analysisSteps.map((step, index) => (
+                            <div key={index} className="flex items-center space-x-4 p-4 bg-white rounded-lg card-shadow">
+                                <div className={`w-10 h-10 rounded-full flex items-center justify-center ${step.status === 'completed' ? 'bg-green-100 text-green-600' :
+                                    step.status === 'active' ? 'bg-blue-100 text-blue-600' :
+                                        'bg-gray-100 text-gray-400'
+                                    }`}>
+                                    {step.status === 'completed' ? (
+                                        <i className="fas fa-check"></i>
+                                    ) : step.status === 'active' ? (
+                                        <i className="fas fa-spinner fa-spin"></i>
+                                    ) : (
+                                        <i className="fas fa-clock"></i>
+                                    )}
+                                </div>
+                                <div className="flex-1">
+                                    <h4 className="font-semibold text-gray-900">{step.label}</h4>
+                                </div>
+                                <div className={`px-3 py-1 rounded-full text-xs font-medium ${step.status === 'completed' ? 'bg-green-100 text-green-800' :
+                                    step.status === 'active' ? 'bg-blue-100 text-blue-800' :
+                                        'bg-gray-100 text-gray-600'
+                                    }`}>
+                                    {step.status === 'completed' ? 'Complete' :
+                                        step.status === 'active' ? 'Processing' : 'Pending'}
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+
+                    {/* Real-time Updates */}
+                    <div className="mt-8 bg-blue-50 border border-blue-200 rounded-lg p-4">
+                        <div className="flex items-start space-x-3">
+                            <i className="fas fa-info-circle text-blue-600 mt-1"></i>
+                            <div>
+                                <h4 className="font-semibold text-blue-900 mb-2">Analysis Updates</h4>
+                                <div className="space-y-1 text-sm text-blue-800">
+                                    {progress > 10 && <p>✓ Processed 3 documents successfully</p>}
+                                    {progress > 30 && <p>✓ Extracted text from 156 pages</p>}
+                                    {progress > 60 && <p>✓ Analyzed against 18 Core Principles</p>}
+                                    {progress > 90 && <p>✓ Generated compliance assessment</p>}
+                                    {showCompleted && (
+                                        <div className="mt-3 p-3 bg-white rounded border-l-4 border-green-500">
+                                            <p className="font-medium text-green-800">🎉 Analysis successfully completed!</p>
+                                            <p className="text-green-700 text-xs mt-1">
+                                                • Analyzed 156 pages across 3 documents<br />
+                                                • Assessed compliance with 5 Core Principles<br />
+                                                • Generated 847 evidence references<br />
+                                                • Identified 3 areas for improvement
+                                            </p>
+                                        </div>
+                                    )}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {showCompleted && (
+                        <div className="mt-6 text-center">
+                            <button
+                                onClick={onComplete}
+                                className="bg-green-600 text-white px-6 py-3 rounded-lg hover:bg-green-700 transition-colors font-semibold"
+                            >
+                                View Results Now <i className="fas fa-arrow-right ml-2"></i>
+                            </button>
+                        </div>
+                    )}
+                </div>
+            );
+        }
+
+        // Results Step Component
+        function ResultsStep({ principles, selectedPrinciple, setSelectedPrinciple, results }) {
+            return (
+                <div className="animate-fade-in">
+                    <div className="text-center mb-8">
+                        <h2 className="text-3xl font-bold text-gray-900 mb-4">Assessment Results</h2>
+                        <p className="text-lg text-gray-600">
+                            Review your compliance assessment against IADI Core Principles
+                        </p>
+                    </div>
+
+                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                        {/* Principles List */}
+                        <div className="lg:col-span-1">
+                            <h3 className="text-lg font-semibold text-gray-900 mb-4">Core Principles</h3>
+                            <div className="space-y-2">
+                                {principles.map((principle) => (
+                                    <button
+                                        key={principle.id}
+                                        onClick={() => setSelectedPrinciple(principle.id)}
+                                        className={`w-full text-left p-4 rounded-lg border transition-colors ${selectedPrinciple === principle.id
+                                            ? 'border-blue-500 bg-blue-50'
+                                            : 'border-gray-200 bg-white hover:border-gray-300'
+                                            }`}
+                                    >
+                                        <div className="flex items-center justify-between">
+                                            <div>
+                                                <h4 className="font-medium text-gray-900">{principle.id}</h4>
+                                                <p className="text-sm text-gray-600">{principle.title}</p>
+                                            </div>
+                                            <div className="flex items-center space-x-2">
+                                                {principle.status === 'completed' && (
+                                                    <>
+                                                        <span className="text-sm font-medium text-green-600">
+                                                            {principle.score}%
+                                                        </span>
+                                                        <i className="fas fa-check-circle text-green-500"></i>
+                                                    </>
+                                                )}
+                                                {principle.status === 'in-progress' && (
+                                                    <i className="fas fa-clock text-yellow-500"></i>
+                                                )}
+                                                {principle.status === 'pending' && (
+                                                    <i className="fas fa-minus-circle text-gray-400"></i>
+                                                )}
+                                            </div>
+                                        </div>
+                                    </button>
+                                ))}
+                            </div>
+                        </div>
+
+                        {/* Detailed Results */}
+                        <div className="lg:col-span-2">
+                            {selectedPrinciple && results[selectedPrinciple] ? (
+                                <PrincipleDetails principle={selectedPrinciple} data={results[selectedPrinciple]} />
+                            ) : (
+                                <div className="bg-white rounded-lg card-shadow p-8 text-center">
+                                    <i className="fas fa-arrow-left text-4xl text-gray-300 mb-4"></i>
+                                    <h3 className="text-lg font-medium text-gray-900 mb-2">
+                                        Select a Core Principle
+                                    </h3>
+                                    <p className="text-gray-600">
+                                        Choose a principle from the list to view detailed assessment results
+                                    </p>
+                                </div>
+                            )}
+                        </div>
+                    </div>
+                </div>
+            );
+        }
+
+        // Principle Details Component
+        function PrincipleDetails({ principle, data }) {
+            return (
+                <div className="space-y-6">
+                    {/* Overall Status */}
+                    <div className="bg-white rounded-lg card-shadow p-6">
+                        <h3 className="text-lg font-semibold text-gray-900 mb-4">
+                            {principle}: Overall Assessment
+                        </h3>
+                        <div className="flex items-center justify-between">
+                            <div>
+                                <span className={`inline-block px-3 py-1 rounded-full text-sm font-medium ${data.overall.color === 'green' ? 'bg-green-100 text-green-800' :
+                                    data.overall.color === 'yellow' ? 'bg-yellow-100 text-yellow-800' :
+                                        'bg-red-100 text-red-800'
+                                    }`}>
+                                    {data.overall.status}
+                                </span>
+                                <p className="text-sm text-gray-600 mt-1">
+                                    {data.overall.confidence}% confidence
+                                </p>
+                            </div>
+                            <div className="text-right">
+                                <div className="text-2xl font-bold text-gray-900">
+                                    {data.overall.confidence}%
+                                </div>
+                                <div className="text-sm text-gray-500">Compliance Score</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Essential Criteria */}
+                    <div className="space-y-4">
+                        <h3 className="text-lg font-semibold text-gray-900">Essential Criteria</h3>
+                        {data.criteria.map((criterion) => (
+                            <div key={criterion.id} className="bg-white rounded-lg card-shadow p-6">
+                                <div className="flex items-start justify-between mb-4">
+                                    <div className="flex-1">
+                                        <h4 className="font-medium text-gray-900 mb-1">
+                                            {criterion.id}: {criterion.text}
+                                        </h4>
+                                        <span className={`inline-block px-2 py-1 rounded-full text-xs font-medium ${criterion.status === 'Fully Compliant' ? 'bg-green-100 text-green-800' :
+                                            criterion.status === 'Largely Compliant' ? 'bg-yellow-100 text-yellow-800' :
+                                                'bg-red-100 text-red-800'
+                                            }`}>
+                                            {criterion.status}
+                                        </span>
+                                    </div>
+                                    <div className="text-right">
+                                        <div className="text-lg font-semibold text-gray-900">
+                                            {criterion.confidence}%
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div className="space-y-3">
+                                    <div>
+                                        <h5 className="text-sm font-medium text-gray-700 mb-1">Evidence Found:</h5>
+                                        <p className="text-sm text-gray-600">{criterion.evidence}</p>
+                                    </div>
+
+                                    {criterion.gaps.length > 0 && (
+                                        <div>
+                                            <h5 className="text-sm font-medium text-gray-700 mb-1">Areas for Improvement:</h5>
+                                            <ul className="list-disc list-inside space-y-1">
+                                                {criterion.gaps.map((gap, index) => (
+                                                    <li key={index} className="text-sm text-red-600">{gap}</li>
+                                                ))}
+                                            </ul>
+                                        </div>
+                                    )}
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            );
+        }
+
+        // Report Step Component
+        function ReportStep({ results }) {
+            return (
+                <div className="animate-fade-in max-w-4xl mx-auto">
+                    <div className="text-center mb-8">
+                        <h2 className="text-3xl font-bold text-gray-900 mb-4">Final Assessment Report</h2>
+                        <p className="text-lg text-gray-600">
+                            Complete compliance report ready for download and sharing
+                        </p>
+                    </div>
+
+                    <div className="bg-white rounded-lg card-shadow p-8">
+                        <h3 className="text-xl font-semibold text-gray-900 mb-6">Executive Summary</h3>
+                        <p className="text-gray-600 mb-6">
+                            This report presents a comprehensive assessment of compliance with IADI Core Principles
+                            for Effective Deposit Insurance Systems, based on AI analysis of submitted documentation.
+                        </p>
+
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                            <div className="text-center p-4 bg-green-50 rounded-lg">
+                                <div className="text-2xl font-bold text-green-600">85%</div>
+                                <div className="text-sm text-gray-600">Overall Compliance</div>
+                            </div>
+                            <div className="text-center p-4 bg-blue-50 rounded-lg">
+                                <div className="text-2xl font-bold text-blue-600">5</div>
+                                <div className="text-sm text-gray-600">Principles Assessed</div>
+                            </div>
+                            <div className="text-center p-4 bg-yellow-50 rounded-lg">
+                                <div className="text-2xl font-bold text-yellow-600">3</div>
+                                <div className="text-sm text-gray-600">Areas for Improvement</div>
+                            </div>
+                        </div>
+
+                        <div className="flex flex-wrap gap-4">
+                            <button className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors">
+                                <i className="fas fa-download mr-2"></i>Download PDF Report
+                            </button>
+                            <button className="bg-green-600 text-white px-6 py-3 rounded-lg hover:bg-green-700 transition-colors">
+                                <i className="fas fa-file-excel mr-2"></i>Export to Excel
+                            </button>
+                            <button className="border border-gray-300 text-gray-700 px-6 py-3 rounded-lg hover:bg-gray-50 transition-colors">
+                                <i className="fas fa-share mr-2"></i>Share Results
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            );
+        }
+
+        // Render the App
+        ReactDOM.render(<IADIGapAssessmentApp />, document.getElementById('root'));
+    </script>
+</body>
+
+</html>
