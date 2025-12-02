@@ -1384,18 +1384,18 @@ Deposit insurers may be confronted with challenges including: the potential risk
                                     filterKey: 'legislation'
                                 },
                                 {
-                                    title: 'Internal Policies',
-                                    description: 'Organizational policies and procedures',
+                                    title: 'Secondary Legislation',
+                                    description: 'Regulations, decrees, rulesbooks or circulars specifying',
                                     icon: 'fas fa-file-contract',
-                                    examples: 'Policy manuals, procedures, guidelines',
+                                    examples: 'DI requirements, membership rules',
                                     count: uploadedDocs.filter(doc => doc.name.toLowerCase().includes('policy') || doc.name.toLowerCase().includes('manual')).length,
                                     filterKey: 'policies'
                                 },
                                 {
-                                    title: 'Assessment Reports',
-                                    description: 'Previous FSAP, self-assessments',
+                                    title: 'Other Documents',
+                                    description: 'Policies & procedures, and documents specifying',
                                     icon: 'fas fa-chart-bar',
-                                    examples: 'FSAP reports, internal assessments',
+                                    examples: 'DI scheme, Supervisory frameworks',
                                     count: uploadedDocs.filter(doc => doc.name.toLowerCase().includes('fsap') || doc.name.toLowerCase().includes('assessment')).length,
                                     filterKey: 'assessments'
                                 }
