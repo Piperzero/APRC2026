@@ -67,6 +67,7 @@
             const [analysisProgress, setAnalysisProgress] = useState(0);
             const [selectedPrinciple, setSelectedPrinciple] = useState(null);
             const [assessmentResults, setAssessmentResults] = useState(null);
+            const [selectedCPReference, setSelectedCPReference] = useState('CP1');
 
             // Sample data for the mockup
             const corePrinciples = [
@@ -112,7 +113,17 @@
                     {/* Main Content */}
                     <main className="max-w-7xl mx-auto px-4 py-8">
                         {currentStep === 'intro' && (
-                            <IntroStep onGetStarted={() => setCurrentStep('upload')} />
+                            <IntroStep
+                                onGetStarted={() => setCurrentStep('upload')}
+                                onViewPrinciples={() => setCurrentStep('core-principles')}
+                            />
+                        )}
+
+                        {currentStep === 'core-principles' && (
+                            <CorePrinciplesStep
+                                selectedPrinciple={selectedCPReference}
+                                setSelectedPrinciple={setSelectedCPReference}
+                            />
                         )}
 
                         {currentStep === 'upload' && (
@@ -179,6 +190,7 @@
         function Navigation({ currentStep, setCurrentStep }) {
             const steps = [
                 { id: 'intro', label: 'Get Started', icon: 'fas fa-home' },
+                { id: 'core-principles', label: 'IADI Core Principles', icon: 'fas fa-book' },
                 { id: 'upload', label: 'Upload Documents', icon: 'fas fa-upload' },
                 { id: 'analysis', label: 'AI Analysis', icon: 'fas fa-brain' },
                 { id: 'results', label: 'Assessment Results', icon: 'fas fa-chart-line' },
@@ -209,7 +221,7 @@
         }
 
         // Introduction Step Component
-        function IntroStep({ onGetStarted }) {
+        function IntroStep({ onGetStarted, onViewPrinciples }) {
             return (
                 <div className="animate-fade-in">
                     {/* Hero Section */}
@@ -253,14 +265,26 @@
                                 Purpose
                             </h2>
                             <p className="text-gray-700 leading-relaxed mb-4">
-                                The IADI Core Principles Compliance Compass (CPCC) is an advanced AI-powered tool designed to help
-                                deposit insurance organizations assess their compliance with the International Association of Deposit
-                                Insurers (IADI) Core Principles for Effective Deposit Insurance Systems.
+                                The Core Principles for Effective Deposit Insurance Systems are the international standard for deposit insurance, setting out the key components of effective deposit insurance systems. Originally issued in 2009 by IADI and the Basel Committee on Banking Supervision, they were revised in 2014 and most recently updated in 2024 to address structural changes in the industry, digital innovation, and lessons from recent banking turmoil.
                             </p>
-                            <p className="text-gray-700 leading-relaxed">
-                                Our intelligent system analyzes your regulatory documents, policies, and assessment materials to provide
-                                comprehensive gap analysis, compliance scoring, and actionable recommendations for improvement.
+                            <p className="text-gray-700 leading-relaxed mb-4">
+                                The Core Principles serve as a benchmark for jurisdictions to assess the quality of their deposit insurance systems and identify gaps in their practices. They are used by the IMF and World Bank in the Financial Sector Assessment Program (FSAP) to evaluate the effectiveness of deposit insurance systems worldwide.
                             </p>
+                            <p className="text-gray-700 leading-relaxed mb-4">
+                                The IADI Core Principles Compliance Compass (CPCC) is an AI-powered tool designed to streamline this assessment process. It analyzes your regulatory documents, policies, and assessment materials to provide comprehensive gap analysis, compliance scoring, and actionable recommendations aligned with the Core Principles.
+                            </p>
+                            <div className="mt-6 text-center">
+                                <button
+                                    onClick={onViewPrinciples}
+                                    className="bg-purple-600 text-white px-6 py-3 rounded-lg hover:bg-purple-700 transition-all transform hover:scale-105 font-semibold shadow-md"
+                                >
+                                    <i className="fas fa-book mr-2"></i>
+                                    View IADI Core Principles
+                                </button>
+                                <p className="text-gray-500 text-sm mt-2">
+                                    Read the full Core Principles and their essential criteria
+                                </p>
+                            </div>
                         </div>
                     </div>
 
@@ -416,6 +440,896 @@
                         <p className="text-gray-500 text-sm mt-4">
                             Ready to assess your compliance? Click to begin the process.
                         </p>
+                    </div>
+                </div>
+            );
+        }
+
+        // Core Principles Reference Step Component
+        function CorePrinciplesStep({ selectedPrinciple, setSelectedPrinciple }) {
+            // General Sections (I-V) from the Core Principles document
+            const generalSections = [
+                {
+                    id: 'SEC1',
+                    title: 'I. Introduction',
+                    content: `The Core Principles for Effective Deposit Insurance Systems are the international standard for deposit insurance. They set out the key components of effective deposit insurance systems.
+
+The first set of Core Principles for Effective Deposit Insurance Systems were jointly issued by the International Association of Deposit Insurers (IADI) and the Basel Committee on Banking Supervision (BCBS) in June 2009. A Compliance Assessment Methodology for the Core Principles was completed in December 2010. The Core Principles and their compliance assessment methodology (together: "Core Principles") are used by jurisdictions as a benchmark for assessing the quality of their deposit insurance systems and for identifying gaps in their deposit insurance practices and measures to address them. The Core Principles are also used by the International Monetary Fund (IMF) and the World Bank, in the context of the Financial Sector Assessment Program (FSAP), to assess the effectiveness of jurisdictions' deposit insurance systems and practices.
+
+The Core Principles are reflective of, and designed to be adaptable to, a broad range of jurisdictional circumstances, settings and institutional structures. Jurisdictional authorities are free to put in place supplementary measures that they deem necessary to achieve effective deposit insurance in their jurisdictions. An assessment of compliance with the Core Principles can be a useful exercise for jurisdictions that are implementing, reviewing or actively reforming a deposit insurance system. The assessment of a deposit insurance system helps to identify strengths and weaknesses in the existing deposit insurance system and possible measures that deposit insurers and policymakers may adopt to enhance the current system and address any shortcomings.
+
+The global financial crisis of 2007-2009 brought to light significant policy lessons for deposit insurance systems. The crisis demonstrated that deposit protection has a key role in maintaining depositor confidence in the financial system. This framed the environment within which the Core Principles were revised in 2014. Subsequently in 2016, the Handbook for the Assessment of Compliance with the Core Principles was published to serve as an interpretive guide to the Core Principles and provide additional guidance for assessing a jurisdiction's compliance with the Core Principles.
+
+The Core Principles have again been revised ten years later, in 2024. This most recent update is informed by structural changes in the industry (e.g. digital innovation), the trend for increased involvement by deposit insurers in resolution and the lessons from the banking turmoil in March 2023, which marked the largest episode of systemic stress since the 2007-2009 global financial crisis. The 2023 banking turmoil highlighted the importance of taking a holistic approach to safeguarding financial stability and the effective interactions of deposit insurance, resolution, and supervision while acknowledging the different architectures across jurisdictions.
+
+The Core Principles continuously evolve to enhance the effectiveness of deposit insurance practices worldwide. Each iteration builds upon the previous versions, aiming to strike a balance between promoting proven practices and ensuring the Core Principles remain a globally applicable standard. The iterative nature of the Core Principles allows for the incorporation of new insights, emerging trends, and lessons learned from practical implementation.`
+                },
+                {
+                    id: 'SEC2',
+                    title: 'II. Definitions of Key Terms',
+                    content: `**Additional criteria** are aspirational and voluntary best practices that exceed current baseline expectations (i.e. Core Principles and Essential Criteria) to deposit insurance systems.
+
+**Blanket guarantee** is defined as a declaration by authorities that in addition to the protection provided by limited coverage deposit insurance or other arrangements, certain or all deposits (and perhaps other liabilities) will be protected in full.
+
+**Deposit insurance** refers to the financial protection for depositors against loss up to an insured amount in the event an insured deposit-taking institution is unable to meet its obligations to the depositors.
+
+**Deposit insurance system** refers to the deposit insurer and its interactions with the financial safety net participants that support deposit insurance functions and resolution processes and thereby support financial stability and the protection of depositors.
+
+**Deposit insurer** refers to the legal entity responsible for providing deposit insurance.
+
+**Essential criteria** are the baseline expectations for effective deposit insurance systems and are used to assess compliance with the Core Principles.
+
+**Financial safety net** refers to the framework of institutional and regulatory arrangements put in place to preserve financial stability and protect depositors. The financial safety net typically includes the deposit insurer, the central bank, the supervisory authority, the resolution authority, and the finance ministry.
+
+**Insured deposit-taking institution** refers to a financial institution that takes deposits from the public and is a member of a deposit insurance system.
+
+**Member institution** refers to an insured deposit-taking institution that is a member in a deposit insurer.
+
+**Moral hazard** arises when parties have incentives to accept more risk because the costs that arise from the risk are borne, in whole or in part, by others.
+
+**Public policy objectives** refer to the goals which the deposit insurance system is expected to achieve.
+
+**Resolution** refers to the exercise of resolution powers over an insured deposit-taking institution that is no longer viable, or likely to be no longer viable. Resolution may include liquidation and depositor reimbursement, transfer and/or sale of assets and liabilities also in liquidation under insolvency law, the establishment of a bridge institution and the write-down of debt, or conversion of debt to equity.
+
+**Resolution authority** is defined as a public authority that, either alone or together with other authorities, has resolution powers over insured deposit-taking institutions established in its jurisdiction. The resolution authority may be the deposit insurer, or any other financial safety net participant vested with resolution powers.
+
+**Subrogation** is the legal substitution of one party (e.g. the deposit insurer) for another (e.g. the insured depositor) with reference to a lawful claim, demand, or right.
+
+**Target fund size** refers to the size of the ex ante deposit insurance fund, typically measured as a proportion of the assessment base (e.g. total or insured deposits), sufficient to meet the expected future obligations and cover the operational and related costs of the deposit insurer.`
+                },
+                {
+                    id: 'SEC3',
+                    title: 'III. The Deposit Insurance System Within the Financial Safety-Net',
+                    content: `This international deposit insurance standard applies to deposit insurance systems, which refers to deposit insurers and their interactions with the financial safety net participants that support deposit insurance functions and resolution processes and thereby support financial stability and the protection of depositors.
+
+The institutional set-up of financial safety nets and the allocation of responsibilities and powers among financial safety net participants, including supervision, resolution and deposit insurance vary by jurisdiction. Design options are myriad and include silo approaches, functional approaches, integrated models, as well as twin peak approaches.
+
+The distinct mandates of financial safety net participants result in different analysis and application of the core concepts of solvency and liquidity. Generally, central banks look at solvency and liquidity from a system-wide perspective and at how these impact monetary policy and economic/financial stability, whereas supervisors are more likely to focus on the safety and soundness of individual financial institutions and the financial system as a whole.
+
+Deposit insurers and resolution authorities focus on protecting depositors and maintaining confidence and stability in the financial system. Their interest in solvency and liquidity is from the perspective of minimising the cost and negative consequences of insured deposit-taking institution failures and ensuring early and effective resolution.
+
+The legal mandates of deposit insurers vary significantly across jurisdictions. The mandate of the deposit insurer may be broad, encompassing responsibilities and tasks related to supervision, regulation and/or resolution; or the deposit insurance institution may be limited to the core deposit insurance function of compensating depositors; with other entities being tasked with supervision and resolution activities.
+
+As a consequence, the interaction and coordination needed among the financial safety net participants varies depending on the mandates of the deposit insurer and the other financial safety net participants. There are a variety of tools available to protect depositors, including resolution powers other than liquidations and depositor reimbursement. These powers may be distributed among safety net participants in a variety of ways.
+
+Acknowledging this variety in institutional designs, the Core Principles differentiate between deposit insurers and the provision of deposit insurance in the narrow sense and the wider deposit insurance system. They set a benchmark that applies:
+(i) to deposit insurers globally, irrespective of the scope of their mandate, and include core expectations for the organisation and functioning of deposit insurance within the financial safety net; and
+(ii) holistically to the deposit insurance system through the effective interaction of supervision, resolution, and deposit insurance.
+
+The Core Principles for Effective Deposit Insurance Systems are structured as follows:
+(i) **Objectives**: Core Principle 1 sets out the overall public policy objectives for the deposit insurance system.
+(ii) **Principles generally applicable to deposit insurers**: Core Principle 2 to Core Principle 10 set out specific requirements for the provision of deposit insurance that are primarily applicable to the legal entity responsible for providing deposit insurance ("deposit insurer").
+(iii) **Principles generally applicable to the deposit insurance system**: Core Principle 11 to Core Principle 18 set out requirements that acknowledge and emphasise the interaction of the deposit insurance functions with the functions of other financial safety net participants.`
+                },
+                {
+                    id: 'SEC4',
+                    title: 'IV. Institutional Arrangements',
+                    content: `The Core Principles acknowledge that the same outcomes can be achieved through different organisational and institutional settings ("outcome-focused"). The assessment of the effective implementation of the Core Principles therefore needs to consider how individual financial safety net functions work together effectively to achieve the outcomes set out in the Core Principles.
+
+## 1. Structure and Organisation
+
+There are significant differences across jurisdictions in the structure and organisation of the deposit insurer. Many deposit insurers are set up as separate administrative agencies or governmental entities, while others may be operated as departments of the government, central banks or supervisory authorities without separate legal personality. Additionally, deposit insurers may be structured as private sector not-for-profit organisations or industry associations of insured deposit-taking institutions. Yet others may be established as integrated single-agency schemes ("integrated protection schemes") that combine the provision of deposit insurance with insurance policy holder and investor protection.
+
+Irrespective of the deposit insurer's arrangements and whether it is administered privately or publicly, its mandate, powers, and responsibilities must be clearly defined and support the public policy objectives of the deposit insurance system.
+
+## 2. Multiple Deposit Insurance Systems
+
+Several jurisdictions have more than one deposit insurance system operating within their borders and catering to different institutions or offering different levels of protection for the same institutions; these arrangements are referred to as multiple deposit insurance systems (MDIS).
+
+Differences in objectives, mandates and design features among MDIS can result in organisational complexities that can lead to inefficiencies and potential competitive concerns. Therefore, in jurisdictions where MDIS exist, appropriate information sharing and coordination arrangements need to be in place between the schemes. This is of particular importance for ensuring effective public awareness about the different systems.
+
+## 3. Special Deposit Insurance System for Cooperatives
+
+Financial cooperatives play an important role in the financial system of many jurisdictions worldwide. They have certain unique characteristics that may impact the way deposit insurers intervene or how they are resolved. Umbrella organisations of cooperative and/or institutional protection schemes can play an important role within a deposit insurance system, notably when they have powers to deal with issues faced by an ailing financial cooperative at an early stage.
+
+Notwithstanding the responsibilities of umbrella organisations and/or institutional protection schemes, the deposit insurer and other relevant financial safety net participants must have the power and capacity to proactively deal with any emerging weaknesses in umbrella organisations, institutional protection schemes, and individual cooperatives within such organisations and schemes, including the power to intervene when necessary.
+
+## 4. Islamic Deposit Insurance
+
+The growth of the Islamic financial services industry has encouraged the establishment of Islamic deposit insurance systems (IDIS) in some jurisdictions, for the protection of Islamic deposits in accordance with Islamic principles and rules. There is an increasing need to provide deposit insurance coverage for the Islamic banking sector, and to establish such systems.
+
+The Core Principles set out in this document are generally applicable to guide the establishment of an effective IDIS. However, they do not specifically take into account the unique design features of an IDIS, such as permitted investments for IDIS funds and elements of Shari'ah prohibitions on, among other things, interest, uncertainty, and gambling. The Core Principles for Effective Islamic Deposit Insurance Systems (CPIDIS) issued in July 2021 by IADI and the Islamic Financial Services Board (IFSB) provide additional guidance.`
+                },
+                {
+                    id: 'SEC5',
+                    title: 'V. Conditions Affecting the Effective Implementation of the Core Principles',
+                    content: `A comprehensive assessment of a deposit insurance system needs to consider a jurisdiction's circumstances and framework conditions that have a direct impact on the effective implementation of the Core Principles. These include:
+
+## 1. Moral Hazard
+
+The degree of moral hazard present in a jurisdiction's financial system affects the design and implementation of deposit insurance. Moral hazard arises when parties have incentives to accept more risk because the costs that arise from the risk are borne, in whole or in part, by others. In the context of deposit insurance, moral hazard can manifest in several ways, including depositors placing funds in riskier institutions without regard to the institution's financial condition, and insured deposit-taking institutions taking on excessive risks knowing that depositors are protected.
+
+## 2. Financial Safety-Net Coordination and Cooperation
+
+Effective coordination and cooperation among financial safety net participants is essential for the successful implementation of deposit insurance systems. This includes coordination with:
+
+**Prudential regulation and supervision**: Sound prudential regulation and supervision are fundamental to limiting excessive risk-taking by insured deposit-taking institutions and are essential complements to deposit insurance.
+
+**Crisis management, recovery, and failure resolution**: Effective crisis management, recovery planning, and failure resolution frameworks are critical for maintaining financial stability and protecting depositors.
+
+**Lender of last resort function**: The lender of last resort function, typically performed by the central bank, provides emergency liquidity to solvent but illiquid institutions.
+
+**Public backstop arrangement**: A credible public backstop provides assurance that the deposit insurance fund will have access to additional funding if needed.
+
+## 3. Structure of the Financial System
+
+The structure and characteristics of a jurisdiction's financial system, including the size, complexity, and interconnectedness of financial institutions, affect the design and operation of the deposit insurance system.
+
+## 4. Macroeconomic Conditions
+
+Macroeconomic conditions, including economic growth, inflation, interest rates, and exchange rates, can significantly impact the financial health of insured deposit-taking institutions and the deposit insurance system.
+
+## 5. Legal Framework and Judicial System
+
+A sound legal framework and an effective judicial system are essential for the effective implementation of deposit insurance. This includes clear laws and regulations governing deposit insurance, insolvency, and creditor rights.
+
+## 6. Creditor Hierarchy and Depositor Preference
+
+The creditor hierarchy determines the order in which claims are paid in the event of an institution's failure. Depositor preference gives depositors priority over other unsecured creditors, which can enhance recoveries for the deposit insurer and reduce losses.
+
+## 7. Accounting, Auditing, and Disclosure Regime
+
+Sound accounting and disclosure regimes and timely access to reliable financial information are necessary for the effective evaluation of risks by the financial safety net, including deposit insurance systems.
+
+## 8. Financial Inclusion
+
+Although promoting financial inclusion does not typically fall explicitly within the mandate of the deposit insurer, deposit insurers should understand the level of financial inclusion in their jurisdiction and stay abreast of financial inclusion initiatives and associated technological innovations.
+
+## 9. Fintech and Digitalisation
+
+Innovations in financial technology (fintech) and the digitalisation of finance have the potential to have heightened effects on a deposit insurance system. Fintech and digitalisation are disrupting the traditional business model of insured deposit-taking institutions and are changing both depositor behaviours and the way that financial services are provided.
+
+Digital payments can serve as alternatives to cash and can be harnessed by the deposit insurer for reimbursement purposes. Additionally, digitalisation may amplify traditional risks (e.g. liquidity, operational and strategic risks), while digital communication channels can more rapidly propagate financial stress, including heightened risk of a depositor run.
+
+## 10. Climate Change and Environmental, Social, and Governance (ESG) Factors
+
+Climate change and the measures necessary to address it may come with risks to economies, financial stability and deposit insurers. Both financial markets and financial safety net participants are increasingly taking climate-related financial risks into consideration when developing products or policies.
+
+Deposit insurers may be confronted with challenges including: the potential risk of climate change for operational capacities; the impact on general financial stability risks; the potential effect of climate-related financial risks on insured deposit-taking institution default risks; and whether and how to consider climate-related financial risks when managing deposit insurance funds.`
+                }
+            ];
+
+            // All 18 IADI Core Principles with Essential Criteria
+            const allCorePrinciples = [
+                {
+                    id: 'CP1',
+                    title: 'Public Policy Objectives',
+                    principle: 'The principal public policy objectives for deposit insurance systems are to protect depositors and to contribute to financial stability. These objectives are formally specified and publicly disclosed. The design of the deposit insurance system reflects the system\'s public policy objectives.',
+                    essentialCriteria: [
+                        'The public policy objectives of the deposit insurance system are formally and clearly specified in law and publicly disclosed.',
+                        'The design of the deposit insurance system is consistent with the system\'s public policy objectives.',
+                        'A periodic internal review is conducted to assess the extent to which the deposit insurance system is meeting its public policy objectives. In addition, a periodic external review is conducted by an independent party.'
+                    ],
+                    interpretation: 'This principle establishes that deposit insurance must have well-defined goals that support financial stability and depositor protection. The objectives should be transparent and aligned with the broader financial safety net.',
+                    recommendedDocs: [
+                        'Deposit Insurance Act or enabling legislation',
+                        'Policy statements on deposit insurance objectives',
+                        'Financial stability framework documents',
+                        'Annual reports and strategic plans'
+                    ]
+                },
+                {
+                    id: 'CP2',
+                    title: 'Mandate and Powers',
+                    principle: 'The mandate and powers of the deposit insurer are formally and clearly specified in law and publicly disclosed. They are consistent with stated public policy objectives of the deposit insurance system.',
+                    essentialCriteria: [
+                        'The mandate and powers of the deposit insurer are formally and clearly specified in law and publicly disclosed. They are consistent with stated public policy objectives of the deposit insurance system',
+                        'The mandate clarifies the roles and responsibilities of the deposit insurer and is aligned with the mandates of other relevant financial safety-net participants.',
+                        'The powers of the deposit insurer support its mandate and enable the deposit insurer to fulfil its roles and responsibilities. They include, but are not limited to: a) assessing and collecting premiums, levies, or other charges; b) reimbursing insured depositors; c) managing its fund and its use; d) obtaining timely, accurate, and comprehensive non-public information needed to fulfil its mandate directly from its member institutions, from third parties holding the relevant information on behalf of a member institution, and from other financial safety-net participants; e) compelling its member institutions to comply with their legal obligations to the deposit insurer, or requiring another financial safety-net participant to do so on behalf of the deposit insurer; f) entering into formal agreements with other financial safety-net participants regarding cooperation, coordination and information sharing in business-as-usual times and in times of crisis; g) setting operating budgets, policies, systems, and practices; and h) entering into contracts to execute its mandate.'
+                    ],
+                    detailedCriteria: [
+                        {
+                            criteria: 'The mandate and powers of the deposit insurer are formally and clearly specified in law and publicly disclosed. They are consistent with stated public policy objectives of the deposit insurance system',
+                            questions: [
+                                'Are the DI\'s mandate and powers:',
+                                'i. Formally and clearly specified in law;',
+                                'ii. Publicly disclosed; and',
+                                'iii. Consistent with stated public policy objectives of DI system'
+                            ],
+                            explanations: [
+                                'Mandate refers to:',
+                                '• set of official instructions describing its roles and responsibilities within the safety-net',
+                                '• guides the operations and activities of the DI (rather than the overall safety-net)',
+                                '• broadly classified into four categories i.e. pay box, pay box plus, loss minimizer, and risk minimiser'
+                            ],
+                            documents: [
+                                '1. DI\'s legislation or by-laws',
+                                '2. Relevant past assessment e.g. FSAP, internal self assessment',
+                                '3. Other relevant documents e.g. those that assists in confirming public disclosure of DI\'s mandate & powers, and that mandates & powers are consistent with DI\'s public policy objectives'
+                            ]
+                        },
+                        {
+                            criteria: 'The mandate clarifies the roles and responsibilities of the deposit insurer and is aligned with the mandates of other relevant financial safety-net participants.',
+                            questions: [
+                                'Does the DI\'s mandate:',
+                                'i. Clarifies roles & responsibilities of DI; and',
+                                'ii. Aligns with mandates of other relevant financial safety net participants?'
+                            ],
+                            explanations: [
+                                'All necessary elements of supervision, resolution of problem bank, depositor protection are:',
+                                '• Located within the safety nets participants',
+                                '• Has appropriate coordination among safety net participants (no overlaps, or lack of clarity)'
+                            ],
+                            documents: [
+                                '1. DI\'s legislation or by-laws',
+                                '2. Relevant past assessment e.g. FSAP, internal self assessment',
+                                '3. Laws of relevant financial safety net participants that reflect their mandates',
+                                '4. FSAPs or other relevant assessment of relevant safety net participants'
+                            ]
+                        },
+                        {
+                            criteria: 'The powers of the deposit insurer support its mandate and enable the deposit insurer to fulfil its roles and responsibilities. They include, but are not limited to: a) assessing and collecting premiums, levies, or other charges; b) reimbursing insured depositors; c) managing its fund and its use; d) obtaining timely, accurate, and comprehensive non-public information needed to fulfil its mandate directly from its member institutions, from third parties holding the relevant information on behalf of a member institution, and from other financial safety-net participants; e) compelling its member institutions to comply with their legal obligations to the deposit insurer, or requiring another financial safety-net participant to do so on behalf of the deposit insurer; f) entering into formal agreements with other financial safety-net participants regarding cooperation, coordination and information sharing in business-as-usual times and in times of crisis; g) setting operating budgets, policies, systems, and practices; and h) entering into contracts to execute its mandate.',
+                            questions: [
+                                'Does the DI have all these powers?',
+                                'Do the powers of DI:',
+                                'i. support its mandate; and',
+                                'ii. enable DI to fulfil its roles and responsibilities?'
+                            ],
+                            explanations: [
+                                '• These are minimum/basic powers for any DI (to be confirmed post 2025 revision)',
+                                '• The powers of the DI must enable it to do in practice what its mandate sets out in theory (e.g. if DI is mandated to provide financial assistance to facilitate P&A, DI must have power & tools to do so)',
+                                '• The powers must not predominantly reside in other safety net participants',
+                                '• The exercise of those powers must not be limited to be exercised by DI',
+                                '• The powers listed are minimum powers: not exhaustive'
+                            ],
+                            documents: [
+                                '1. DI\'s legislation or by-laws',
+                                '2. Relevant past assessment e.g. FSAP, internal self assessment',
+                                '3. Other relevant documents e.g. those that assists in confirming that powers of DI support its mandate & enable DI to fulfill its roles & responsibilities'
+                            ]
+                        }
+                    ],
+                    interpretation: 'A clear mandate and powers are the foundation of an effective deposit insurance system. They must be enshrined in law to ensure stability and transparency.',
+                    recommendedDocs: [
+                        'Deposit Insurance Act or relevant legislation',
+                        'By-laws and statutes',
+                        'Public policy objective statements',
+                        'Memoranda of Understanding with other safety net participants',
+                        'Annual reports'
+                    ]
+                },
+                {
+                    id: 'CP3',
+                    title: 'Governance',
+                    principle: 'The deposit insurer is operationally independent, well-governed, transparent, accountable, and insulated from undue external interference.',
+                    essentialCriteria: [
+                        'The deposit insurer is operationally independent, transparent, accountable and insulated from undue political and industry influence.',
+                        'The deposit insurer has the capacity and capability to fulfil its mandate and is able to use its powers without interference from external parties.',
+                        'There is no government, central bank, supervisory or industry interference that compromises the operational independence of the deposit insurer.',
+                        'The deposit insurer has the authority to: a) set and manage its operating budget and fees; b) set and manage its internal organisation, structure and rules; c) hire, manage and dismiss its staff and management; and d) set its own procurement rules.',
+                        'The governing body of the deposit insurer is held accountable to an authority that is specified in law.',
+                        'The composition of the governing body and the qualification and suitability of its members are specified in law. The suitability of the members of the governing body is assessed regularly.',
+                        'The appointment and dismissal processes for members of the governing body and for the head of the executive body are specified in law, transparent, and subject to statutory constraints. The reasons for dismissal are publicly disclosed.',
+                        'The deposit insurer is subject to regular internal and external audits.',
+                        'The deposit insurer publishes an annual report on its activities and the use of its funds.',
+                        'The deposit insurer has a code of conduct in place for the members of the governing body, its staff and any third party working on its behalf. This code addresses at a minimum conflicts of interest and the use of confidential information.'
+                    ],
+                    interpretation: 'Operational independence ensures the deposit insurer can make decisions based on technical and professional considerations without political interference, while maintaining accountability and transparency.',
+                    recommendedDocs: [
+                        'Governance framework documents',
+                        'Board appointment and removal procedures',
+                        'Annual reports and disclosure policies',
+                        'Accountability framework and reporting requirements',
+                        'Conflict of interest policies'
+                    ]
+                },
+                {
+                    id: 'CP4',
+                    title: 'Business Continuity Management',
+                    principle: 'The deposit insurer has in place an effective business continuity management framework to withstand, adapt to, and recover from severe operational risk-related disruptions. It has business continuity plans in place that ensure that disruptions in its capability to perform its critical operations are minimised. The framework includes periodic reviews, testing, training, coordination, and communication.',
+                    essentialCriteria: [
+                        'The deposit insurer has in place a business continuity management framework that includes plans, policies, and procedures for ensuring that its critical operations, including critical information and communication technology, can be maintained or recovered in a timely fashion in the event of operational disruptions.',
+                        'The business continuity management framework is periodically reviewed and tested based on scenarios of severe business disruption which might affect the deposit insurer.',
+                        'The deposit insurer provides periodic training to employees on its business continuity management framework.',
+                        'The business continuity management framework includes plans, policies, and procedures to appropriately address disruptions to any third-party-provided service(s) which are needed to maintain the continuity or to ensure the timely recovery of the deposit insurer\'s critical operations.',
+                        'The deposit insurer has a coordination plan for ongoing communication with its stakeholders, including other financial safety net participants, during an operational disruption.'
+                    ],
+                    interpretation: 'With increasing globalization of banking, deposit insurers need frameworks to handle cross-border situations, including information sharing and coordination with foreign counterparts.',
+                    recommendedDocs: [
+                        'Business continuity plan and procedures',
+                        'Disaster recovery plans',
+                        'Business continuity testing results',
+                        'IT system backup and redundancy documentation',
+                        'Crisis communication plans'
+                    ]
+                },
+                {
+                    id: 'CP5',
+                    title: 'Legal Protection',
+                    principle: 'The deposit insurer and individuals who are currently working or have formerly worked for the deposit insurer in discharging the deposit insurer\'s mandate are protected by law from liability for decisions, actions taken or omissions made while discharging their duties in good faith.',
+                    essentialCriteria: [
+                        'The deposit insurer and individuals working for the deposit insurer are protected by law against liability for actions taken or omitted to be taken in good faith in the exercise of their functions and powers.',
+                        'Legal protection covers current and former employees, members of the governing body, and any other person acting on behalf of the deposit insurer.',
+                        'The deposit insurer has the authority to indemnify or provide insurance to cover the costs of legal defence and any damages or settlements resulting from legal actions taken against the individuals mentioned in EC2.'
+                    ],
+                    interpretation: 'Strong governance ensures effective oversight, sound decision-making, and accountability. This includes having a competent board, clear organizational structure, and robust internal controls.',
+                    recommendedDocs: [
+                        'Legal protection provisions in legislation',
+                        'Information access and confidentiality rules',
+                        'Depositor preference provisions',
+                        'Legal opinions on powers and immunities',
+                        'Crisis intervention legal framework'
+                    ]
+                },
+                {
+                    id: 'CP6',
+                    title: 'Recoveries',
+                    principle: 'The deposit insurer has, by law, the right to recover its claims in accordance with the statutory creditor hierarchy.',
+                    essentialCriteria: [
+                        'The deposit insurer has the right to recover its costs and expenses from the assets of the failed institution.',
+                        'The deposit insurer has the same creditor rights and status as the depositors it has reimbursed or protected.',
+                        'The deposit insurer actively manages its recoveries to maximise the value of the assets of the failed institution.'
+                    ],
+                    interpretation: 'Effective deposit insurance requires seamless coordination with supervisors, central banks, and resolution authorities. Clear communication channels and information-sharing protocols are essential.',
+                    recommendedDocs: [
+                        'Subrogation and recovery provisions in legislation',
+                        'Liquidation participation procedures',
+                        'Asset recovery strategies and policies',
+                        'Recovery tracking and reporting systems',
+                        'Historical recovery rates and analysis'
+                    ]
+                },
+                {
+                    id: 'CP7',
+                    title: 'Membership',
+                    principle: 'Membership in a deposit insurer is compulsory for all insured deposit-taking institutions.',
+                    essentialCriteria: [
+                        'Membership in the deposit insurance system is compulsory for all financial institutions that accept deposits from the public.',
+                        'The criteria for membership are clearly specified in law or regulation and are transparent.',
+                        'The deposit insurer has the authority to revoke membership or to exclude an institution from the deposit insurance system if it fails to meet the membership criteria or if its license is withdrawn.',
+                        'The deposit insurer maintains an up-to-date list of its member institutions and makes it publicly available.'
+                    ],
+                    interpretation: 'Compulsory membership prevents adverse selection and ensures all depositors have equal protection. It maintains public confidence and prevents competitive disadvantages.',
+                    recommendedDocs: [
+                        'Deposit Insurance Act provisions on membership',
+                        'List of member institutions',
+                        'Membership criteria and application procedures',
+                        'Enforcement mechanisms for non-compliance'
+                    ]
+                },
+                {
+                    id: 'CP8',
+                    title: 'Coverage',
+                    principle: 'The level and scope of deposit insurance coverage is clearly defined. Coverage is limited, credible and covers the large majority of depositors but leaves a substantial proportion of the value of deposits exposed to market discipline. Deposit insurance coverage is consistent with the deposit insurance system\'s public policy objectives and related design features.',
+                    essentialCriteria: [
+                        'The scope and level of coverage are clearly specified in law or regulation and are publicly disclosed.',
+                        'The level of coverage is limited but credible and is capable of covering the large majority of depositors.',
+                        'The scope of coverage includes all types of deposits, including foreign currency deposits and deposits of non-residents.',
+                        'The deposit insurer has the authority to determine the scope and level of coverage, subject to the approval of the relevant authority.',
+                        'The deposit insurer reviews the scope and level of coverage on a regular basis to ensure that they remain adequate and appropriate.'
+                    ],
+                    interpretation: 'Clear coverage rules help depositors understand their protection level. Coverage should balance depositor protection with moral hazard concerns, typically protecting small savers while encouraging market discipline for large depositors.',
+                    recommendedDocs: [
+                        'Coverage policy documents and public disclosures',
+                        'Deposit insurance brochures and educational materials',
+                        'Coverage limit determination methodology',
+                        'Periodic coverage reviews and assessments',
+                        'Public awareness campaign materials'
+                    ]
+                },
+                {
+                    id: 'CP9',
+                    title: 'Funding for the Deposit Insurer',
+                    principle: 'The deposit insurer has readily available funds and funding mechanisms, including assured liquidity funding arrangements, in place as necessary to meet its mandate. Responsibility for paying the cost of deposit insurance is borne by the member institutions of the deposit insurer.',
+                    essentialCriteria: [
+                        'Funding arrangements for the deposit insurance system are clearly defined in law or regulation.',
+                        'The deposit insurer has direct access to funding sources that are sufficient to cover its obligations.',
+                        'The deposit insurer has the authority to set and collect premiums, levies, or other charges from its member institutions.',
+                        'The deposit insurer has the authority to borrow from the government, the central bank, or the markets to cover any funding shortfalls.',
+                        'The deposit insurer manages its funds in a prudent and transparent manner, with a focus on liquidity and safety.',
+                        'The deposit insurer has a target fund size or a range for the fund size that is sufficient to cover its potential liabilities.',
+                        'The deposit insurer reviews its funding arrangements and the adequacy of its fund on a regular basis.'
+                    ],
+                    interpretation: 'Adequate funding is crucial for credibility. This includes ex-ante funding (premiums), backup funding arrangements, and access to emergency liquidity to ensure prompt payout capability.',
+                    recommendedDocs: [
+                        'Fund management policy and investment guidelines',
+                        'Premium assessment methodology and rates',
+                        'Backup funding agreements (government, central bank)',
+                        'Fund adequacy assessments and stress tests',
+                        'Borrowing authority documentation'
+                    ]
+                },
+                {
+                    id: 'CP10',
+                    title: 'Public Awareness',
+                    principle: 'In order to protect depositors and contribute to financial stability, the public is informed about the benefits and limitations of deposit insurance on an ongoing basis and in the event of a failure of an insured deposit-taking institution.',
+                    essentialCriteria: [
+                        'The deposit insurer is responsible for promoting public awareness of deposit insurance on an ongoing basis and has in place a comprehensive public awareness programme that incorporates a variety of communication tools.',
+                        'The objectives of the public awareness programme are clearly defined and consistent with the public policy objectives of the deposit insurance system and mandate of the deposit insurer.',
+                        'The public awareness programme ensures the broad dissemination of information about: a) the scope of coverage, including which types of financial instruments and depositors are covered by deposit insurance, which are not covered and what the characteristics are for financial instruments to be insured as deposit; b) the level of coverage; and c) which institutions are member institutions and how they can be identified.',
+                        'The law prohibits misleading or deceptive statements about who is a member institution of the deposit insurer or what is an insured deposit.',
+                        'In the event of a failure of an insured deposit-taking institution, the deposit insurer notifies depositors promptly through an adequate variety of public communication channels: a) where, how, and when insured depositors will be provided with access to their funds; b) what information insured depositors must provide, and any process to follow, in order to obtain payment or access to their funds; c) whether interim payments are being made; and d) procedures whereby uninsured depositors can make claims to the liquidator for their uninsured portion.',
+                        'The deposit insurer sets a long-term strategy and makes appropriate resources available to meet its public awareness objectives.',
+                        'The deposit insurer works closely with insured deposit-taking institutions and other financial safety net participants to ensure the consistency and accuracy of the information provided to depositors and to maximise awareness on an ongoing basis.',
+                        'Law or regulation requires insured deposit-taking institutions to provide accurate information about deposit insurance in a format/language prescribed by the deposit insurer.',
+                        'The deposit insurer monitors, on an ongoing basis, its public awareness activities and extent to which it reaches its awareness objectives. The deposit insurer arranges, on periodic basis, independent evaluations of the effectiveness of its public awareness programme or activities.',
+                        'In jurisdictions with branches or subsidiaries of foreign insured deposit-taking institutions, depositors are provided with clear information about the deposit insurer legally responsible for reimbursement, and the limits and scope of coverage.'
+                    ],
+                    interpretation: 'Public awareness ensures depositors understand their protection, which is essential for maintaining confidence. This includes ongoing education campaigns and clear disclosure requirements for member institutions.',
+                    recommendedDocs: [
+                        'Public awareness strategy and campaigns',
+                        'Educational materials and brochures',
+                        'Website content and FAQs',
+                        'Member institution disclosure requirements',
+                        'Public awareness effectiveness surveys'
+                    ]
+                },
+                {
+                    id: 'CP11',
+                    title: 'Crisis Preparedness and Management',
+                    principle: 'The deposit insurer has in place an effective framework to ensure it is at all times prepared to respond to the potential and actual failure of insured deposit-taking institutions and has in place an effective framework with other financial safety net participants to ensure communication and coordination.',
+                    essentialCriteria: [
+                        'The deposit insurer develops and regularly tests its own crisis preparedness and crisis management plans, policies, and procedures.',
+                        'The deposit insurer is a member of an institutional framework for ongoing communication and coordination involving financial safety net participants related to system-wide crisis preparedness and management.',
+                        'The deposit insurer has in place coordinated plans, policies and procedures with other financial safety net participants which include: a) the allocation of roles and responsibilities in a crisis; b) effective arrangements for crisis preparedness and management; and c) crisis communication plans that ensure comprehensive and consistent public awareness and communications.',
+                        'The deposit insurer participates in regular contingency planning and simulation exercises related to system-wide crisis preparedness and management involving relevant safety net participants.',
+                        'The financial safety net participants regularly review and test their crisis preparedness and management plans, policies and/or procedures in crisis simulations.'
+                    ],
+                    interpretation: 'A robust legal framework protects the deposit insurer and its staff, ensures access to necessary information, and provides clear legal standing in insolvency proceedings.',
+                    recommendedDocs: [
+                        'Crisis preparedness and management plans',
+                        'Contingency planning documentation',
+                        'Crisis simulation exercise results',
+                        'Coordination agreements with safety net participants',
+                        'Crisis communication plans'
+                    ]
+                },
+                {
+                    id: 'CP12',
+                    title: 'Dealing with Parties at Fault in a Failure',
+                    principle: 'The individuals that may be responsible for, or may have contributed to, a failure of an insured deposit-taking institution are held accountable for their actions or omissions. The deposit insurer, or other relevant authority, is provided with the power to seek legal redress against those parties at fault in the failure of an insured deposit-taking institution.',
+                    essentialCriteria: [
+                        'The conduct of parties that may be responsible for, or may have contributed to, the failure of an insured deposit-taking institution, as well as the conduct of related parties and professional service providers, is subject to investigation by the relevant financial safety net participant, criminal or investigative authority, or any other professional or disciplinary body, as applicable.',
+                        'Insiders, related parties, and professional service providers acting for the failed insured deposit-taking institution are appropriately investigated and held accountable for any wrongdoing that led to or contributed to the failure of the insured deposit-taking institution.',
+                        'The relevant authority takes the appropriate steps to pursue those parties that are identified as responsible for the failure of the insured deposit-taking institution. The responsible parties are subject to sanction and/or redress. Sanction or redress may include personal or professional disciplinary measures, criminal prosecution, civil proceedings for damages, and claw back of variable remuneration.'
+                    ],
+                    interpretation: 'Accountability mechanisms deter misconduct and help recover losses. The deposit insurer should have powers to pursue claims against directors, officers, auditors, and other parties at fault.',
+                    recommendedDocs: [
+                        'Legal provisions on liability and recovery',
+                        'Procedures for pursuing claims against responsible parties',
+                        'Information sharing agreements with law enforcement',
+                        'Recovery case examples and outcomes',
+                        'Professional indemnity insurance requirements'
+                    ]
+                },
+                {
+                    id: 'CP13',
+                    title: 'Early Detection and Timely Intervention',
+                    principle: 'The deposit insurer is part of an effective framework within the financial safety net that provides for the early detection of, and timely intervention in, troubled insured deposit-taking institutions before they become non-viable.',
+                    essentialCriteria: [
+                        'The deposit insurer is part of an effective framework that provides for the early detection of, and timely intervention in, insured deposit-taking institutions in financial difficulty before they become non-viable.',
+                        'The framework for early detection and timely intervention includes a set of clearly defined qualitative and/or quantitative criteria that are used to trigger timely intervention or corrective action. The criteria: a) are clearly defined in law or regulation; b) include at a minimum safety and soundness indicators such as the institution\'s capital adequacy, asset quality, earnings, liquidity, and sensitivity to market risk; and c) are reviewed periodically as to their effectiveness and whether additional safety and soundness factors and emerging risks are sufficiently taken into account, and the procedure for this review is formalised.',
+                        'The financial safety net participants have the operational independence and power to perform their respective roles in the framework for early detection and timely intervention.',
+                        'Relevant recovery and resolution planning information is shared with the deposit insurer and other financial safety net participants in a timely and appropriate manner and subject to confidentiality safeguards.'
+                    ],
+                    interpretation: 'Early detection and intervention minimize losses to the deposit insurance fund. This requires timely information from supervisors and participation in intervention decisions.',
+                    recommendedDocs: [
+                        'Early warning system documentation',
+                        'Information sharing protocols with supervisor',
+                        'Risk assessment methodologies',
+                        'Intervention framework and procedures',
+                        'Problem bank monitoring reports'
+                    ]
+                },
+                {
+                    id: 'CP14',
+                    title: 'Failure Resolution',
+                    principle: 'A resolution regime ensures the effective resolution of an insured deposit-taking institution that is no longer viable, or likely to be no longer viable, in a manner that protects insured depositors against losses, minimises disruptions in their access to insured deposits, and contributes to financial stability.',
+                    essentialCriteria: [
+                        'The resolution regime provides for a broad range of powers and options to resolve an insured deposit-taking institution that is no longer viable, or likely to be no longer viable, and has no reasonable prospect of becoming so. It includes options that facilitate the continuity of the deposit taking, as well as liquidation options that provide for the orderly closure and wind-down of all or parts of the business of the insured deposit-taking institution. The period of time during which insured depositors are without access to their insured funds is minimised.',
+                        'Where responsible for exercising resolution powers, the deposit insurer\'s powers are clearly defined in law and sufficiently broad. Where multiple financial safety net participants are responsible for resolution, there is a clear allocation of objectives, mandates, and powers of those participants, with no material gaps, overlaps or inconsistencies.',
+                        'Where responsible for exercising resolution powers, the deposit insurer has the operational independence, expertise, transparent processes, sound governance, resources, and the operational capacity to exercise those powers consistent with its mandate.',
+                        'Resolution procedures follow a defined creditor hierarchy in which equity or other instruments of ownership take first losses and insured deposits are excluded from sharing losses.',
+                        'Where responsible for exercising resolution powers, the deposit insurer is protected against legal action that could constrain its implementation of, or result in a reversal of, resolution-related measures taken within its legal powers and taken in good faith. The legal remedy for successful legal challenges is limited to financial compensation.',
+                        'Where responsible for exercising resolution powers, the deposit insurer is guided by clear objectives, as well as cost and benefit considerations.',
+                        'The resolution regime does not discriminate against depositors on the basis of their nationality or residency status in the resolution process.'
+                    ],
+                    interpretation: 'Effective resolution minimizes disruption and costs. The deposit insurer\'s role may range from paybox to providing resolution funding or acting as resolution authority.',
+                    recommendedDocs: [
+                        'Resolution framework legislation and regulations',
+                        'Resolution tools and powers documentation',
+                        'Resolution planning procedures',
+                        'Coordination arrangements with resolution authority',
+                        'Resolution case studies and lessons learned'
+                    ]
+                },
+                {
+                    id: 'CP15',
+                    title: 'Reimbursement',
+                    principle: 'The deposit insurer reimburses insured depositors as soon as possible in the event of the liquidation of the insured deposit-taking institution. Most insured depositors are reimbursed within seven working days. There is a clear and unequivocal trigger for the reimbursement of the depositors\' insured deposits.',
+                    essentialCriteria: [
+                        'Reimbursement is triggered promptly following the legal determination of a reimbursement event. The trigger for the reimbursement of insured deposits is set out in law or regulation. The period of time during which insured depositors are without access to their insured funds is minimised.',
+                        'The deposit insurer has the capability and procedures in place to reimburse most insured depositors within seven working days of the reimbursement being triggered. Where this target cannot currently be met, there is a plan in place to do so with a clear and reasonable time frame for implementation and with clear and measurable deliverables.',
+                        'In situations where reimbursement is triggered and extended delays in reimbursement expected, the deposit insurer may make interim payments to the insured depositors.',
+                        'In order to reimburse depositors as soon as possible, the deposit insurer: a) has access to depositors\' records at all times, which includes the authority to require insured deposit-taking institutions to maintain depositor information in a format prescribed by the deposit insurer in order to expedite insured depositor reimbursement. Customer confidentiality provisions should not hinder the deposit insurers\' access to depositors\' records at all times; b) has the authority to undertake advance or preparatory examinations, including on-site and independently or in conjunction with the supervisory authority on the reliability of depositor records, and has tested member institution\'s IT systems and data to ensure the capability to produce such records; and c) has a range of reimbursement options which may include cheque payments, electronic transfers, payment agents and agent banks, cash payments, and digital payment methods.',
+                        'The deposit insurer has the capacity and capability to promptly carry out the reimbursement process, including: a) adequate resources and trained personnel (in-house or contractors) dedicated to the reimbursement function and supported with reimbursement documentation or manuals; b) secure information systems to process depositor information; and c) manuals that provide instructions on all pre- and post-closure activities.',
+                        'The deposit insurer, together with other relevant financial safety net participants and external service providers or contractors where relevant, conduct regular scenario planning and testing of insured deposit-taking institution closures and reimbursements.',
+                        'At regular intervals, and following the completion of each reimbursement process, the deposit insurer carries out a review to identify any elements in the reimbursement process that can be further optimised.',
+                        'An independent party conducts a periodic audit of the entire reimbursement process to confirm that appropriate internal controls are in place.',
+                        'If set-off of insured deposits against past due claims or matured loans is applied, such application does not delay prompt reimbursement of insured depositors\' claims or undermine financial stability.',
+                        'The deposit insurer has in place suitable arrangements with relevant clearing and settlement system agencies, agent banks or liquidators that address the treatment of transit items that are caught in the clearing and settlement process in an appropriate, consistent, and timely manner.',
+                        'In cases where the deposit insurer does not act as a liquidator, the liquidator is obliged by law or regulation to cooperate with the deposit insurer to facilitate the reimbursement process.'
+                    ],
+                    interpretation: 'Prompt reimbursement is essential for maintaining public confidence. This requires robust systems, accurate data, regular testing, and clear procedures.',
+                    recommendedDocs: [
+                        'Payout procedures and manuals',
+                        'Depositor information systems documentation',
+                        'Payout testing and simulation results',
+                        'Contingency plans for different scenarios',
+                        'Service level agreements with service providers'
+                    ]
+                },
+                {
+                    id: 'CP16',
+                    title: 'Use of the Deposit Insurance Fund in Resolution',
+                    principle: 'The conditions for the use of the deposit insurance fund to manage the resolution of failed insured deposit-taking institutions are clearly set out in law and publicly disclosed.',
+                    essentialCriteria: [
+                        'The deposit insurance fund may be used to support reimbursement or other resolution measures which protect depositors.',
+                        'Where there are multiple funds in the financial safety net available for resolution funding, their respective roles and use cases are set out in law and publicly disclosed.',
+                        'Where a deposit insurer is not the resolution authority, its legal framework may provide the option for use of its funds for resolution of member institutions other than reimbursement of insured depositors. This use is subject to clear and formal terms and conditions, which include at a minimum the following: a) the deposit insurer is informed in a timely manner of the resolution and involved in the resolution decision-making process from an early stage; b) the deposit insurer confirms that the conditions set out in the legal framework for the use of its funds for non-reimbursement purposes are met; c) the resolution measure limits the risk of exposure of the deposit insurer to contribute additional funding in respect of the same obligation; d) net contributions from the deposit insurer for the resolution of member institutions do not exceed the estimated costs the deposit insurer would otherwise have incurred in a reimbursement of insured depositors in a liquidation, net of expected recoveries; and gross contributions do not exceed total insured deposits in the failed insured deposit-taking institution; e) the use of deposit insurance funds is subject to an ex post independent audit to review compliance with the terms and conditions and criteria for the use of the funds in resolution; f) deposit insurance funds are used for the recapitalisation of resolved insured deposit-taking institutions only in exceptional circumstances and if equity or other instruments of ownership are written down fully to absorb losses.'
+                    ],
+                    interpretation: 'Recovery rights help offset deposit insurance costs and promote fairness. The deposit insurer should be subrogated to depositor claims and have appropriate priority.',
+                    recommendedDocs: [
+                        'Legal framework for use of deposit insurance funds',
+                        'Resolution funding policies and procedures',
+                        'Cost-benefit analysis methodologies',
+                        'Independent audit reports on fund usage',
+                        'Resolution case documentation'
+                    ]
+                },
+                {
+                    id: 'CP17',
+                    title: 'Financial Safety Net Cooperation, Coordination and Information Sharing',
+                    principle: 'The deposit insurer is part of a formal framework within the financial safety net for cooperation, coordination, and information sharing. The framework sets the individual and joint responsibilities of the financial safety net participants and how these participants discharge these responsibilities in a coordinated and cooperative manner.',
+                    essentialCriteria: [
+                        'An explicit framework exists between the deposit insurer and other financial safety net participants for cooperation, timely and ongoing sharing of confidential information, and the coordination of actions. This framework is formalised and operationalised through law or regulation, memoranda of understanding, legal agreements, or a combination thereof.',
+                        'The deposit insurer has in place rules for the protection of confidential information that impose confidentiality requirements on its current and former employees and agents that receive or have received confidential information. The rules provide for effective sanctions and penalties for breach of confidentiality requirements.',
+                        'The deposit insurer shares and receives appropriate information in line with its respective roles and responsibilities on a timely basis and before material supervisory actions are taken in respect of insured deposit-taking institutions. This includes information on the funding structures of insured deposit-taking institutions and on supervisory actions that relate to concerns about the solvency, performance, or viability of an insured deposit-taking institution.',
+                        'In cases where the deposit insurer is not the resolution authority, cooperation, coordination and information sharing arrangements are in place between the deposit insurer and the resolution authority that address: a) collaboration in the orderly resolution of a problem insured deposit-taking institution; and b) the timely sharing of relevant confidential information needed in order to inform the decision on the choice of the resolution action and to determine whether the terms and conditions set out in the legal framework for the use of the deposit insurance fund for resolution of member institutions other than reimbursement of insured depositors are met.',
+                        'Where multiple deposit insurers operate within the same jurisdiction, appropriate cooperation, coordination and information sharing arrangements among those deposit insurers are in place.'
+                    ],
+                    interpretation: 'If foreign currency deposits are covered, the deposit insurer must have mechanisms to handle currency conversion, foreign exchange risk, and reimbursement logistics.',
+                    recommendedDocs: [
+                        'Memoranda of Understanding with safety net participants',
+                        'Information sharing protocols and agreements',
+                        'Confidentiality policies and procedures',
+                        'Coordination framework documentation',
+                        'Joint committee meeting records'
+                    ]
+                },
+                {
+                    id: 'CP18',
+                    title: 'Cross-border Cooperation, Coordination and Information Sharing',
+                    principle: 'Where there is a material presence of foreign insured deposit-taking institutions in a jurisdiction, formal cooperation coordination and information sharing arrangements are in place between deposit insurers and, where necessary, with other financial safety net participants of the institutions\' home and host jurisdictions, as needed to ensure that they are at all times prepared to respond to the potential and actual failure of insured deposit-taking institutions in a cooperative and coordinated manner.',
+                    essentialCriteria: [
+                        'Where there is a material presence of foreign insured deposit-taking institutions in a jurisdiction, cooperation, coordination, and information sharing arrangements between deposit insurers and, where necessary, with other financial safety net participants of the institutions\' home and host jurisdictions are in place that set out at a minimum: a) the type and frequency of information to be shared on a regular basis, where applicable; b) the circumstances in which information will be shared and type of information to be shared on an ad hoc basis; c) mechanisms and processes for requesting and sharing information, including timeframes; and d) confidentiality requirements that protect and preserve the confidentiality of all non-public information exchanged.',
+                        'Where a deposit insurer is responsible for coverage of deposits in a foreign jurisdiction, formal bilateral or multilateral arrangements are in place that identify the respective roles and responsibilities of each financial safety net participant in the home and host jurisdictions, including in ensuring effective deposit insurance coverage and public awareness, and in implementing any resolution and reimbursement actions.'
+                    ],
+                    interpretation: 'Business continuity ensures the deposit insurer can continue operations during disruptions. This is critical given the time-sensitive nature of deposit insurance functions.',
+                    recommendedDocs: [
+                        'Cross-border cooperation agreements',
+                        'Information sharing MOUs with foreign deposit insurers',
+                        'Home-host coordination frameworks',
+                        'Crisis management group documentation',
+                        'Cross-border resolution protocols'
+                    ]
+                }
+            ];
+
+            // Determine if selected item is a general section or core principle
+            const isGeneralSection = selectedPrinciple && selectedPrinciple.startsWith('SEC');
+            const currentSection = isGeneralSection ? generalSections.find(sec => sec.id === selectedPrinciple) : null;
+            const currentPrinciple = !isGeneralSection ? (allCorePrinciples.find(cp => cp.id === selectedPrinciple) || allCorePrinciples[0]) : null;
+
+            // Helper function to format criteria text with lists
+            const formatCriteriaText = (text) => {
+                // Check if text contains list items like " a) ", " b) ", etc.
+                if (!text.includes(' a) ')) return text;
+
+                const parts = text.split(/(\s[a-z]\)\s)/);
+                const intro = parts[0];
+                const listItems = [];
+
+                for (let i = 1; i < parts.length; i += 2) {
+                    if (i + 1 < parts.length) {
+                        listItems.push({
+                            marker: parts[i].trim(),
+                            content: parts[i + 1]
+                        });
+                    }
+                }
+
+                return (
+                    <div>
+                        <div className="mb-2">{intro}</div>
+                        <ul className="space-y-1 pl-4">
+                            {listItems.map((item, idx) => (
+                                <li key={idx} className="flex items-start">
+                                    <span className="font-semibold mr-2 text-purple-700">{item.marker}</span>
+                                    <span>{item.content}</span>
+                                </li>
+                            ))}
+                        </ul>
+                    </div>
+                );
+            };
+
+            // Prepare display criteria: use detailedCriteria if available, otherwise map essentialCriteria
+            const displayCriteria = currentPrinciple ? (currentPrinciple.detailedCriteria || currentPrinciple.essentialCriteria.map(ec => ({
+                criteria: ec,
+                questions: [],
+                explanations: [],
+                documents: []
+            }))) : [];
+
+            return (
+                <div className="animate-fade-in">
+                    <div className="text-center mb-8">
+                        <h2 className="text-3xl font-bold text-gray-900 mb-4">IADI Core Principles for Effective Deposit Insurance Systems</h2>
+                        <p className="text-lg text-gray-600">
+                            Reference guide to all 18 Core Principles with essential criteria and documentation guidance
+                        </p>
+                    </div>
+
+                    <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                        {/* Left Side Menu - General Sections + Core Principles */}
+                        <div className="lg:col-span-3">
+                            <div className="bg-white rounded-lg card-shadow p-4 sticky top-4">
+                                <div className="space-y-2 overflow-y-auto" style={{ maxHeight: 'calc(100vh - 120px)' }}>
+
+                                    {/* General Sections */}
+                                    <div className="mb-4">
+                                        <h3 className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2 px-2">General Sections</h3>
+                                        <div className="space-y-2">
+                                            {generalSections.map((sec) => (
+                                                <button
+                                                    key={sec.id}
+                                                    onClick={() => setSelectedPrinciple(sec.id)}
+                                                    className={`w-full text-left p-3 rounded-lg border transition-colors ${selectedPrinciple === sec.id
+                                                        ? 'border-blue-500 bg-blue-50 text-blue-900'
+                                                        : 'border-gray-200 bg-white hover:border-gray-300 hover:bg-gray-50'
+                                                        }`}
+                                                >
+                                                    <div className="text-sm font-medium">{sec.title}</div>
+                                                </button>
+                                            ))}
+                                        </div>
+                                    </div>
+
+                                    {/* Divider */}
+                                    <div className="border-t border-gray-300 my-4"></div>
+
+                                    {/* Core Principles */}
+                                    <div>
+                                        <h3 className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2 px-2">Core Principles</h3>
+                                        <div className="space-y-2">
+                                            {allCorePrinciples.map((cp) => (
+                                                <button
+                                                    key={cp.id}
+                                                    onClick={() => setSelectedPrinciple(cp.id)}
+                                                    className={`w-full text-left p-3 rounded-lg border transition-colors ${selectedPrinciple === cp.id
+                                                        ? 'border-purple-500 bg-purple-50 text-purple-900'
+                                                        : 'border-gray-200 bg-white hover:border-gray-300 hover:bg-gray-50'
+                                                        }`}
+                                                >
+                                                    <div className="font-medium text-sm">{cp.id}</div>
+                                                    <div className="text-xs mt-1 line-clamp-2">{cp.title}</div>
+                                                </button>
+                                            ))}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Right Content Area: General Section or Core Principle */}
+                        <div className="lg:col-span-9 space-y-6">
+
+                            {isGeneralSection && currentSection ? (
+                                /* General Section Content */
+                                <div className="bg-white rounded-lg card-shadow p-6">
+                                    <div className="mb-6">
+                                        <h2 className="text-2xl font-bold text-gray-900 mb-2">{currentSection.title}</h2>
+                                        <div className="h-1 w-20 bg-blue-600 rounded"></div>
+                                    </div>
+                                    <div className="prose prose-sm max-w-none">
+                                        {currentSection.content.split('\n\n').map((paragraph, idx) => {
+                                            // Check if paragraph is a heading (starts with ##)
+                                            if (paragraph.startsWith('## ')) {
+                                                return (
+                                                    <h3 key={idx} className="text-lg font-semibold text-gray-900 mt-6 mb-3">
+                                                        {paragraph.replace('## ', '')}
+                                                    </h3>
+                                                );
+                                            }
+                                            // Check if paragraph contains bold text (**text**)
+                                            else if (paragraph.includes('**')) {
+                                                const parts = paragraph.split(/(\*\*[^*]+\*\*)/g);
+                                                return (
+                                                    <p key={idx} className="text-gray-700 leading-relaxed mb-4">
+                                                        {parts.map((part, i) => {
+                                                            if (part.startsWith('**') && part.endsWith('**')) {
+                                                                return <strong key={i}>{part.slice(2, -2)}</strong>;
+                                                            }
+                                                            return part;
+                                                        })}
+                                                    </p>
+                                                );
+                                            }
+                                            // Regular paragraph
+                                            else {
+                                                return (
+                                                    <p key={idx} className="text-gray-700 leading-relaxed mb-4">
+                                                        {paragraph}
+                                                    </p>
+                                                );
+                                            }
+                                        })}
+                                    </div>
+                                </div>
+                            ) : currentPrinciple ? (
+                                /* Core Principle Content */
+                                <>
+                                    {/* SECTION 1 - Core Principle Extract */}
+                                    <div className="bg-white rounded-lg card-shadow p-6">
+                                        <div className="mb-4 pb-3 border-b border-gray-200">
+                                            <h3 className="text-sm font-semibold text-gray-500 uppercase tracking-wide">Section 1: Core Principle Extract</h3>
+                                        </div>
+
+                                        {/* Principle Header */}
+                                        <div>
+                                            <div className="flex items-center mb-3">
+                                                <span className="bg-purple-600 text-white px-3 py-1 rounded-full text-sm font-semibold mr-3">
+                                                    {currentPrinciple.id}
+                                                </span>
+                                                <h3 className="text-xl font-bold text-gray-900">{currentPrinciple.title}</h3>
+                                            </div>
+                                            <div className="bg-gray-50 border-l-4 border-purple-600 p-4 rounded">
+                                                <p className="text-gray-700 italic leading-relaxed">
+                                                    "{currentPrinciple.principle}"
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    {/* SECTION 2 - Detailed Assessment Matrix */}
+                                    <div className="bg-white rounded-lg card-shadow p-6">
+                                        <div className="mb-4 pb-3 border-b border-gray-200">
+                                            <h3 className="text-sm font-semibold text-gray-500 uppercase tracking-wide">
+                                                Section 2: Detailed Assessment Matrix
+                                            </h3>
+                                        </div>
+
+                                        <div className="overflow-x-auto">
+                                            <table className="min-w-full divide-y divide-gray-200 border border-gray-200 rounded-lg">
+                                                <thead className="bg-blue-600 text-white">
+                                                    <tr>
+                                                        <th scope="col" className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider w-1/4">Essential Criteria</th>
+                                                        <th scope="col" className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider w-1/4">(A) Set of structured questions</th>
+                                                        <th scope="col" className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider w-1/4">(B) Supporting explanations</th>
+                                                        <th scope="col" className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider w-1/4">(C) Suggested documents</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody className="bg-white divide-y divide-gray-200">
+                                                    {displayCriteria.map((item, index) => (
+                                                        <tr key={index} className={index % 2 === 0 ? 'bg-white' : 'bg-gray-50'}>
+                                                            <td className="px-4 py-4 text-sm text-gray-900 align-top">
+                                                                <div className="font-bold text-blue-800 mb-1">EC{index + 1}</div>
+                                                                {formatCriteriaText(item.criteria)}
+                                                            </td>
+                                                            <td className="px-4 py-4 text-sm text-gray-700 align-top bg-blue-50/30">
+                                                                {item.questions && item.questions.length > 0 ? (
+                                                                    <ul className="list-none space-y-1">
+                                                                        {item.questions.map((q, i) => (
+                                                                            <li key={i} className="mb-1">{q}</li>
+                                                                        ))}
+                                                                    </ul>
+                                                                ) : (
+                                                                    <span className="text-gray-400 italic text-xs">No questions available</span>
+                                                                )}
+                                                            </td>
+                                                            <td className="px-4 py-4 text-sm text-gray-700 align-top">
+                                                                {item.explanations && item.explanations.length > 0 ? (
+                                                                    <>
+                                                                        <div className="text-xs text-gray-500 italic mb-2">*based on IADI CP Assessment Handbook</div>
+                                                                        <ul className="list-none space-y-1">
+                                                                            {item.explanations.map((exp, i) => (
+                                                                                <li key={i} className="mb-1">{exp}</li>
+                                                                            ))}
+                                                                        </ul>
+                                                                    </>
+                                                                ) : (
+                                                                    <span className="text-gray-400 italic text-xs">No explanations available</span>
+                                                                )}
+                                                            </td>
+                                                            <td className="px-4 py-4 text-sm text-gray-700 align-top bg-blue-50/30">
+                                                                {item.documents && item.documents.length > 0 ? (
+                                                                    <ul className="list-none space-y-1">
+                                                                        {item.documents.map((doc, i) => (
+                                                                            <li key={i} className="mb-1">{doc}</li>
+                                                                        ))}
+                                                                    </ul>
+                                                                ) : (
+                                                                    <span className="text-gray-400 italic text-xs">No suggested documents available</span>
+                                                                )}
+                                                            </td>
+                                                        </tr>
+                                                    ))}
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </>
+                            ) : null}
+                        </div>
+
+
+                        {/* Navigation Buttons - Aligned with Section 1 & 2 */}
+                        <div className="lg:col-span-9 lg:col-start-4">
+                            <div className="bg-white rounded-lg card-shadow p-6">
+                                <div className="flex justify-between items-center">
+                                    <button
+                                        onClick={() => {
+                                            // Combine all items for navigation
+                                            const allItems = [...generalSections.map(s => s.id), ...allCorePrinciples.map(cp => cp.id)];
+                                            const currentIndex = allItems.findIndex(id => id === selectedPrinciple);
+                                            if (currentIndex > 0) {
+                                                setSelectedPrinciple(allItems[currentIndex - 1]);
+                                            }
+                                        }}
+                                        disabled={selectedPrinciple === 'SEC1'}
+                                        className={`px-4 py-2 rounded-lg font-medium transition-colors ${selectedPrinciple === 'SEC1'
+                                            ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
+                                            : 'bg-purple-600 text-white hover:bg-purple-700'
+                                            }`}
+                                    >
+                                        <i className="fas fa-arrow-left mr-2"></i>
+                                        Previous
+                                    </button>
+                                    <span className="text-gray-500 text-sm">
+                                        {isGeneralSection ? currentSection?.title : selectedPrinciple}
+                                    </span>
+                                    <button
+                                        onClick={() => {
+                                            // Combine all items for navigation
+                                            const allItems = [...generalSections.map(s => s.id), ...allCorePrinciples.map(cp => cp.id)];
+                                            const currentIndex = allItems.findIndex(id => id === selectedPrinciple);
+                                            if (currentIndex < allItems.length - 1) {
+                                                setSelectedPrinciple(allItems[currentIndex + 1]);
+                                            }
+                                        }}
+                                        disabled={selectedPrinciple === 'CP18'}
+                                        className={`px-4 py-2 rounded-lg font-medium transition-colors ${selectedPrinciple === 'CP18'
+                                            ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
+                                            : 'bg-purple-600 text-white hover:bg-purple-700'
+                                            }`}
+                                    >
+                                        Next
+                                        <i className="fas fa-arrow-right ml-2"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             );
@@ -747,11 +1661,11 @@
                                 onClick={onComplete}
                                 className="bg-green-600 text-white px-6 py-3 rounded-lg hover:bg-green-700 transition-colors font-semibold"
                             >
-                                Continue to Assessment Results <i className="fas fa-arrow-right ml-2"></i> 
+                                Continue to Assessment Results <i className="fas fa-arrow-right ml-2"></i>
                             </button>
                             <p className="text-sm text-gray-500 mt-2">
                                 Review the analysis when you're ready
-                            </p>    
+                            </p>
                         </div>
                     )}
                 </div>
