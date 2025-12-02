@@ -1677,9 +1677,9 @@ Deposit insurers may be confronted with challenges including: the potential risk
             return (
                 <div className="animate-fade-in">
                     <div className="text-center mb-8">
-                        <h2 className="text-3xl font-bold text-gray-900 mb-4">Assessment Results</h2>
+                        <h2 className="text-3xl font-bold text-gray-900 mb-4">Preliminary Assessment Results</h2>
                         <p className="text-lg text-gray-600">
-                            Review your compliance assessment against IADI Core Principles
+                            Review extent of DI's alignment with IADI Core Principles
                         </p>
                     </div>
 
@@ -1786,7 +1786,7 @@ Deposit insurers may be confronted with challenges including: the potential risk
                                             {criterion.id}: {criterion.text}
                                         </h4>
                                         <span className={`inline-block px-2 py-1 rounded-full text-xs font-medium ${criterion.status === 'Fully Compliant' ? 'bg-green-100 text-green-800' :
-                                            criterion.status === 'Largely Compliant' ? 'bg-yellow-100 text-yellow-800' :
+                                            criterion.status === 'Generally Aligned' ? 'bg-yellow-100 text-yellow-800' :
                                                 'bg-red-100 text-red-800'
                                             }`}>
                                             {criterion.status}
@@ -1801,13 +1801,13 @@ Deposit insurers may be confronted with challenges including: the potential risk
 
                                 <div className="space-y-3">
                                     <div>
-                                        <h5 className="text-sm font-medium text-gray-700 mb-1">Evidence Found:</h5>
+                                        <h5 className="text-sm font-medium text-gray-700 mb-1">Supporting Data:</h5>
                                         <p className="text-sm text-gray-600">{criterion.evidence}</p>
                                     </div>
 
                                     {criterion.gaps.length > 0 && (
                                         <div>
-                                            <h5 className="text-sm font-medium text-gray-700 mb-1">Areas for Improvement:</h5>
+                                            <h5 className="text-sm font-medium text-gray-700 mb-1">Potential Focus Areas:</h5>
                                             <ul className="list-disc list-inside space-y-1">
                                                 {criterion.gaps.map((gap, index) => (
                                                     <li key={index} className="text-sm text-red-600">{gap}</li>
