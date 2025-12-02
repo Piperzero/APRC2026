@@ -193,7 +193,7 @@
                 { id: 'core-principles', label: 'IADI Core Principles', icon: 'fas fa-book' },
                 { id: 'upload', label: 'Upload Documents', icon: 'fas fa-upload' },
                 { id: 'analysis', label: 'AI Analysis', icon: 'fas fa-brain' },
-                { id: 'results', label: 'Assessment Results', icon: 'fas fa-chart-line' },
+                { id: 'results', label: 'Preliminary Assessment Results', icon: 'fas fa-chart-line' },
                 { id: 'report', label: 'Final Report', icon: 'fas fa-file-alt' }
             ];
 
@@ -1376,26 +1376,26 @@ Deposit insurers may be confronted with challenges including: the potential risk
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
                             {[
                                 {
-                                    title: 'Primary Legislation',
-                                    description: 'Deposit insurance acts, banking laws',
+                                    title: 'Primary Legislations',
+                                    description: 'Primary statutes or laws',
                                     icon: 'fas fa-gavel',
                                     examples: 'PIDM Act, DI Law, Banking Act',
                                     count: uploadedDocs.filter(doc => doc.name.toLowerCase().includes('act') || doc.name.toLowerCase().includes('law')).length,
                                     filterKey: 'legislation'
                                 },
                                 {
-                                    title: 'Internal Policies',
-                                    description: 'Organizational policies and procedures',
+                                    title: 'Secondary Legislations',
+                                    description: 'Regulations, decrees, rulebooks or circulars specifying',
                                     icon: 'fas fa-file-contract',
                                     examples: 'Policy manuals, procedures, guidelines',
                                     count: uploadedDocs.filter(doc => doc.name.toLowerCase().includes('policy') || doc.name.toLowerCase().includes('manual')).length,
                                     filterKey: 'policies'
                                 },
                                 {
-                                    title: 'Assessment Reports',
-                                    description: 'Previous FSAP, self-assessments',
+                                    title: 'Other Documents',
+                                    description: 'Policies & procedures, and documents specifying',
                                     icon: 'fas fa-chart-bar',
-                                    examples: 'FSAP reports, internal assessments',
+                                    examples: 'DI scheme, supervisory frameworks',
                                     count: uploadedDocs.filter(doc => doc.name.toLowerCase().includes('fsap') || doc.name.toLowerCase().includes('assessment')).length,
                                     filterKey: 'assessments'
                                 }
