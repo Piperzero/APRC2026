@@ -80,20 +80,20 @@
 
             const sampleResults = {
                 CP2: {
-                    overall: { status: 'Largely Compliant', confidence: 83.2, color: 'green' },
+                    overall: { status: 'Further Alignment Required', confidence: 83.2, color: 'orange' },
                     criteria: [
                         {
                             id: 'EC1',
-                            text: 'Mandate and powers formally specified in law',
-                            status: 'Fully Compliant',
+                            text: 'The mandate and powers of the deposit insurer are formally and clearly specified in law and publicly disclosed. They are consistent with stated public policy objectives of the deposit insurance system',
+                            status: 'Strong Alignment',
                             confidence: 94,
                             evidence: 'Found in PIDM Act 2011, Section 5-7',
                             gaps: []
                         },
                         {
                             id: 'EC2',
-                            text: 'Mandate aligned with safety-net participants',
-                            status: 'Largely Compliant',
+                            text: 'The mandate clarifies the roles and responsibilities of the deposit insurer and is aligned with the mandates of other relevant financial safety-net participants.',
+                            status: 'Further Alignment Required',
                             confidence: 78,
                             evidence: 'Section 15 coordination provisions',
                             gaps: ['Need clearer crisis management roles']
@@ -101,6 +101,73 @@
                     ]
                 }
             };
+
+            // Core Principles data with descriptions for Results tab
+            const allCorePrinciples = [
+                {
+                    id: 'CP1',
+                    title: 'Public Policy Objectives',
+                    principle: 'The principal public policy objectives for deposit insurance systems are to protect depositors and to contribute to financial stability. These objectives are formally specified and publicly disclosed. The design of the deposit insurance system reflects the system\'s public policy objectives.',
+                    essentialCriteria: [
+                        'The public policy objectives of the deposit insurance system are formally and clearly specified in law and publicly disclosed.',
+                        'The design of the deposit insurance system is consistent with the system\'s public policy objectives.',
+                        'A periodic internal review is conducted to assess the extent to which the deposit insurance system is meeting its public policy objectives. In addition, a periodic external review is conducted by an independent party.'
+                    ]
+                },
+                {
+                    id: 'CP2',
+                    title: 'Mandate and Powers',
+                    principle: 'The mandate and powers of the deposit insurer are formally and clearly specified in law and publicly disclosed. They are consistent with stated public policy objectives of the deposit insurance system.',
+                    essentialCriteria: [
+                        'The mandate and powers of the deposit insurer are formally and clearly specified in law and publicly disclosed. They are consistent with stated public policy objectives of the deposit insurance system',
+                        'The mandate clarifies the roles and responsibilities of the deposit insurer and is aligned with the mandates of other relevant financial safety-net participants.',
+                        'The powers of the deposit insurer support its mandate and enable the deposit insurer to fulfil its roles and responsibilities. They include, but are not limited to: a) assessing and collecting premiums, levies, or other charges; b) reimbursing insured depositors; c) managing its fund and its use; d) obtaining timely, accurate, and comprehensive non-public information needed to fulfil its mandate directly from its member institutions, from third parties holding the relevant information on behalf of a member institution, and from other financial safety-net participants; e) compelling its member institutions to comply with their legal obligations to the deposit insurer, or requiring another financial safety-net participant to do so on behalf of the deposit insurer; f) entering into formal agreements with other financial safety-net participants regarding cooperation, coordination and information sharing in business-as-usual times and in times of crisis; g) setting operating budgets, policies, systems, and practices; and h) entering into contracts to execute its mandate.'
+                    ],
+                    detailedCriteria: [
+                        {
+                            criteria: 'The mandate and powers of the deposit insurer are formally and clearly specified in law and publicly disclosed. They are consistent with stated public policy objectives of the deposit insurance system',
+                            questions: [
+                                'Are the DI\'s mandate and powers:',
+                                'i. Formally and clearly specified in law;',
+                                'ii. Publicly disclosed; and',
+                                'iii. Consistent with stated public policy objectives of DI system'
+                            ]
+                        },
+                        {
+                            criteria: 'The mandate clarifies the roles and responsibilities of the deposit insurer and is aligned with the mandates of other relevant financial safety-net participants.',
+                            questions: [
+                                'Does the DI\'s mandate:',
+                                'i. Clarifies roles & responsibilities of DI; and',
+                                'ii. Aligns with mandates of other relevant financial safety net participants?'
+                            ]
+                        },
+                        {
+                            criteria: 'The powers of the deposit insurer support its mandate and enable the deposit insurer to fulfil its roles and responsibilities. They include, but are not limited to: a) assessing and collecting premiums, levies, or other charges; b) reimbursing insured depositors; c) managing its fund and its use; d) obtaining timely, accurate, and comprehensive non-public information needed to fulfil its mandate directly from its member institutions, from third parties holding the relevant information on behalf of a member institution, and from other financial safety-net participants; e) compelling its member institutions to comply with their legal obligations to the deposit insurer, or requiring another financial safety-net participant to do so on behalf of the deposit insurer; f) entering into formal agreements with other financial safety-net participants regarding cooperation, coordination and information sharing in business-as-usual times and in times of crisis; g) setting operating budgets, policies, systems, and practices; and h) entering into contracts to execute its mandate.',
+                            questions: [
+                                'Does the DI have all these powers?',
+                                'Do the powers of DI:',
+                                'i. support its mandate; and',
+                                'ii. enable DI to fulfil its roles and responsibilities?'
+                            ]
+                        }
+                    ]
+                },
+                {
+                    id: 'CP3',
+                    title: 'Independence',
+                    principle: 'The deposit insurer is operationally independent, well-governed, transparent, accountable, and insulated from undue external interference.'
+                },
+                {
+                    id: 'CP4',
+                    title: 'Cross-border Issues',
+                    principle: 'The deposit insurer has in place an effective business continuity management framework to withstand, adapt to, and recover from severe operational risk-related disruptions. It has business continuity plans in place that ensure that disruptions in its capability to perform its critical operations are minimised. The framework includes periodic reviews, testing, training, coordination, and communication.'
+                },
+                {
+                    id: 'CP5',
+                    title: 'Governance',
+                    principle: 'The deposit insurer and individuals who are currently working or have formerly worked for the deposit insurer in discharging the deposit insurer\'s mandate are protected by law from liability for decisions, actions taken or omissions made while discharging their duties in good faith.'
+                }
+            ];
 
             return (
                 <div className="min-h-screen bg-gray-50">
@@ -148,6 +215,7 @@
                                 selectedPrinciple={selectedPrinciple}
                                 setSelectedPrinciple={setSelectedPrinciple}
                                 results={sampleResults}
+                                allCorePrinciples={allCorePrinciples}
                             />
                         )}
 
@@ -1119,24 +1187,21 @@ Deposit insurers may be confronted with challenges including: the potential risk
                                     {/* Divider */}
                                     <div className="border-t border-gray-300 my-4"></div>
 
-                                    {/* Core Principles */}
+                                    {/* Core Principles Dropdown */}
                                     <div>
                                         <h3 className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2 px-2">Core Principles</h3>
-                                        <div className="space-y-2">
+                                        <select
+                                            value={selectedPrinciple && selectedPrinciple.startsWith('CP') ? selectedPrinciple : ''}
+                                            onChange={(e) => setSelectedPrinciple(e.target.value)}
+                                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent text-sm"
+                                        >
+                                            <option value="">-- Select a Core Principle --</option>
                                             {allCorePrinciples.map((cp) => (
-                                                <button
-                                                    key={cp.id}
-                                                    onClick={() => setSelectedPrinciple(cp.id)}
-                                                    className={`w-full text-left p-3 rounded-lg border transition-colors ${selectedPrinciple === cp.id
-                                                        ? 'border-purple-500 bg-purple-50 text-purple-900'
-                                                        : 'border-gray-200 bg-white hover:border-gray-300 hover:bg-gray-50'
-                                                        }`}
-                                                >
-                                                    <div className="font-medium text-sm">{cp.id}</div>
-                                                    <div className="text-xs mt-1 line-clamp-2">{cp.title}</div>
-                                                </button>
+                                                <option key={cp.id} value={cp.id}>
+                                                    {cp.id}: {cp.title}
+                                                </option>
                                             ))}
-                                        </div>
+                                        </select>
                                     </div>
                                 </div>
                             </div>
@@ -1710,7 +1775,7 @@ Deposit insurers may be confronted with challenges including: the potential risk
         }
 
         // Results Step Component
-        function ResultsStep({ principles, selectedPrinciple, setSelectedPrinciple, results }) {
+        function ResultsStep({ principles, selectedPrinciple, setSelectedPrinciple, results, allCorePrinciples }) {
             return (
                 <div className="animate-fade-in">
                     <div className="text-center mb-8">
@@ -1764,7 +1829,11 @@ Deposit insurers may be confronted with challenges including: the potential risk
                         {/* Detailed Results */}
                         <div className="lg:col-span-2">
                             {selectedPrinciple && results[selectedPrinciple] ? (
-                                <PrincipleDetails principle={selectedPrinciple} data={results[selectedPrinciple]} />
+                                <PrincipleDetails
+                                    principle={selectedPrinciple}
+                                    principleData={allCorePrinciples.find(cp => cp.id === selectedPrinciple)}
+                                    data={results[selectedPrinciple]}
+                                />
                             ) : (
                                 <div className="bg-white rounded-lg card-shadow p-8 text-center">
                                     <i className="fas fa-arrow-left text-4xl text-gray-300 mb-4"></i>
@@ -1783,31 +1852,46 @@ Deposit insurers may be confronted with challenges including: the potential risk
         }
 
         // Principle Details Component
-        function PrincipleDetails({ principle, data }) {
+        function PrincipleDetails({ principle, principleData, data }) {
+            // State to track which criteria are expanded
+            const [expandedCriteria, setExpandedCriteria] = useState({});
+
+            // Toggle expansion for a specific criterion
+            const toggleCriterion = (criterionId) => {
+                setExpandedCriteria(prev => ({
+                    ...prev,
+                    [criterionId]: !prev[criterionId]
+                }));
+            };
+
             return (
                 <div className="space-y-6">
                     {/* Overall Status */}
                     <div className="bg-white rounded-lg card-shadow p-6">
                         <h3 className="text-lg font-semibold text-gray-900 mb-4">
-                            {principle}: Overall Assessment
+                            {principle}: {principleData?.title || 'Overall Assessment'}
                         </h3>
-                        <div className="flex items-center justify-between">
-                            <div>
-                                <span className={`inline-block px-3 py-1 rounded-full text-sm font-medium ${data.overall.color === 'green' ? 'bg-green-100 text-green-800' :
-                                    data.overall.color === 'yellow' ? 'bg-yellow-100 text-yellow-800' :
-                                        'bg-red-100 text-red-800'
-                                    }`}>
-                                    {data.overall.status}
-                                </span>
-                                <p className="text-sm text-gray-600 mt-1">
-                                    {data.overall.confidence}% confidence
+
+                        {/* Core Principle Description */}
+                        {principleData && principleData.principle && (
+                            <div className="bg-gray-50 border-l-4 border-purple-600 p-4 rounded mb-6">
+                                <p className="text-gray-700 italic leading-relaxed text-sm">
+                                    "{principleData.principle}"
                                 </p>
+                            </div>
+                        )}
+
+                        <div className="flex items-center justify-between">
+                            <div className="flex items-center gap-3">
+                                {/* Color-only status indicator */}
+                                <div className={`rounded-full ${data.overall.status === 'Strong Alignment' ? 'bg-green-500' : 'bg-orange-500'}`} style={{ width: '40px', height: '16px' }} title={data.overall.status}></div>
+                                <span className="text-sm font-medium text-gray-700">{data.overall.status}</span>
                             </div>
                             <div className="text-right">
                                 <div className="text-2xl font-bold text-gray-900">
                                     {data.overall.confidence}%
                                 </div>
-                                <div className="text-sm text-gray-500">Compliance Score</div>
+                                <div className="text-sm text-gray-500">Confidence</div>
                             </div>
                         </div>
                     </div>
@@ -1815,46 +1899,115 @@ Deposit insurers may be confronted with challenges including: the potential risk
                     {/* Essential Criteria */}
                     <div className="space-y-4">
                         <h3 className="text-lg font-semibold text-gray-900">Essential Criteria</h3>
-                        {data.criteria.map((criterion) => (
-                            <div key={criterion.id} className="bg-white rounded-lg card-shadow p-6">
-                                <div className="flex items-start justify-between mb-4">
-                                    <div className="flex-1">
-                                        <h4 className="font-medium text-gray-900 mb-1">
-                                            {criterion.id}: {criterion.text}
-                                        </h4>
-                                        <span className={`inline-block px-2 py-1 rounded-full text-xs font-medium ${criterion.status === 'Fully Compliant' ? 'bg-green-100 text-green-800' :
-                                            criterion.status === 'Generally Aligned' ? 'bg-yellow-100 text-yellow-800' :
-                                                'bg-red-100 text-red-800'
-                                            }`}>
-                                            {criterion.status}
-                                        </span>
-                                    </div>
-                                    <div className="text-right">
-                                        <div className="text-lg font-semibold text-gray-900">
-                                            {criterion.confidence}%
+                        {data.criteria.map((criterion, index) => {
+                            const isExpanded = expandedCriteria[criterion.id];
+                            const criterionDescription = principleData?.essentialCriteria?.[index];
+
+                            return (
+                                <div key={criterion.id} className="bg-white rounded-lg card-shadow overflow-hidden">
+                                    {/* Clickable Header */}
+                                    <div
+                                        onClick={() => toggleCriterion(criterion.id)}
+                                        className="flex items-start justify-between p-6 cursor-pointer hover:bg-gray-50 transition-colors"
+                                    >
+                                        <div className="flex-1">
+                                            <div className="flex items-center gap-3 mb-2">
+                                                {/* Color-only status indicator - moved to left */}
+                                                <div className={`rounded-full flex-shrink-0 ${criterion.status === 'Strong Alignment' ? 'bg-green-500' : 'bg-orange-500'}`} style={{ width: '40px', height: '16px' }} title={criterion.status}></div>
+                                                <h4 className="font-medium text-gray-900">
+                                                    {criterion.id}: {criterion.text}
+                                                </h4>
+                                            </div>
+                                        </div>
+                                        <div className="flex items-center gap-4 ml-4">
+                                            {/* Chevron Icon */}
+                                            <i className={`fas fa-chevron-${isExpanded ? 'up' : 'down'} text-gray-400 transition-transform`}></i>
                                         </div>
                                     </div>
-                                </div>
 
-                                <div className="space-y-3">
-                                    <div>
-                                        <h5 className="text-sm font-medium text-gray-700 mb-1">Supporting Data:</h5>
-                                        <p className="text-sm text-gray-600">{criterion.evidence}</p>
-                                    </div>
+                                    {/* Expandable Content */}
+                                    {isExpanded && (
+                                        <div className="px-6 pb-6 border-t border-gray-200 pt-4 space-y-6">
+                                            {/* Set of Structured Questions - Different styling */}
+                                            {principleData?.detailedCriteria?.[index]?.questions && (
+                                                <div className="bg-blue-50 border-l-4 border-blue-500 p-4 rounded">
+                                                    <h5 className="text-sm font-semibold text-blue-900 mb-3">Set of Structured Questions:</h5>
+                                                    <ul className="space-y-2">
+                                                        {principleData.detailedCriteria[index].questions.map((question, qIndex) => (
+                                                            <li key={qIndex} className="text-sm text-blue-800">{question}</li>
+                                                        ))}
+                                                    </ul>
+                                                </div>
+                                            )}
 
-                                    {criterion.gaps.length > 0 && (
-                                        <div>
-                                            <h5 className="text-sm font-medium text-gray-700 mb-1">Potential Focus Areas:</h5>
-                                            <ul className="list-disc list-inside space-y-1">
-                                                {criterion.gaps.map((gap, index) => (
-                                                    <li key={index} className="text-sm text-red-600">{gap}</li>
-                                                ))}
-                                            </ul>
+                                            {/* Supporting Data */}
+                                            <div>
+                                                <h5 className="text-sm font-semibold text-gray-900 mb-2">Supporting Data:</h5>
+                                                <p className="text-sm text-gray-600">{criterion.evidence}</p>
+                                            </div>
+
+                                            {/* Summary of Submission */}
+                                            <div>
+                                                <h5 className="text-sm font-semibold text-gray-900 mb-2">Summary of Submission:</h5>
+                                                <p className="text-sm text-gray-500 italic">Content to be provided</p>
+                                            </div>
+
+                                            {/* Potential Focus Areas */}
+                                            {criterion.gaps.length > 0 && (
+                                                <div>
+                                                    <h5 className="text-sm font-semibold text-gray-900 mb-2">Potential Focus Areas:</h5>
+                                                    <ul className="list-disc list-inside space-y-1">
+                                                        {criterion.gaps.map((gap, gapIndex) => (
+                                                            <li key={gapIndex} className="text-sm text-red-600">{gap}</li>
+                                                        ))}
+                                                    </ul>
+                                                </div>
+                                            )}
+
+                                            {/* Suggested Reference */}
+                                            <div>
+                                                <h5 className="text-sm font-semibold text-gray-900 mb-2">Suggested Reference:</h5>
+                                                <p className="text-sm text-gray-500 italic">References to be configured</p>
+                                            </div>
+
+                                            {/* Overlay Section */}
+                                            <div className="bg-gray-50 border border-gray-200 rounded-lg p-4 space-y-4">
+                                                <h5 className="text-sm font-semibold text-gray-900">Overlay:</h5>
+
+                                                {/* Justification */}
+                                                <div>
+                                                    <label className="block text-xs font-medium text-gray-700 mb-1">
+                                                        Justification (if you disagree with Potential Focus Areas):
+                                                    </label>
+                                                    <textarea
+                                                        className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                                                        rows="3"
+                                                        placeholder="Provide your justification here..."
+                                                    ></textarea>
+                                                </div>
+
+                                                {/* File Upload */}
+                                                <div>
+                                                    <label className="block text-xs font-medium text-gray-700 mb-1">
+                                                        Upload Past Assessment Documentation:
+                                                    </label>
+                                                    <div className="space-y-2">
+                                                        <input
+                                                            type="file"
+                                                            className="w-full text-sm text-gray-600 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-medium file:bg-purple-50 file:text-purple-700 hover:file:bg-purple-100 cursor-pointer"
+                                                            accept=".pdf,.doc,.docx"
+                                                        />
+                                                        <button className="px-4 py-2 bg-purple-600 text-white text-sm font-medium rounded-md hover:bg-purple-700 transition-colors">
+                                                            Submit
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>
                                         </div>
                                     )}
                                 </div>
-                            </div>
-                        ))}
+                            );
+                        })}
                     </div>
                 </div>
             );
