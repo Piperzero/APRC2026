@@ -206,6 +206,7 @@
                                 progress={analysisProgress}
                                 setProgress={setAnalysisProgress}
                                 onComplete={() => setCurrentStep('results')}
+                                uploadedDocs={uploadedDocs}
                             />
                         )}
 
@@ -1618,7 +1619,7 @@ Deposit insurers may be confronted with challenges including: the potential risk
         }
 
         // Analysis Step Component
-        function AnalysisStep({ progress, setProgress, onComplete }) {
+        function AnalysisStep({ progress, setProgress, onComplete, uploadedDocs }) {
             const [showCompleted, setShowCompleted] = useState(false);
 
             useEffect(() => {
@@ -1731,16 +1732,17 @@ Deposit insurers may be confronted with challenges including: the potential risk
                                 <h4 className="font-semibold text-blue-900 mb-2">Analysis Updates</h4>
                                 <div className="space-y-1 text-sm text-blue-800">
                                     {progress > 10 && <p>✓ Processed {uploadedDocs.length} documents successfully</p>}
-                                    {progress > 30 && <p>✓ Extracted text from multiple pages</p>}
+                                    {progress > 30 && <p>✓ Extracted text from {totalPages || 'multiple'} pages</p>}
                                     {progress > 60 && <p>✓ Analyzed against IADI Core Principles</p>}
                                     {progress > 90 && <p>✓ Generated compliance assessment</p>}
                                     {showCompleted && (
                                         <div className="mt-3 p-3 bg-white rounded border-l-4 border-green-500">
                                             <p className="font-medium text-green-800">🎉 Analysis successfully completed!</p>
                                             <p className="text-green-700 text-xs mt-1">
-                                                • Analyzed multiple pages across {uploadedDocs.length} documents<br />
-                                                • Assessed compliance with Core Principles<br />
-                                                • Generated evidence references<br />
+                                                • Analyzed {totalPages || 'multiple'} pages across {uploadedDocs.length} documents<br />
+                                                • Assessed compliance with {selectedPrinciples.length || 1} Core Principles<br />
+                                                • Generated {evidenceCount || 'multiple'} evidence references<br />
+                                                • Analysis confidence: {overallConfidence || 'Calculating...'}%
                                             </p>
                                         </div>
                                     )}
