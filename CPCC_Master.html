@@ -262,7 +262,7 @@
                 { id: 'upload', label: 'Upload Documents', icon: 'fas fa-upload' },
                 { id: 'analysis', label: 'AI Analysis', icon: 'fas fa-brain' },
                 { id: 'results', label: 'Preliminary Assessment Results', icon: 'fas fa-chart-line' },
-                { id: 'report', label: 'Key Takeaways', icon: 'fas fa-file-alt' }
+                { id: 'report', label: 'Final Report', icon: 'fas fa-file-alt' }
             ];
 
             return (
@@ -1731,17 +1731,17 @@ Deposit insurers may be confronted with challenges including: the potential risk
                                 <h4 className="font-semibold text-blue-900 mb-2">Analysis Updates</h4>
                                 <div className="space-y-1 text-sm text-blue-800">
                                     {progress > 10 && <p>✓ Processed {uploadedDocs.length} documents successfully</p>}
-                                    {progress > 30 && <p>✓ Extracted text from multiple pages</p>}
-                                    {progress > 60 && <p>✓ Analyzed against 18 Core Principles</p>}
+                                    {progress > 30 && <p>✓ Extracted text from {totalPages || 'multiple'} pages</p>}
+                                    {progress > 60 && <p>✓ Analyzed against IADI Core Principles</p>}
                                     {progress > 90 && <p>✓ Generated compliance assessment</p>}
                                     {showCompleted && (
                                         <div className="mt-3 p-3 bg-white rounded border-l-4 border-green-500">
                                             <p className="font-medium text-green-800">🎉 Analysis successfully completed!</p>
                                             <p className="text-green-700 text-xs mt-1">
-                                                • Analyzed 156 pages across 3 documents<br />
-                                                • Assessed compliance with 5 Core Principles<br />
-                                                • Generated 847 evidence references<br />
-                                                • Identified 3 areas for improvement
+                                                • Analyzed {totalPages || 'multiple'} pages across {uploadedDocs.length} documents<br />
+                                                • Assessed compliance with {selectedPrinciples.length || 1} Core Principles<br />
+                                                • Generated {evidenceCount || 'multiple'} evidence references<br />
+                                                • Analysis confidence: {overallConfidence || 'Calculating...'}%
                                             </p>
                                         </div>
                                     )}
@@ -1875,12 +1875,17 @@ Deposit insurers may be confronted with challenges including: the potential risk
                             </div>
                         )}
 
-                        <div className="flex items-center gap-4">
-                            {/* Color-only status indicator */}
-                            <div className={`rounded-full ${data.overall.status === 'Strong Alignment' ? 'bg-green-500' : 'bg-orange-500'}`} style={{ width: '40px', height: '16px' }} title={data.overall.status}></div>
+                        <div className="flex items-center justify-between">
                             <div>
-                                <div className="text-lg font-semibold text-gray-900">{data.overall.status}</div>
-                                <div className="text-xs text-gray-500">{data.overall.confidence}% confidence</div>
+                                {/* Empty left side */}
+                            </div>
+                            <div className="flex items-center gap-4">
+                                {/* Color-only status indicator */}
+                                <div className={`rounded-full ${data.overall.status === 'Strong Alignment' ? 'bg-green-500' : 'bg-orange-500'}`} style={{ width: '40px', height: '16px' }} title={data.overall.status}></div>
+                                <div className="text-right">
+                                    <div className="text-lg font-semibold text-gray-900">{data.overall.status}</div>
+                                    <div className="text-xs text-gray-500">{data.overall.confidence}% confidence</div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -2009,44 +2014,35 @@ Deposit insurers may be confronted with challenges including: the potential risk
             return (
                 <div className="animate-fade-in max-w-4xl mx-auto">
                     <div className="text-center mb-8">
-                        <h2 className="text-3xl font-bold text-gray-900 mb-4">Key Takeaways</h2>
+                        <h2 className="text-3xl font-bold text-gray-900 mb-4">Final Assessment Report</h2>
                         <p className="text-lg text-gray-600">
-                            The key takeaways report has been finalized and is ready for download
+                            Complete compliance report ready for download and sharing
                         </p>
                     </div>
 
                     <div className="bg-white rounded-lg card-shadow p-8">
-                        <h3 className="text-xl font-semibold text-gray-900 mb-4">Overview</h3>
-                        <p className="text-gray-600 italic mb-8">
-                            To be configured. This summary highlights key observations based on the documents you provided. The findings reflect alignment with the IADI Core Principles for Effective Deposit Insurance Systems (September 2025) and identifies potential areas that could benefit from added attention, helping guide potential enhancements where needed, based solely on the materials submitted.
+                        <h3 className="text-xl font-semibold text-gray-900 mb-6">Executive Summary</h3>
+                        <p className="text-gray-600 mb-6">
+                            This report presents a comprehensive assessment of compliance with IADI Core Principles
+                            for Effective Deposit Insurance Systems, based on AI analysis of submitted documentation.
                         </p>
 
-                        <h3 className="text-xl font-semibold text-gray-900 mb-6">Executive Summary</h3>
-                        <div className="text-gray-600 italic mb-6">
-                            <p className="mb-2">To be configured. A high-level overview of the main themes emerging from the review, including:</p>
-                            <ol className="list-decimal list-inside space-y-1 ml-2">
-                                <li>Notable strengths in the legal, regulatory, or policy framework</li>
-                                <li>Operational or governance practices that support effective system functioning</li>
-                                <li>Any significant gaps or ambiguities observed in the uploaded materials</li>
-                            </ol>
-                        </div>
-
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                            <div className="text-center p-4 bg-green-50 rounded-lg">
+                                <div className="text-2xl font-bold text-green-600">85%</div>
+                                <div className="text-sm text-gray-600">Overall Compliance</div>
+                            </div>
                             <div className="text-center p-4 bg-blue-50 rounded-lg">
                                 <div className="text-2xl font-bold text-blue-600">5</div>
-                                <div className="text-sm text-gray-600">Core Principles Assessed</div>
+                                <div className="text-sm text-gray-600">Principles Assessed</div>
                             </div>
-                            <div className="text-center p-4 bg-green-50 rounded-lg">
-                                <div className="text-2xl font-bold text-green-600">2</div>
-                                <div className="text-sm text-gray-600">Areas with Strong Alignment</div>
-                            </div>
-                            <div className="text-center p-4 bg-orange-50 rounded-lg">
-                                <div className="text-2xl font-bold text-orange-600">3</div>
+                            <div className="text-center p-4 bg-yellow-50 rounded-lg">
+                                <div className="text-2xl font-bold text-yellow-600">3</div>
                                 <div className="text-sm text-gray-600">Potential Focus Areas</div>
                             </div>
                         </div>
 
-                        <div className="flex flex-wrap gap-4 mb-8">
+                        <div className="flex flex-wrap gap-4">
                             <button className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors">
                                 <i className="fas fa-download mr-2"></i>Download PDF Report
                             </button>
@@ -2056,14 +2052,6 @@ Deposit insurers may be confronted with challenges including: the potential risk
                             <button className="border border-gray-300 text-gray-700 px-6 py-3 rounded-lg hover:bg-gray-50 transition-colors">
                                 <i className="fas fa-share mr-2"></i>Share Results
                             </button>
-                        </div>
-
-                        {/* Disclaimer Section */}
-                        <div className="border-t border-gray-200 pt-6 mt-8">
-                            <h4 className="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-2">Disclaimer</h4>
-                            <p className="text-xs text-gray-500 italic leading-relaxed">
-                                This summary is informational in nature and does not constitute legal or supervisory advice. The observations are based solely on the documents provided and may not reflect the full legal or operational context of your jurisdiction or institution.
-                            </p>
                         </div>
                     </div>
                 </div>
