@@ -206,6 +206,7 @@
                                 progress={analysisProgress}
                                 setProgress={setAnalysisProgress}
                                 onComplete={() => setCurrentStep('results')}
+                                uploadedDocs={uploadedDocs}
                             />
                         )}
 
@@ -1618,7 +1619,7 @@ Deposit insurers may be confronted with challenges including: the potential risk
         }
 
         // Analysis Step Component
-        function AnalysisStep({ progress, setProgress, onComplete }) {
+        function AnalysisStep({ progress, setProgress, onComplete, uploadedDocs }) {
             const [showCompleted, setShowCompleted] = useState(false);
 
             useEffect(() => {
