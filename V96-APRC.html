@@ -1764,6 +1764,7 @@
       if (document.getElementById('page5-submit')) document.getElementById('page5-submit').disabled = true;
       // Reset gate and tracks
       ['trackA','trackB'].forEach(id => { const el = document.getElementById(id); if(el) el.style.display='none'; });
+      behaviouralSurveyInitialised = false;
       document.querySelectorAll('#gate-options .radio-option').forEach(el => el.classList.remove('selected'));
       // Hide thank you panel
       const ty = document.getElementById('surveyThankYou'); if(ty) ty.style.display='none';
@@ -1887,18 +1888,45 @@
       });
     }
 
+    // Flag to track if behavioural survey has been rendered
+    let behaviouralSurveyInitialised = false;
+
     /**
      * Initialise behavioural survey question rendering (called when entering page 5)
+     * Only renders questions once; subsequent entries restore visibility state only.
      */
     function initializeBehaviouralSurvey() {
-      // Track A
-      renderCheckboxOptions('qa1-options', withdrawalTriggers, 'a_q1', true);
-      renderRadioOptions('qa2-options', moneyDestinations, 'a_q2');
-      renderCheckboxOptions('qa3-options', reassuranceFactors, 'a_q3', false);
-      // Track B
-      renderCheckboxOptions('qb1-options', withdrawalTriggers, 'b_q1', true);
-      renderRadioOptions('qb2-options', moneyDestinations, 'b_q2');
-      renderCheckboxOptions('qb3-options', reassuranceFactors, 'b_q3', false);
+      if (!behaviouralSurveyInitialised) {
+        // First time — render all question options
+        renderCheckboxOptions('qa1-options', withdrawalTriggers, 'a_q1', true);
+        renderRadioOptions('qa2-options', moneyDestinations, 'a_q2');
+        renderCheckboxOptions('qa3-options', reassuranceFactors, 'a_q3', false);
+        renderCheckboxOptions('qb1-options', withdrawalTriggers, 'b_q1', true);
+        renderRadioOptions('qb2-options', moneyDestinations, 'b_q2');
+        renderCheckboxOptions('qb3-options', reassuranceFactors, 'b_q3', false);
+        behaviouralSurveyInitialised = true;
+      }
+      // Always restore gate section visibility (in case reset was called)
+      const gateSection = document.getElementById('surveyGateSection');
+      if (gateSection) gateSection.style.display = 'block';
+      // Restore track visibility based on previously selected gate
+      if (surveyAnswers.respondentType) {
+        document.getElementById('trackA').style.display = surveyAnswers.respondentType === 'DI' ? 'block' : 'none';
+        document.getElementById('trackB').style.display = surveyAnswers.respondentType === 'NDI' ? 'block' : 'none';
+        // Restore gate radio visual selection
+        const gateEl = document.getElementById('gate-' + (surveyAnswers.respondentType === 'DI' ? 'di' : 'ndi'));
+        if (gateEl) gateEl.classList.add('selected');
+      }
+      // Restore thank-you panel state
+      const ty = document.getElementById('surveyThankYou');
+      const nav = document.querySelector('#page5 .nav-container');
+      if (ty && ty.style.display === 'block') {
+        if (nav) nav.style.display = 'none';
+        if (gateSection) gateSection.style.display = 'none';
+        document.getElementById('trackA').style.display = 'none';
+        document.getElementById('trackB').style.display = 'none';
+      }
+      updateBehaviouralSubmitButton();
     }
 
     /**
