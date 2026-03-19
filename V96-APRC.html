@@ -1283,7 +1283,7 @@
       </div>
 
       <!-- Navigation: Back to Results & Forward to Survey -->
-      <div class="nav-container">
+      <div class="nav-container" id="page4-nav" style="display:none;">
         <button class="nav-btn nav-btn-back" onclick="navigateToPage(3)">
           ← Back
         </button>
@@ -2208,6 +2208,8 @@
      * Reset family scenario steps to initial state
      */
     function resetFamilyScenarioSteps() {
+      const page4Nav = document.getElementById('page4-nav');
+      if (page4Nav) page4Nav.style.display = 'none';
       document.getElementById('step1Card').style.display = 'block';
       document.getElementById('step2Card').style.display = 'none';
       document.getElementById('step3Card').style.display = 'none';
@@ -2536,6 +2538,9 @@
       if (step6Card) {
         step6Card.style.display = 'block';
       }
+      // Reveal bottom nav only at Step 6
+      const page4Nav = document.getElementById('page4-nav');
+      if (page4Nav) page4Nav.style.display = 'flex';
 
       const depositAmount = window.depositAmount || 0;
       const householdMembers = window.householdMembers || 0;
