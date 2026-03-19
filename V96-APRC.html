@@ -872,7 +872,7 @@
         <div class="landing-header">
           <h1 class="landing-title">APRC Deposit Coverage Calculator</h1>
           <p class="landing-subtitle">APRC Deposit Insurance Protection</p>
-          <p class="landing-tagline">Discover how your deposits are protected across 20 APRC jurisdictions</p>
+          <p class="landing-tagline">Discover how your deposits are protected in the Asia-Pacific region.</p>
         </div>
 
         <div class="feature-grid">
@@ -1004,7 +1004,7 @@
          PAGE 3: Coverage Results
          ============================================ -->
     <div class="page" id="page3">
-      <h1>Your Coverage Across APRC</h1>
+      <h1>Your Coverage Across Asia-Pacific Region</h1>
 
       <!-- Coverage Box for Selected Jurisdiction -->
       <div class="coverage-box" id="coverageBox">
@@ -1298,22 +1298,22 @@
          ============================================ -->
     <div class="page" id="page5">
       <div class="survey-header">
-        <h1>Behavioural Survey</h1>
-        <p>Help us understand depositor behaviour across APRC</p>
+        <h1>Deposit Coverage Calculator</h1>
+        <p>Find out how much of your deposit may be protected.</p>
       </div>
 
       <!-- GATE QUESTION: DI or Non-DI -->
       <div class="survey-section" id="surveyGateSection">
         <div class="survey-question">
-          <p class="survey-question-text">Q0. Are you a deposit insurer or a non-deposit insurer?</p>
+          <p class="survey-question-text">Q1. Are you a deposit insurer or a non-deposit insurer?</p>
           <div class="radio-group" id="gate-options">
             <div class="radio-option" id="gate-di" onclick="selectGate('DI')">
               <input type="radio" id="gate-radio-di" name="gate" value="DI">
-              <label for="gate-radio-di">🏛️ &nbsp;<strong>Deposit Insurer</strong> — I represent a deposit insurance organisation</label>
+              <label for="gate-radio-di">🏛️ &nbsp;<strong>Deposit Insurer</strong></label>
             </div>
             <div class="radio-option" id="gate-ndi" onclick="selectGate('NDI')">
               <input type="radio" id="gate-radio-ndi" name="gate" value="NDI">
-              <label for="gate-radio-ndi">👤 &nbsp;<strong>Non-Deposit Insurer</strong> — I am a depositor / general public / other</label>
+              <label for="gate-radio-ndi">👤 &nbsp;<strong>Non-Deposit Insurer</strong></label>
             </div>
           </div>
           <div class="validation-message" id="gate-validation">
@@ -1855,28 +1855,31 @@
     /**
      * Render checkbox options (multi-select) for behavioural survey
      */
-    function renderCheckboxOptions(containerId, options, answerKey) {
+    function renderCheckboxOptions(containerId, options, answerKey, hasNoneOption) {
+      // hasNoneOption: true only for Q1 (withdrawal triggers) where 'f' = "None of the above"
       const container = document.getElementById(containerId);
       if (!container) return;
       container.innerHTML = '';
       options.forEach(option => {
         const div = document.createElement('div');
         div.className = 'checkbox-option';
-        const isNoneValue = option.value === 'f'; // "None of the above" exclusive
         div.innerHTML = `<input type="checkbox" id="${containerId}-${option.value}" name="${containerId}" value="${option.value}">
           <label for="${containerId}-${option.value}">${option.label}</label>`;
         div.addEventListener('click', function(e) {
           const cb = div.querySelector('input[type="checkbox"]');
           if (e.target !== cb) cb.checked = !cb.checked;
-          // "None of the above" exclusivity
-          if (option.value === 'f' && cb.checked) {
-            container.querySelectorAll('input[type="checkbox"]').forEach(c => { if (c !== cb) { c.checked = false; c.closest('.checkbox-option').classList.remove('selected'); } });
-          } else if (cb.checked) {
-            const noneCheckbox = document.getElementById(`${containerId}-f`);
-            if (noneCheckbox) { noneCheckbox.checked = false; noneCheckbox.closest('.checkbox-option').classList.remove('selected'); }
+          if (hasNoneOption) {
+            // "None of the above" exclusivity — only applies to Q1
+            if (option.value === 'f' && cb.checked) {
+              container.querySelectorAll('input[type="checkbox"]').forEach(c => {
+                if (c !== cb) { c.checked = false; c.closest('.checkbox-option').classList.remove('selected'); }
+              });
+            } else if (cb.checked) {
+              const noneCheckbox = document.getElementById(`${containerId}-f`);
+              if (noneCheckbox) { noneCheckbox.checked = false; noneCheckbox.closest('.checkbox-option').classList.remove('selected'); }
+            }
           }
           div.classList.toggle('selected', cb.checked);
-          // Update answer array
           surveyAnswers[answerKey] = Array.from(container.querySelectorAll('input:checked')).map(c => c.value);
           updateBehaviouralSubmitButton();
         });
@@ -1889,13 +1892,13 @@
      */
     function initializeBehaviouralSurvey() {
       // Track A
-      renderCheckboxOptions('qa1-options', withdrawalTriggers, 'a_q1');
+      renderCheckboxOptions('qa1-options', withdrawalTriggers, 'a_q1', true);
       renderRadioOptions('qa2-options', moneyDestinations, 'a_q2');
-      renderCheckboxOptions('qa3-options', reassuranceFactors, 'a_q3');
+      renderCheckboxOptions('qa3-options', reassuranceFactors, 'a_q3', false);
       // Track B
-      renderCheckboxOptions('qb1-options', withdrawalTriggers, 'b_q1');
+      renderCheckboxOptions('qb1-options', withdrawalTriggers, 'b_q1', true);
       renderRadioOptions('qb2-options', moneyDestinations, 'b_q2');
-      renderCheckboxOptions('qb3-options', reassuranceFactors, 'b_q3');
+      renderCheckboxOptions('qb3-options', reassuranceFactors, 'b_q3', false);
     }
 
     /**
