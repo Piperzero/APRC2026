@@ -1863,8 +1863,8 @@
         const div = document.createElement('div');
         div.className = 'checkbox-option';
         const isNoneValue = option.value === 'f'; // "None of the above" exclusive
-        div.innerHTML = \`<input type="checkbox" id="\${containerId}-\${option.value}" name="\${containerId}" value="\${option.value}">
-          <label for="\${containerId}-\${option.value}">\${option.label}</label>\`;
+        div.innerHTML = `<input type="checkbox" id="${containerId}-${option.value}" name="${containerId}" value="${option.value}">
+          <label for="${containerId}-${option.value}">${option.label}</label>`;
         div.addEventListener('click', function(e) {
           const cb = div.querySelector('input[type="checkbox"]');
           if (e.target !== cb) cb.checked = !cb.checked;
@@ -1872,7 +1872,7 @@
           if (option.value === 'f' && cb.checked) {
             container.querySelectorAll('input[type="checkbox"]').forEach(c => { if (c !== cb) { c.checked = false; c.closest('.checkbox-option').classList.remove('selected'); } });
           } else if (cb.checked) {
-            const noneCheckbox = document.getElementById(\`\${containerId}-f\`);
+            const noneCheckbox = document.getElementById(`${containerId}-f`);
             if (noneCheckbox) { noneCheckbox.checked = false; noneCheckbox.closest('.checkbox-option').classList.remove('selected'); }
           }
           div.classList.toggle('selected', cb.checked);
