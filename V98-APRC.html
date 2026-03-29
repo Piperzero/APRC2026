@@ -2075,31 +2075,46 @@
           return true;
 
         case 6:
-          // Page 5: Must select gate respondent type + complete track questions
+          // Gate: must select DI or NDI
           if (!surveyAnswers.respondentType) {
             document.getElementById('gate-validation').classList.add('show');
             return false;
           }
           document.getElementById('gate-validation').classList.remove('show');
+          return true;
+
+        case 9:
+          // Q1: must select at least one checkbox
           if (surveyAnswers.respondentType === 'DI') {
-            let v5 = true;
-            if (surveyAnswers.a_q1.length === 0) { document.getElementById('qa1-validation').classList.add('show'); v5 = false; }
-            else document.getElementById('qa1-validation').classList.remove('show');
-            if (!surveyAnswers.a_q2) { document.getElementById('qa2-validation').classList.add('show'); v5 = false; }
-            else document.getElementById('qa2-validation').classList.remove('show');
-            if (surveyAnswers.a_q3.length === 0) { document.getElementById('qa3-validation').classList.add('show'); v5 = false; }
-            else document.getElementById('qa3-validation').classList.remove('show');
-            return v5;
+            if (surveyAnswers.a_q1.length === 0) { document.getElementById('qa1-validation').classList.add('show'); return false; }
+            document.getElementById('qa1-validation').classList.remove('show');
           } else {
-            let v5 = true;
-            if (surveyAnswers.b_q1.length === 0) { document.getElementById('qb1-validation').classList.add('show'); v5 = false; }
-            else document.getElementById('qb1-validation').classList.remove('show');
-            if (!surveyAnswers.b_q2) { document.getElementById('qb2-validation').classList.add('show'); v5 = false; }
-            else document.getElementById('qb2-validation').classList.remove('show');
-            if (surveyAnswers.b_q3.length === 0) { document.getElementById('qb3-validation').classList.add('show'); v5 = false; }
-            else document.getElementById('qb3-validation').classList.remove('show');
-            return v5;
+            if (surveyAnswers.b_q1.length === 0) { document.getElementById('qb1-validation').classList.add('show'); return false; }
+            document.getElementById('qb1-validation').classList.remove('show');
           }
+          return true;
+
+        case 10:
+          // Q2: must select one radio
+          if (surveyAnswers.respondentType === 'DI') {
+            if (!surveyAnswers.a_q2) { document.getElementById('qa2-validation').classList.add('show'); return false; }
+            document.getElementById('qa2-validation').classList.remove('show');
+          } else {
+            if (!surveyAnswers.b_q2) { document.getElementById('qb2-validation').classList.add('show'); return false; }
+            document.getElementById('qb2-validation').classList.remove('show');
+          }
+          return true;
+
+        case 11:
+          // Q3: must select at least one checkbox
+          if (surveyAnswers.respondentType === 'DI') {
+            if (surveyAnswers.a_q3.length === 0) { document.getElementById('qa3-validation').classList.add('show'); return false; }
+            document.getElementById('qa3-validation').classList.remove('show');
+          } else {
+            if (surveyAnswers.b_q3.length === 0) { document.getElementById('qb3-validation').classList.add('show'); return false; }
+            document.getElementById('qb3-validation').classList.remove('show');
+          }
+          return true;
 
         default:
           return true;
@@ -2218,7 +2233,7 @@
       document.getElementById('page1-forward').disabled = true;
       document.getElementById('page2-forward').disabled = true;
       if (document.getElementById('page3-forward')) document.getElementById('page3-forward').disabled = true;
-      if (document.getElementById('page6-submit')) document.getElementById('page6-submit').disabled = true;
+      // page6-submit removed — survey submit is now page11-submit (already reset in survey buttons block above)
       // Reset gate and tracks
       ['trackA','trackB'].forEach(id => { const el = document.getElementById(id); if(el) el.style.display='none'; });
       behaviouralSurveyInitialised = false;
