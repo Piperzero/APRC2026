@@ -2233,7 +2233,10 @@
       document.getElementById('page1-forward').disabled = true;
       document.getElementById('page2-forward').disabled = true;
       if (document.getElementById('page3-forward')) document.getElementById('page3-forward').disabled = true;
-      // page6-submit removed — survey submit is now page11-submit (already reset in survey buttons block above)
+      // Reset all survey page forward/submit buttons
+      ['page6-forward','page9-forward','page10-forward','page11-submit'].forEach(id => {
+        const el = document.getElementById(id); if (el) el.disabled = true;
+      });
       // Reset gate and tracks
       ['trackA','trackB'].forEach(id => { const el = document.getElementById(id); if(el) el.style.display='none'; });
       behaviouralSurveyInitialised = false;
