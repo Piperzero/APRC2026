@@ -1367,9 +1367,6 @@
               <div class="detail-value" id="uncoveredAmount">-</div>
             </div>
           </div>
-          <div id="sgPlaceholderNote" style="display: none; margin-top: 15px; padding-left: 20px; font-size: 13px; color: #f59e0b; font-style: italic; line-height: 1.4;">
-            ⚠️ Singapore deposit insurance details are pending confirmation. Coverage limit shown is a placeholder.
-          </div>
         </div>
       </div>
 
@@ -1882,7 +1879,7 @@
        COUNTRIES DATA & EXCHANGE RATES
        ============================================ */
 
-    // APRC 2026 — 20 jurisdictions (alphabetical order)
+    // APRC 2026 — 22 jurisdictions (alphabetical order)
     const countries = [
       { name: 'Australia',         flag: '🇦🇺', limit: 250000,     currency: 'AUD', code: 'AU', insurer: 'Australian Prudential Regulation Authority' },
       { name: 'Azerbaijan',        flag: '🇦🇿', limit: 100000,     currency: 'AZN', code: 'AZ', insurer: 'Azerbaijan Deposit Insurance Fund' },
@@ -1895,25 +1892,27 @@
       { name: 'Japan',             flag: '🇯🇵', limit: 10000000,   currency: 'JPY', code: 'JP', insurer: 'Deposit Insurance Corporation of Japan' },
       { name: 'Kazakhstan',        flag: '🇰🇿', limit: 20000000,   currency: 'KZT', code: 'KZ', insurer: 'Kazakhstan Deposit Insurance Fund' },
       { name: 'Kyrgyz Republic',   flag: '🇰🇬', limit: 1000000,    currency: 'KGS', code: 'KG', insurer: 'Deposit Protection Agency of the Kyrgyz Republic' },
+      { name: 'Lao PDR',           flag: '🇱🇦', limit: 100000000,  currency: 'LAK', code: 'LA', insurer: 'Deposit Protection Office' },
       { name: 'Malaysia',          flag: '🇲🇾', limit: 250000,     currency: 'MYR', code: 'MY', insurer: 'Malaysia Deposit Insurance Corporation (PIDM)' },
       { name: 'Mongolia',          flag: '🇲🇳', limit: 20000000,   currency: 'MNT', code: 'MN', insurer: 'Deposit Insurance Corporation of Mongolia' },
       { name: 'New Zealand',       flag: '🇳🇿', limit: 100000,     currency: 'NZD', code: 'NZ', insurer: 'Reserve Bank of New Zealand' },
       { name: 'Pakistan',          flag: '🇵🇰', limit: 1000000,    currency: 'PKR', code: 'PK', insurer: 'Deposit Protection Corporation' },
       { name: 'Philippines',       flag: '🇵🇭', limit: 1000000,    currency: 'PHP', code: 'PH', insurer: 'Philippine Deposit Insurance Corporation' },
+      { name: 'Republic of China', flag: '🇨🇳', limit: 500000,     currency: 'CNY', code: 'CN', insurer: 'China Deposit Insurance Corporation' },
       { name: 'Republic of Korea', flag: '🇰🇷', limit: 50000000,   currency: 'KRW', code: 'KR', insurer: 'Korea Deposit Insurance Corporation' },
-      { name: 'Singapore',         flag: '🇸🇬', limit: 100000,     currency: 'SGD', code: 'SG', insurer: '[Deposit insurer name — placeholder]', note: 'Singapore deposit insurance details to be confirmed.' },
       { name: 'Thailand',          flag: '🇹🇭', limit: 1000000,    currency: 'THB', code: 'TH', insurer: 'Deposit Protection Agency' },
       { name: 'Uzbekistan',        flag: '🇺🇿', limit: 200000000,  currency: 'UZS', code: 'UZ', insurer: 'Deposit Guarantee Agency' },
       { name: 'Viet Nam',          flag: '🇻🇳', limit: 125000000,  currency: 'VND', code: 'VN', insurer: 'Deposit Insurance of Vietnam' }
     ];
 
-    // Exchange rates to MYR (base currency) — as of March 2026 (placeholder — update before event)
+    // Exchange rates to MYR (base currency) — as of April 2026 (1 USD = 3.9548 MYR)
     const exchangeRates = {
       'MYR': 1,
       'AUD': 0.303,    // Australia
       'AZN': 0.415,    // Azerbaijan
       'BDT': 26.0,     // Bangladesh
       'BND': 0.303,    // Brunei Darussalam
+      'CNY': 1.724,    // Republic of China
       'TWD': 8.0,      // Chinese Taipei
       'HKD': 1.87,     // Hong Kong
       'INR': 20.0,     // India
@@ -1921,12 +1920,12 @@
       'JPY': 35.5,     // Japan
       'KZT': 115.0,    // Kazakhstan
       'KGS': 20.5,     // Kyrgyz Republic
+      'LAK': 5572,     // Lao PDR
       'MNT': 820,      // Mongolia
       'NZD': 0.275,    // New Zealand
       'PKR': 67.0,     // Pakistan
       'PHP': 13.5,     // Philippines
       'KRW': 328,      // Republic of Korea
-      'SGD': 0.303,    // Singapore
       'THB': 8.0,      // Thailand
       'UZS': 2950,     // Uzbekistan
       'VND': 6200      // Viet Nam
@@ -2537,14 +2536,6 @@
 
       // Store selected jurisdiction
       selectedJurisdiction = country;
-      // Show Singapore placeholder note if applicable
-      if (country.code === 'SG') {
-        const sgNote = document.getElementById('sgPlaceholderNote');
-        if (sgNote) sgNote.style.display = 'block';
-      } else {
-        const sgNote = document.getElementById('sgPlaceholderNote');
-        if (sgNote) sgNote.style.display = 'none';
-      }
 
       const amount = parseFloat(amountInput.value);
       if (!amount) {
@@ -2643,8 +2634,6 @@
       } else {
         uncoveredAmount.textContent = `${formatCurrency(uninsuredMYR)} (${formatCurrency(uninsuredLocal, country.currency)})`;
       }
-
-      // Singapore placeholder note handled in selectCountry
 
       // Render regional comparison
       renderRegionalComparison(amount);
