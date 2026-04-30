@@ -838,13 +838,34 @@
     }
     .checkbox-option:hover { border-color: #3b82f6; background: #eff6ff; }
     .checkbox-option.selected { border-color: #1e3a6e; background: #eff6ff; }
-    .checkbox-option input[type="checkbox"] { 
-      margin-top: 2px; 
-      flex-shrink: 0; 
-      accent-color: #1e3a6e; 
-      width: 16px; 
+    .checkbox-option input[type="checkbox"] {
+      appearance: none;
+      -webkit-appearance: none;
+      margin-top: 2px;
+      flex-shrink: 0;
+      width: 16px;
       height: 16px;
+      border: 2px solid #9ca3af;
+      border-radius: 3px;
+      background: white;
       cursor: pointer;
+      position: relative;
+    }
+    .checkbox-option input[type="checkbox"]:checked {
+      background: #1e3a6e;
+      border-color: #1e3a6e;
+    }
+    .checkbox-option input[type="checkbox"]:checked::after {
+      content: '';
+      position: absolute;
+      left: 3px;
+      top: 0px;
+      width: 5px;
+      height: 9px;
+      border: 2px solid white;
+      border-top: none;
+      border-left: none;
+      transform: rotate(45deg);
     }
     .checkbox-option label { cursor: pointer; font-size: 0.95rem; color: #374151; line-height: 1.4; }
     .checkbox-group { display: flex; flex-direction: column; gap: 10px; }
@@ -1441,7 +1462,7 @@
         <div class="survey-section" style="border-left: 4px solid #1e3a6e; padding-left: 20px;">
           <p style="font-size: 0.85rem; color: #6b7280; margin: 0 0 16px 0; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;">Track A — Deposit Insurer</p>
           <div class="survey-question">
-            <p class="survey-question-text">Q1. Which events would make <em>you</em> consider withdrawing your deposits? <span style="font-size: 0.85rem; color: #6b7280;">(select all that apply)</span></p>
+            <p class="survey-question-text">Q1. In your jurisdiction, which events are most likely to trigger depositors to withdraw their deposits? <span style="font-size: 0.85rem; color: #6b7280;">(select all that apply)</span></p>
             <div class="checkbox-group" id="qa1-options"></div>
             <div class="validation-message" id="qa1-validation">Please select at least one option.</div>
           </div>
@@ -1453,7 +1474,7 @@
         <div class="survey-section" style="border-left: 4px solid #3b82f6; padding-left: 20px;">
           <p style="font-size: 0.85rem; color: #6b7280; margin: 0 0 16px 0; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;">Track B — Non-Deposit Insurer</p>
           <div class="survey-question">
-            <p class="survey-question-text">Q1. In your jurisdiction, which events are most likely to trigger depositors to withdraw their deposits? <span style="font-size: 0.85rem; color: #6b7280;">(select all that apply)</span></p>
+            <p class="survey-question-text">Q1. Which events would make <em>you</em> consider withdrawing your deposits? <span style="font-size: 0.85rem; color: #6b7280;">(select all that apply)</span></p>
             <div class="checkbox-group" id="qb1-options"></div>
             <div class="validation-message" id="qb1-validation">Please select at least one option.</div>
           </div>
@@ -1483,7 +1504,7 @@
         <div class="survey-section" style="border-left: 4px solid #1e3a6e; padding-left: 20px;">
           <p style="font-size: 0.85rem; color: #6b7280; margin: 0 0 16px 0; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;">Track A — Deposit Insurer</p>
           <div class="survey-question">
-            <p class="survey-question-text">Q2. If you were to move your money, where would you be most likely to place it?</p>
+            <p class="survey-question-text">Q2. If depositors were to move their money during a period of stress, where are they most likely to place it?</p>
             <div class="radio-group" id="qa2-options"></div>
             <div class="validation-message" id="qa2-validation">Please select an answer to continue.</div>
           </div>
@@ -1495,7 +1516,7 @@
         <div class="survey-section" style="border-left: 4px solid #3b82f6; padding-left: 20px;">
           <p style="font-size: 0.85rem; color: #6b7280; margin: 0 0 16px 0; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;">Track B — Non-Deposit Insurer</p>
           <div class="survey-question">
-            <p class="survey-question-text">Q2. If depositors were to move their money during a period of stress, where are they most likely to place it?</p>
+            <p class="survey-question-text">Q2. If you were to move your money, where would you be most likely to place it?</p>
             <div class="radio-group" id="qb2-options"></div>
             <div class="validation-message" id="qb2-validation">Please select an answer to continue.</div>
           </div>
@@ -1525,7 +1546,7 @@
         <div class="survey-section" style="border-left: 4px solid #1e3a6e; padding-left: 20px;">
           <p style="font-size: 0.85rem; color: #6b7280; margin: 0 0 16px 0; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;">Track A — Deposit Insurer</p>
           <div class="survey-question">
-            <p class="survey-question-text">Q3. Which of these would make you feel reassured enough to keep your deposits? <span style="font-size: 0.85rem; color: #6b7280;">(select all that apply)</span></p>
+            <p class="survey-question-text">Q3. Which actions or communications are most effective in reassuring depositors and preventing unnecessary withdrawals? <span style="font-size: 0.85rem; color: #6b7280;">(select all that apply)</span></p>
             <div class="checkbox-group" id="qa3-options"></div>
             <div class="validation-message" id="qa3-validation">Please select at least one option.</div>
           </div>
@@ -1537,7 +1558,7 @@
         <div class="survey-section" style="border-left: 4px solid #3b82f6; padding-left: 20px;">
           <p style="font-size: 0.85rem; color: #6b7280; margin: 0 0 16px 0; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;">Track B — Non-Deposit Insurer</p>
           <div class="survey-question">
-            <p class="survey-question-text">Q3. Which actions or communications are most effective in reassuring depositors and preventing unnecessary withdrawals? <span style="font-size: 0.85rem; color: #6b7280;">(select all that apply)</span></p>
+            <p class="survey-question-text">Q3. Which of these would make you feel reassured enough to keep your deposits? <span style="font-size: 0.85rem; color: #6b7280;">(select all that apply)</span></p>
             <div class="checkbox-group" id="qb3-options"></div>
             <div class="validation-message" id="qb3-validation">Please select at least one option.</div>
           </div>
@@ -1902,33 +1923,33 @@
       { name: 'Republic of Korea', flag: '🇰🇷', limit: 50000000,   currency: 'KRW', code: 'KR', insurer: 'Korea Deposit Insurance Corporation' },
       { name: 'Thailand',          flag: '🇹🇭', limit: 1000000,    currency: 'THB', code: 'TH', insurer: 'Deposit Protection Agency' },
       { name: 'Uzbekistan',        flag: '🇺🇿', limit: 200000000,  currency: 'UZS', code: 'UZ', insurer: 'Deposit Guarantee Agency' },
-      { name: 'Viet Nam',          flag: '🇻🇳', limit: 350000000,  currency: 'VND', code: 'VN', insurer: 'Deposit Insurance of Vietnam' }
+      { name: 'Viet Nam',          flag: '🇻🇳', limit: 125000000,  currency: 'VND', code: 'VN', insurer: 'Deposit Insurance of Vietnam' }
     ];
 
     // Exchange rates to MYR (base currency) — as of April 2026 (1 USD = 3.9548 MYR)
     const exchangeRates = {
       'MYR': 1,
-      'AUD': 0.353,    // Australia
-      'AZN': 0.43,    // Azerbaijan
-      'BDT': 30.97,     // Bangladesh
-      'BND': 0.32,    // Brunei Darussalam
-      'CNY': 1.73,    // Republic of China
-      'TWD': 7.99,      // Chinese Taipei
-      'HKD': 1.98,     // Hong Kong
-      'INR': 23.93,     // India
-      'IDR': 4371.28,     // Indonesia
-      'JPY': 40.0,     // Japan
-      'KZT': 116.58,    // Kazakhstan
-      'KGS': 22.06,     // Kyrgyz Republic
-      'LAK': 5507.32,     // Lao PDR
-      'MNT': 901.35,      // Mongolia
-      'NZD': 0.4318,    // New Zealand
-      'PKR': 70.281,     // Pakistan
-      'PHP': 15.482,     // Philippines
-      'KRW': 374.13,      // Republic of Korea
-      'THB': 8.262,      // Thailand
-      'UZS': 3030.20,     // Uzbekistan
-      'VND': 6642      // Viet Nam
+      'AUD': 0.303,    // Australia
+      'AZN': 0.415,    // Azerbaijan
+      'BDT': 26.0,     // Bangladesh
+      'BND': 0.303,    // Brunei Darussalam
+      'CNY': 1.724,    // Republic of China
+      'TWD': 8.0,      // Chinese Taipei
+      'HKD': 1.87,     // Hong Kong
+      'INR': 20.0,     // India
+      'IDR': 3900,     // Indonesia
+      'JPY': 35.5,     // Japan
+      'KZT': 115.0,    // Kazakhstan
+      'KGS': 20.5,     // Kyrgyz Republic
+      'LAK': 5572,     // Lao PDR
+      'MNT': 820,      // Mongolia
+      'NZD': 0.275,    // New Zealand
+      'PKR': 67.0,     // Pakistan
+      'PHP': 13.5,     // Philippines
+      'KRW': 328,      // Republic of Korea
+      'THB': 8.0,      // Thailand
+      'UZS': 2950,     // Uzbekistan
+      'VND': 6200      // Viet Nam
     };
 
     /* ============================================
