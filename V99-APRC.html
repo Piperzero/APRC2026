@@ -1,0 +1,3250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>APRC 2026 Deposit Coverage Calculator</title>
+  <style>
+    /* ============================================
+       BASE STYLES
+       ============================================ */
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #CDD7E3 0%, #ADC7F8 100%);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 10px;
+      box-sizing: border-box;
+      margin: 0;
+      flex-direction: column;
+    }
+
+    html, body {
+      overflow-x: hidden;
+      max-width: 100vw;
+    }
+
+    .widget-container {
+      background: white;
+      border-radius: 20px;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+      padding: 40px;
+      max-width: 700px;
+      width: 100%;
+      margin: auto;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* ============================================
+       LANDING PAGE STYLES
+       ============================================ */
+    .landing-container {
+      text-align: center;
+      padding: 40px 20px;
+      min-height: 70vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .landing-header {
+      margin-bottom: 40px;
+    }
+
+    .landing-title {
+      font-size: 2.8rem;
+      margin-bottom: 15px;
+      background: #5A7ED8;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      font-weight: bold;
+    }
+
+    .landing-subtitle {
+      font-size: 1.3rem;
+      color: #555;
+      margin-bottom: 10px;
+      font-weight: 600;
+    }
+
+    .landing-tagline {
+      font-size: 1rem;
+      color: #666;
+      margin-bottom: 30px;
+    }
+
+    .feature-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 25px;
+      margin: 30px 0 40px 0;
+    }
+
+    .feature-card {
+      background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+      padding: 25px;
+      border-radius: 15px;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.08);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      border: 1px solid rgba(255,255,255,0.2);
+    }
+
+    .feature-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 25px rgba(0,0,0,0.12);
+    }
+
+    .feature-icon {
+      font-size: 2.5rem;
+      margin-bottom: 12px;
+    }
+
+    .feature-title {
+      font-size: 1.1rem;
+      font-weight: bold;
+      color: #333;
+      margin-bottom: 8px;
+    }
+
+    .feature-description {
+      font-size: 0.9rem;
+      color: #666;
+      line-height: 1.4;
+    }
+
+    .get-started-btn {
+      background: #5A7ED8;
+      color: white;
+      border: none;
+      padding: 18px 40px;
+      border-radius: 30px;
+      font-size: 1.2rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 6px 20px rgba(90, 126, 216, 0.3);
+      margin-top: 20px;
+    }
+
+    .get-started-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(16, 185, 129, 0.4);
+    }
+
+    .nrs-badge {
+      display: inline-block;
+      background: #5A7ED8;
+      color: white;
+      padding: 8px 16px;
+      border-radius: 20px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      margin-bottom: 20px;
+    }
+
+    .disclaimer-section {
+      margin-top: 40px;
+      text-align: center;
+      max-width: 600px;
+      margin-left: auto;
+      margin-right: auto;
+      font-style: italic;
+    }
+
+    .disclaimer-title {
+      font-size: 1.0rem;
+      font-weight: bold;
+      color: #333;
+      margin-bottom: 20px;
+      text-decoration: underline;
+    }
+
+    .disclaimer-text {
+      font-size: 0.8rem;
+      color: #666;
+      line-height: 1.4;
+      margin-bottom: 15px;
+      text-align: justify;
+    }
+
+    .disclaimer-copyright {
+      text-align: center;
+    }
+
+    /* ---- LOGO BAR ---- */
+    .logo-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 4px 14px 4px;
+      margin-bottom: 4px;
+    }
+    .pidm-logo {
+      height: 120px;
+      max-height: 120px;
+      width: auto;
+      max-width: 260px;
+      object-fit: contain;
+      display: block;
+    }
+    .aprc-logo {
+      height: 120px;
+      max-height: 120px;
+      width: auto;
+      max-width: 100px;
+      object-fit: contain;
+      display: block;
+    }
+    @media (max-width: 600px) {
+      .pidm-logo { height: 80px; max-height: 80px; max-width: 190px; }
+      .aprc-logo { height: 80px; max-height: 80px; max-width: 70px; }
+    }
+    @media (max-width: 360px) {
+      .pidm-logo { height: 60px; max-height: 60px; }
+      .aprc-logo { height: 60px; max-height: 60px; }
+    }
+
+    /* ============================================
+       PAGE & NAVIGATION STYLES
+       ============================================ */
+    .page {
+      display: none;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .page.active {
+      display: block;
+      opacity: 1;
+      animation: fadeIn 0.3s ease forwards;
+    }
+
+    /* Page fade-in animation */
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Navigation container */
+    .nav-container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 30px;
+      padding-top: 20px;
+      border-top: 1px solid #e5e7eb;
+    }
+
+    .nav-container.single-btn {
+      justify-content: flex-end;
+    }
+
+    /* Navigation buttons */
+    .nav-btn {
+      padding: 14px 28px;
+      border-radius: 25px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      border: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .nav-btn-back {
+      background: #6c757d;
+      color: white;
+      box-shadow: 0 4px 12px rgba(108, 117, 125, 0.3);
+    }
+
+    .nav-btn-back:hover {
+      background: #5a6268;
+      transform: translateY(-1px);
+      box-shadow: 0 6px 16px rgba(108, 117, 125, 0.4);
+    }
+
+    .nav-btn-forward {
+      background: #007bff;
+      color: white;
+      box-shadow: 0 4px 12px rgba(0, 123, 255, 0.3);
+    }
+
+    .nav-btn-forward:hover:not(:disabled) {
+      background: #0056b3;
+      transform: translateY(-1px);
+      box-shadow: 0 6px 16px rgba(0, 123, 255, 0.4);
+    }
+
+    .nav-btn-forward:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .nav-btn-submit {
+      background: linear-gradient(135deg, #10b981, #059669);
+      color: white;
+      box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+    }
+
+    .nav-btn-submit:hover:not(:disabled) {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 16px rgba(16, 185, 129, 0.4);
+    }
+
+    .nav-btn-submit:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .nav-btn-reset {
+      background: linear-gradient(135deg, #6b7280, #4b5563);
+      color: white;
+      box-shadow: 0 4px 12px rgba(107, 114, 128, 0.3);
+    }
+
+    .nav-btn-reset:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 16px rgba(107, 114, 128, 0.4);
+    }
+
+    /* ============================================
+       SURVEY SECTION STYLES
+       ============================================ */
+    .survey-section {
+      background: #f8f9fa;
+      border: 2px solid #e9ecef;
+      border-radius: 8px;
+      padding: 20px;
+      margin: 20px 0;
+    }
+
+    .survey-header {
+      text-align: center;
+      margin-bottom: 25px;
+    }
+
+    .survey-header h1 {
+      color: #5A7ED8;
+      font-size: 1.8rem;
+      margin-bottom: 10px;
+    }
+
+    .survey-header p {
+      color: #666;
+      font-size: 1rem;
+    }
+
+    .survey-question {
+      margin-bottom: 25px;
+    }
+
+    .survey-question-text {
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: #333;
+      margin-bottom: 15px;
+      line-height: 1.4;
+    }
+
+    /* Radio button styling for large tap targets */
+    .radio-group {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .radio-option {
+      display: flex;
+      align-items: center;
+      padding: 12px 16px;
+      background: white;
+      border: 2px solid #e2e8f0;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      min-height: 44px; /* Touch-friendly minimum */
+    }
+
+    .radio-option:hover {
+      border-color: #007bff;
+      background: #f0f7ff;
+    }
+
+    .radio-option.selected {
+      border-color: #007bff;
+      background: #e7f1ff;
+    }
+
+    .radio-option input[type="radio"] {
+      width: 20px;
+      height: 20px;
+      margin-right: 12px;
+      cursor: pointer;
+      accent-color: #007bff;
+    }
+
+    .radio-option label {
+      cursor: pointer;
+      font-size: 1rem;
+      color: #333;
+      flex: 1;
+      line-height: 1.4;
+    }
+
+    /* Validation message styling */
+    .validation-message {
+      color: #dc3545;
+      font-size: 0.9rem;
+      margin-top: 10px;
+      display: none;
+      padding: 10px;
+      background: #fff5f5;
+      border-radius: 6px;
+      border-left: 3px solid #dc3545;
+    }
+
+    .validation-message.show {
+      display: block;
+    }
+
+    /* ============================================
+       FORM STYLES
+       ============================================ */
+    h1 {
+      text-align: center;
+      color: #5A7ED8;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 10px;
+      font-weight: bold;
+      color: #555;
+    }
+
+    .form-group input,
+    .form-group select {
+      width: 100%;
+      padding: 12px;
+      border-radius: 10px;
+      border: 1px solid #ccc;
+      font-size: 16px;
+    }
+
+    /* ============================================
+       DASHBOARD & SUMMARY STYLES
+       ============================================ */
+    .summary-dashboard {
+      background: white;
+      border-radius: 16px;
+      padding: 25px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+      border-left: 6px solid #3b82f6;
+      margin-top: 20px;
+    }
+
+    .dashboard-header {
+      text-align: center;
+      margin-bottom: 25px;
+    }
+
+    .dashboard-title {
+      font-size: 20px;
+      font-weight: bold;
+      color: #333;
+      margin: 0;
+    }
+
+    .summary-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 15px;
+    }
+
+    .summary-card {
+      background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
+      padding: 18px;
+      border-radius: 12px;
+      text-align: center;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      border: 1px solid rgba(255,255,255,0.2);
+    }
+
+    .summary-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+
+    .summary-icon {
+      font-size: 24px;
+      margin-bottom: 8px;
+    }
+
+    .summary-label {
+      font-size: 12px;
+      color: #666;
+      text-transform: uppercase;
+      font-weight: 600;
+      margin-bottom: 6px;
+    }
+
+    .summary-value {
+      font-size: 16px;
+      font-weight: bold;
+      color: #333;
+      word-break: break-word;
+    }
+
+    /* ============================================
+       COVERAGE CARD STYLES
+       ============================================ */
+    .coverage-main-card {
+      background: white;
+      border-radius: 16px;
+      padding: 25px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+      border-left: 6px solid #ddd;
+      transition: all 0.3s ease;
+      margin-bottom: 20px;
+    }
+
+    .coverage-main-card.fully-covered {
+      border-left-color: #10b981;
+      background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
+    }
+
+    .coverage-main-card.partially-covered {
+      border-left-color: #f59e0b;
+      background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%);
+    }
+
+    .coverage-main-card.no-coverage {
+      border-left-color: #ef4444;
+      background: linear-gradient(135deg, #fef2f2 0%, #fecaca 100%);
+    }
+
+    .coverage-status-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 20px;
+    }
+
+    .coverage-title {
+      font-size: 20px;
+      font-weight: bold;
+      color: #333;
+    }
+
+    .coverage-badge {
+      padding: 8px 16px;
+      border-radius: 25px;
+      font-size: 14px;
+      font-weight: bold;
+    }
+
+    .badge-covered {
+      background: #10b981;
+      color: white;
+    }
+
+    .badge-partial {
+      background: #f59e0b;
+      color: white;
+    }
+
+    .badge-no-coverage {
+      background: #ef4444;
+      color: white;
+    }
+
+    .progress-container {
+      background: #e5e7eb;
+      border-radius: 10px;
+      height: 12px;
+      margin-bottom: 20px;
+      overflow: hidden;
+    }
+
+    .progress-bar {
+      height: 100%;
+      border-radius: 10px;
+      transition: width 0.8s ease;
+    }
+
+    .progress-covered {
+      background: linear-gradient(90deg, #10b981, #34d399);
+    }
+
+    .progress-partial {
+      background: linear-gradient(90deg, #f59e0b, #fbbf24);
+    }
+
+    .coverage-details-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 15px;
+    }
+
+    .detail-card {
+      background: rgba(255,255,255,0.7);
+      padding: 15px;
+      border-radius: 12px;
+      text-align: center;
+      backdrop-filter: blur(10px);
+    }
+
+    .detail-icon {
+      font-size: 24px;
+      margin-bottom: 8px;
+    }
+
+    .detail-label {
+      font-size: 12px;
+      color: #666;
+      text-transform: uppercase;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+
+    .detail-value {
+      font-size: 16px;
+      font-weight: bold;
+      color: #333;
+    }
+
+    /* ============================================
+       COUNTRY GRID STYLES
+       ============================================ */
+    .country-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 15px;
+      margin-top: 10px;
+    }
+
+    .country-option {
+      border: 2px solid #ccc;
+      padding: 10px;
+      border-radius: 12px;
+      text-align: center;
+      cursor: pointer;
+    }
+
+    .country-option.selected {
+      border-color: #4c51bf;
+      background-color: #ebf4ff;
+      box-shadow: 0 0 0 3px #a3bffa;
+    }
+
+    .country-option:hover {
+      background-color: #eef5ff;
+      border-color: #667eea;
+    }
+
+    .country-option.active-region {
+      border-color: #5A7ED8 !important;
+      background-color: #e8eeff !important;
+      box-shadow: 0 0 0 3px rgba(90, 126, 216, 0.25);
+      transform: translateY(-2px);
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+    }
+
+    .coverage-viewing-hint {
+      font-size: 0.75rem;
+      color: #5A7ED8;
+      font-weight: 600;
+      text-align: center;
+      margin-top: 8px;
+      letter-spacing: 0.3px;
+    }
+
+    .country-option .flag {
+      font-size: 32px;
+      margin-bottom: 8px;
+    }
+
+    /* ============================================
+       BUTTON STYLES
+       ============================================ */
+    .start-family-scenario-btn {
+      background: linear-gradient(135deg, #10b981, #059669);
+      color: white;
+      border: none;
+      padding: 15px 30px;
+      border-radius: 25px;
+      font-size: 18px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
+      margin-top: 25px;
+      display: block;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .start-family-scenario-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4);
+    }
+
+    .page-header {
+      text-align: center;
+      margin-bottom: 30px;
+      padding-bottom: 20px;
+      border-bottom: 2px solid #e5e7eb;
+    }
+
+    .back-button {
+      background: linear-gradient(135deg, #6b7280, #4b5563);
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 20px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      margin-bottom: 20px;
+    }
+
+    .back-button:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(107, 114, 128, 0.3);
+    }
+
+    /* ============================================
+       MOBILE RESPONSIVE STYLES
+       ============================================ */
+    @media (max-width: 768px) {
+      .asean-logo {
+        width: 60px;
+        top: 6px;
+        right: 10px;
+      }
+
+      .pidm-nrs2 {
+        height: 25px;
+        top: 12px;
+        left: 10px;
+      }
+
+      body {
+        padding: 5px;
+        align-items: flex-start;
+        padding-top: 20px;
+      }
+
+      .widget-container {
+        margin: 0;
+        padding: 20px;
+        max-width: 100%;
+        width: calc(100% - 10px);
+        box-sizing: border-box;
+      }
+
+      .landing-container {
+        padding: 20px 10px;
+      }
+
+      .landing-title {
+        font-size: 2.2rem;
+      }
+
+      .feature-grid {
+        grid-template-columns: 1fr;
+        gap: 15px;
+      }
+
+      .survey-header h1 {
+        font-size: 1.4rem;
+      }
+
+      .nav-container {
+        flex-direction: column;
+        gap: 10px;
+      }
+
+      .nav-btn {
+        width: 100%;
+        justify-content: center;
+      }
+
+      .summary-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .coverage-details-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .radio-option {
+        padding: 14px 16px;
+      }
+
+      .radio-option label {
+        font-size: 0.95rem;
+      }
+    }
+
+    /* Extra small screens */
+    @media (max-width: 480px) {
+      body {
+        padding: 2px;
+      }
+
+      .widget-container {
+        width: calc(100% - 4px);
+        padding: 15px;
+      }
+
+      .landing-title {
+        font-size: 1.8rem;
+      }
+
+      .nav-btn {
+        padding: 12px 20px;
+        font-size: 14px;
+      }
+    }
+
+    /* Minimum width support (320px) */
+    @media (max-width: 320px) {
+      .widget-container {
+        padding: 10px;
+      }
+
+      .survey-section {
+        padding: 15px;
+        margin: 15px 0;
+      }
+
+      .radio-option {
+        padding: 10px 12px;
+      }
+
+      .survey-question-text {
+        font-size: 1rem;
+      }
+    }
+
+    /* ---- CHECKBOX OPTIONS (multi-select) ---- */
+    .checkbox-option {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      padding: 14px 18px;
+      border-radius: 10px;
+      border: 2px solid #e2e8f0;
+      background: white;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      user-select: none;
+    }
+    .checkbox-option:hover { border-color: #3b82f6; background: #eff6ff; }
+    .checkbox-option.selected { border-color: #1e3a6e; background: #eff6ff; }
+    .checkbox-option input[type="checkbox"] {
+      appearance: none;
+      -webkit-appearance: none;
+      margin-top: 2px;
+      flex-shrink: 0;
+      width: 16px;
+      height: 16px;
+      border: 2px solid #9ca3af;
+      border-radius: 3px;
+      background: white;
+      cursor: pointer;
+      position: relative;
+    }
+    .checkbox-option input[type="checkbox"]:checked {
+      background: #1e3a6e;
+      border-color: #1e3a6e;
+    }
+    .checkbox-option input[type="checkbox"]:checked::after {
+      content: '';
+      position: absolute;
+      left: 3px;
+      top: 0px;
+      width: 5px;
+      height: 9px;
+      border: 2px solid white;
+      border-top: none;
+      border-left: none;
+      transform: rotate(45deg);
+    }
+    .checkbox-option label { cursor: pointer; font-size: 0.95rem; color: #374151; line-height: 1.4; }
+    .checkbox-group { display: flex; flex-direction: column; gap: 10px; }
+
+    /* Track dividers */
+    .track-label {
+      font-size: 0.78rem;
+      color: #6b7280;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      margin: 0 0 14px 0;
+    }
+    #trackA .survey-section { border-left: 4px solid #1e3a6e; }
+    #trackB .survey-section { border-left: 4px solid #3b82f6; }
+
+    /* ============================================
+       STEP PROGRESS BAR
+       ============================================ */
+    .step-progress-bar {
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      margin: 0 0 28px 0;
+      padding: 0 10px;
+      position: relative;
+    }
+    .step-progress-bar .step-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      flex: 1;
+      position: relative;
+    }
+    .step-progress-bar .step-dot {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      border: 3px solid #d1d5db;
+      background: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      font-weight: 700;
+      color: #9ca3af;
+      z-index: 2;
+      position: relative;
+      transition: all 0.3s ease;
+    }
+    .step-progress-bar .step-item.active .step-dot {
+      border-color: #5A7ED8;
+      background: #5A7ED8;
+      color: white;
+      box-shadow: 0 0 0 4px rgba(90,126,216,0.15);
+    }
+    .step-progress-bar .step-item.completed .step-dot {
+      border-color: #10b981;
+      background: #10b981;
+      color: white;
+    }
+    .step-progress-bar .step-label {
+      font-size: 0.72rem;
+      font-weight: 600;
+      color: #9ca3af;
+      margin-top: 6px;
+      text-align: center;
+      line-height: 1.3;
+      max-width: 80px;
+    }
+    .step-progress-bar .step-item.active .step-label {
+      color: #5A7ED8;
+    }
+    .step-progress-bar .step-item.completed .step-label {
+      color: #10b981;
+    }
+    .step-progress-bar .step-line {
+      flex: 1;
+      height: 3px;
+      background: #e5e7eb;
+      margin-top: 13px;
+      z-index: 1;
+      transition: background 0.3s ease;
+    }
+    .step-progress-bar .step-line.completed {
+      background: #10b981;
+    }
+
+    /* ============================================
+       STEP PAGE LAYOUT (Steps 1 & 2)
+       ============================================ */
+    .step-page-container {
+      text-align: center;
+      padding: 10px 0 0 0;
+    }
+    .step-page-title {
+      font-size: 1.35rem;
+      font-weight: 700;
+      color: #333;
+      margin: 0 0 24px 0;
+      line-height: 1.4;
+    }
+    .step-input-card {
+      background: #f8fafc;
+      border: 1.5px solid #e2e8f0;
+      border-radius: 14px;
+      padding: 20px 20px 16px 20px;
+      margin-bottom: 10px;
+      text-align: left;
+    }
+    .step-input-card label {
+      display: block;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: #555;
+      margin-bottom: 10px;
+    }
+    .step-input-card input[type="number"],
+    .step-input-card select {
+      width: 100%;
+      padding: 12px 14px;
+      border-radius: 10px;
+      border: 1.5px solid #d1d5db;
+      font-size: 1rem;
+      color: #333;
+      background: white;
+      box-sizing: border-box;
+      transition: border-color 0.2s ease;
+      -webkit-appearance: none;
+    }
+    .step-input-card input[type="number"]:focus,
+    .step-input-card select:focus {
+      outline: none;
+      border-color: #5A7ED8;
+      box-shadow: 0 0 0 3px rgba(90,126,216,0.1);
+    }
+    .step-helper-text {
+      font-size: 0.82rem;
+      font-style: italic;
+      color: #666;
+      margin: 6px 0 0 2px;
+    }
+    .step-illustration {
+      margin: 20px auto 10px auto;
+      display: flex;
+      justify-content: center;
+      align-items: flex-end;
+      height: 110px;
+    }
+
+    /* ============================================
+       TRANSITION PAGE (between survey & family scenario)
+       ============================================ */
+    .transition-page {
+      text-align: center;
+      padding: 30px 10px;
+    }
+    .transition-icon {
+      font-size: 3.5rem;
+      margin-bottom: 16px;
+    }
+    .transition-title {
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: #1e3a6e;
+      margin-bottom: 16px;
+    }
+    .transition-message {
+      font-size: 1rem;
+      color: #555;
+      line-height: 1.7;
+      margin-bottom: 32px;
+      max-width: 480px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .transition-continue-btn {
+      background: linear-gradient(135deg, #1e3a6e, #3b82f6);
+      color: white;
+      border: none;
+      padding: 14px 40px;
+      border-radius: 50px;
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: 0 6px 20px rgba(30,58,110,0.3);
+      transition: all 0.3s ease;
+    }
+    .transition-continue-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(30,58,110,0.4);
+    }
+  </style>
+</head>
+<body>
+  <div class="widget-container">
+    <!-- ============================================
+         PAGE 0: Landing Page
+         ============================================ -->
+    <div class="page active" id="page0">
+      <div class="logo-bar">
+      <img src="https://raw.githubusercontent.com/Piperzero/APRC2026/main/PIDM26_transparent.png" alt="PIDM APRC 2026" class="pidm-logo">
+      <img src="https://raw.githubusercontent.com/Piperzero/APRC2026/main/aprc2026-logo.png" alt="APRC 2026" class="aprc-logo">
+    </div>
+      <div class="landing-container">
+        <div class="landing-header">
+          <h1 class="landing-title">APRC Deposit<br>Coverage Calculator</h1>
+          <p class="landing-subtitle">APRC Deposit Insurance Protection</p>
+          <p class="landing-tagline">Discover how your deposits are protected in the Asia-Pacific region.</p>
+        </div>
+
+        <div class="feature-grid">
+          <div class="feature-card">
+            <div class="feature-icon">🌍</div>
+            <div class="feature-title">Deposit Coverage</div>
+            <div class="feature-description">Comparison of deposit coverage across 22 APAC jurisdictions</div>
+          </div>
+          <div class="feature-card">
+            <div class="feature-icon">💰</div>
+            <div class="feature-title">Real-Time Analysis</div>
+            <div class="feature-description">Instant calculation with currency conversion and coverage visualisation</div>
+          </div>
+          <div class="feature-card">
+            <div class="feature-icon">👨‍👩‍👧‍👦</div>
+            <div class="feature-title">Family Edition in Malaysia</div>
+            <div class="feature-description">Strategic distribution through joint accounts</div>
+          </div>
+        </div>
+
+        <button class="get-started-btn" onclick="startTool()">
+          Start Coverage Calculator
+        </button>
+        <div class="disclaimer-section">
+          <h3 class="disclaimer-title">Disclaimer</h3>
+          <p class="disclaimer-text">This "APRC Deposit Coverage Calculator" ("Calculator") independently developed by Perbadanan Insurans Deposit Malaysia ("PIDM") is based on certain assumptions (including the currency exchange rates applied which are as of April 2026) and public information. PIDM makes no representations or warranties as to the accuracy, completeness, and reliability of the information generated by this Calculator. Please contact the deposit insurers from the relevant countries for more information on the deposit insurance in their respective jurisdictions.</p>
+          <p class="disclaimer-text">The information generated by this Calculator is for general informational and illustrative purposes only and does not in any way constitute any financial advice, guidance, or recommendation by PIDM. PIDM shall not be responsible for any consequential effect, nor be liable for any loss or damage howsoever caused arising out of or in connection with the use of this Calculator.</p>
+          <p class="disclaimer-text">Please take note that by completing the questions in the Calculator, you consent to PIDM's collection and use of the information provided for PIDM's purposes including survey, research and analysis.</p>
+          <p class="disclaimer-text disclaimer-copyright">&copy; 2026. Perbadanan Insurans Deposit Malaysia. All rights reserved.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============================================
+         PAGE 1: Demographics Survey (Q1 - Age Group)
+         ============================================ -->
+    <div class="page" id="page1">
+      <div class="survey-header">
+        <h1>Before We Begin - Quick Survey</h1>
+        <p>Help us understand our users better</p>
+      </div>
+
+      <div class="survey-section">
+        <div class="survey-question">
+          <p class="survey-question-text">Q1. What is your age group?</p>
+          <div class="radio-group" id="q1-options">
+            <!-- Radio options generated by JavaScript -->
+          </div>
+          <div class="validation-message" id="q1-validation">
+            Please select your age group to continue.
+          </div>
+        </div>
+      </div>
+
+      <!-- Navigation: Forward only -->
+      <div class="nav-container single-btn">
+        <button class="nav-btn nav-btn-forward" id="page1-forward" onclick="navigateToPage(2)" disabled>
+          Forward →
+        </button>
+      </div>
+    </div>
+
+    <!-- ============================================
+         PAGE 2: STEP 1 — Deposit Amount
+         ============================================ -->
+    <div class="page" id="page2">
+      <h1>Deposit Coverage Calculator</h1>
+
+      <!-- Step Progress Bar -->
+      <div class="step-progress-bar">
+        <div class="step-item active">
+          <div class="step-dot">1</div>
+          <div class="step-label">Enter Amount</div>
+        </div>
+        <div class="step-line"></div>
+        <div class="step-item">
+          <div class="step-dot">2</div>
+          <div class="step-label">Select Jurisdiction</div>
+        </div>
+        <div class="step-line"></div>
+        <div class="step-item">
+          <div class="step-dot">3</div>
+          <div class="step-label">View Results</div>
+        </div>
+      </div>
+
+      <div class="step-page-container">
+        <p class="step-page-title">How much money do you plan to keep<br>in the deposit account?</p>
+
+        <div class="step-input-card">
+          <label for="amount">Deposit Amount</label>
+          <input type="number" id="amount" placeholder="Enter amount in MYR (e.g. 10,000)" />
+          <p class="step-helper-text">(MYR1.00 = ~USD0.25)</p>
+        </div>
+
+        <!-- Validation Message -->
+        <div class="validation-message" id="page2-validation">
+          Please enter a deposit amount to continue.
+        </div>
+
+        <!-- Money Bag Illustration (SVG) -->
+        <div class="step-illustration">
+          <svg width="130" height="110" viewBox="0 0 130 110" xmlns="http://www.w3.org/2000/svg">
+            <!-- Coins stack right -->
+            <ellipse cx="102" cy="98" rx="18" ry="6" fill="#f59e0b" opacity="0.5"/>
+            <rect x="84" y="80" width="36" height="18" rx="2" fill="#fbbf24" opacity="0.7"/>
+            <ellipse cx="102" cy="80" rx="18" ry="6" fill="#f59e0b" opacity="0.8"/>
+            <rect x="84" y="66" width="36" height="16" rx="2" fill="#fcd34d" opacity="0.7"/>
+            <ellipse cx="102" cy="66" rx="18" ry="6" fill="#f59e0b"/>
+            <!-- Bag body -->
+            <ellipse cx="56" cy="78" rx="42" ry="30" fill="#93c5fd"/>
+            <ellipse cx="56" cy="78" rx="42" ry="30" fill="url(#bagGrad)"/>
+            <!-- Bag neck -->
+            <rect x="42" y="44" width="28" height="16" rx="8" fill="#60a5fa"/>
+            <!-- Bag top knot -->
+            <ellipse cx="56" cy="42" rx="16" ry="8" fill="#3b82f6"/>
+            <ellipse cx="56" cy="38" rx="10" ry="6" fill="#2563eb"/>
+            <!-- Dollar sign -->
+            <text x="56" y="86" text-anchor="middle" font-size="26" font-weight="900" fill="white" font-family="Arial, sans-serif">$</text>
+            <!-- Shine -->
+            <ellipse cx="40" cy="65" rx="10" ry="6" fill="white" opacity="0.25" transform="rotate(-20 40 65)"/>
+            <defs>
+              <radialGradient id="bagGrad" cx="40%" cy="35%">
+                <stop offset="0%" stop-color="#60a5fa"/>
+                <stop offset="100%" stop-color="#1d4ed8"/>
+              </radialGradient>
+            </defs>
+          </svg>
+        </div>
+      </div>
+
+      <!-- Navigation: Back & Continue -->
+      <div class="nav-container">
+        <button class="nav-btn nav-btn-back" onclick="navigateToPage(1)">
+          ← Back
+        </button>
+        <button class="nav-btn nav-btn-forward" id="page2-forward" onclick="navigateToPage(3)" disabled>
+          Continue →
+        </button>
+      </div>
+    </div>
+
+    <!-- ============================================
+         PAGE 3: STEP 2 — Select Jurisdiction
+         ============================================ -->
+    <div class="page" id="page3">
+      <h1>Deposit Coverage Calculator</h1>
+
+      <!-- Step Progress Bar -->
+      <div class="step-progress-bar">
+        <div class="step-item completed">
+          <div class="step-dot">✓</div>
+          <div class="step-label">Enter Amount</div>
+        </div>
+        <div class="step-line completed"></div>
+        <div class="step-item active">
+          <div class="step-dot">2</div>
+          <div class="step-label">Select Jurisdiction</div>
+        </div>
+        <div class="step-line"></div>
+        <div class="step-item">
+          <div class="step-dot">3</div>
+          <div class="step-label">View Results</div>
+        </div>
+      </div>
+
+      <div class="step-page-container">
+        <p class="step-page-title">Which jurisdiction will the<br>deposit be held in?</p>
+
+        <div class="step-input-card">
+          <label for="jurisdictionSelect">Jurisdiction</label>
+          <select id="jurisdictionSelect" onchange="selectCountryFromDropdown(this.value)">
+            <option value="">Select Jurisdiction ▾</option>
+          </select>
+          <p class="step-helper-text">Deposit protection limits vary by jurisdiction.</p>
+        </div>
+
+        <!-- Hidden elements needed by selectCountry logic (summaryCards moved to page 4) -->
+        <span id="summaryAmount" style="display:none;">MYR 0.00</span>
+        <span id="summaryCountry" style="display:none;">-</span>
+        <span id="summaryConverted" style="display:none;">-</span>
+        <span id="summaryThreshold" style="display:none;">-</span>
+
+        <!-- Validation Message -->
+        <div class="validation-message" id="page3-validation">
+          Please select a jurisdiction to continue.
+        </div>
+
+        <!-- Globe Illustration (SVG) -->
+        <div class="step-illustration">
+          <svg width="120" height="110" viewBox="0 0 120 110" xmlns="http://www.w3.org/2000/svg">
+            <!-- Globe body -->
+            <circle cx="58" cy="60" r="44" fill="url(#globeGrad)"/>
+            <!-- Latitude lines -->
+            <ellipse cx="58" cy="60" rx="44" ry="14" fill="none" stroke="white" stroke-width="1.2" opacity="0.35"/>
+            <ellipse cx="58" cy="44" rx="38" ry="10" fill="none" stroke="white" stroke-width="1.2" opacity="0.3"/>
+            <ellipse cx="58" cy="76" rx="38" ry="10" fill="none" stroke="white" stroke-width="1.2" opacity="0.3"/>
+            <!-- Longitude lines -->
+            <line x1="58" y1="16" x2="58" y2="104" stroke="white" stroke-width="1.2" opacity="0.35"/>
+            <path d="M 38 18 Q 28 60 38 102" fill="none" stroke="white" stroke-width="1.2" opacity="0.3"/>
+            <path d="M 78 18 Q 88 60 78 102" fill="none" stroke="white" stroke-width="1.2" opacity="0.3"/>
+            <!-- Continent blobs -->
+            <ellipse cx="45" cy="50" rx="12" ry="9" fill="#34d399" opacity="0.7" transform="rotate(-15 45 50)"/>
+            <ellipse cx="68" cy="48" rx="9" ry="7" fill="#34d399" opacity="0.6" transform="rotate(10 68 48)"/>
+            <ellipse cx="60" cy="68" rx="14" ry="7" fill="#34d399" opacity="0.65" transform="rotate(-5 60 68)"/>
+            <!-- Globe shine -->
+            <ellipse cx="42" cy="44" rx="12" ry="8" fill="white" opacity="0.18" transform="rotate(-25 42 44)"/>
+            <!-- Pin 1 -->
+            <circle cx="72" cy="38" r="5" fill="#ef4444"/>
+            <line x1="72" y1="43" x2="72" y2="52" stroke="#ef4444" stroke-width="2"/>
+            <!-- Pin 2 -->
+            <circle cx="44" cy="62" r="5" fill="#f97316"/>
+            <line x1="44" y1="67" x2="44" y2="76" stroke="#f97316" stroke-width="2"/>
+            <!-- Pin 3 -->
+            <circle cx="64" cy="74" r="5" fill="#ec4899"/>
+            <line x1="64" y1="79" x2="64" y2="88" stroke="#ec4899" stroke-width="2"/>
+            <defs>
+              <radialGradient id="globeGrad" cx="38%" cy="35%">
+                <stop offset="0%" stop-color="#60a5fa"/>
+                <stop offset="100%" stop-color="#1e3a8a"/>
+              </radialGradient>
+            </defs>
+          </svg>
+        </div>
+      </div>
+
+      <!-- Navigation: Back & Continue -->
+      <div class="nav-container">
+        <button class="nav-btn nav-btn-back" onclick="navigateToPage(2)">
+          ← Back
+        </button>
+        <button class="nav-btn nav-btn-forward" id="page3-forward" onclick="navigateToPage(4)" disabled>
+          Continue →
+        </button>
+      </div>
+    </div>
+
+    <!-- ============================================
+         PAGE 4: Coverage Results (Step 3)
+         ============================================ -->
+    <div class="page" id="page4">
+      <h1>Your Coverage Across Asia-Pacific Region</h1>
+
+      <!-- Step Progress Bar -->
+      <div class="step-progress-bar">
+        <div class="step-item completed">
+          <div class="step-dot">&#10003;</div>
+          <div class="step-label">Enter Amount</div>
+        </div>
+        <div class="step-line completed"></div>
+        <div class="step-item completed">
+          <div class="step-dot">&#10003;</div>
+          <div class="step-label">Select Jurisdiction</div>
+        </div>
+        <div class="step-line completed"></div>
+        <div class="step-item completed">
+          <div class="step-dot">&#10003;</div>
+          <div class="step-label">View Results</div>
+        </div>
+      </div>
+
+      <!-- Deposit Summary Dashboard (moved from old Page 2) -->
+      <div class="summary" style="margin-bottom: 20px;">
+        <div class="summary-dashboard">
+          <div class="dashboard-header">
+            <h2 class="dashboard-title">&#128203; Deposit Summary</h2>
+          </div>
+          <div class="summary-grid">
+            <div class="summary-card">
+              <div class="summary-icon">&#128176;</div>
+              <div class="summary-label">Deposit Amount</div>
+              <div class="summary-value" id="summaryAmountDisplay">MYR 0.00</div>
+            </div>
+            <div class="summary-card">
+              <div class="summary-icon">&#127758;</div>
+              <div class="summary-label" id="summaryCountryLabel">Selected Jurisdiction</div>
+              <div class="summary-value" id="summaryCountryDisplay">-</div>
+            </div>
+            <div class="summary-card">
+              <div class="summary-icon">&#128178;</div>
+              <div class="summary-label">Converted Amount</div>
+              <div class="summary-value" id="summaryConvertedDisplay">-</div>
+            </div>
+            <div class="summary-card">
+              <div class="summary-icon">&#127919;</div>
+              <div class="summary-label">Deposit Insurance Coverage Limit</div>
+              <div class="summary-value" id="summaryThresholdDisplay">-</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Coverage Box for Selected Jurisdiction -->
+      <div class="coverage-box" id="coverageBox">
+        <div class="coverage-main-card" id="coverageMainCard">
+          <div class="coverage-status-header">
+            <div class="coverage-title">🛡️ Deposit Insurance Coverage</div>
+            <div class="coverage-badge" id="coverageBadge">-</div>
+          </div>
+          <div class="progress-container">
+            <div class="progress-bar" id="progressBar" style="width: 0%;"></div>
+          </div>
+          <div class="coverage-details-grid">
+            <div class="detail-card">
+              <div class="detail-icon">🎯</div>
+              <div class="detail-label">Deposit Insurance Coverage Limit</div>
+              <div class="detail-value" id="coverageLimit">-</div>
+            </div>
+            <div class="detail-card">
+              <div class="detail-icon">⚠️</div>
+              <div class="detail-label">Uninsured Amount</div>
+              <div class="detail-value" id="uncoveredAmount">-</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Regional Coverage Comparison Grid -->
+      <div class="coverage-box" id="regionalCoverage" style="margin-top: 30px">
+        <h2>🌍 Regional Coverage Comparison</h2>
+        <div id="regionalResults"></div>
+      </div>
+
+      <!-- Navigation: Back & Forward -->
+      <div class="nav-container">
+        <button class="nav-btn nav-btn-back" onclick="navigateToPage(3)">
+          ← Back
+        </button>
+        <button class="nav-btn nav-btn-forward" onclick="navigateToPage(6)">
+          Proceed to Survey →
+        </button>
+      </div>
+    </div>
+
+    <!-- ============================================
+         PAGE 6: Survey Gate (DI or Non-DI)
+         ============================================ -->
+    <div class="page" id="page6">
+      <div class="survey-header">
+        <h1>Short Survey</h1>
+        <p>Before you leave, we invite you to answer a quick survey. This survey contains 3 questions and takes less than a minute.<br>Your responses will help us gain insights into depositor behaviour and experiences related to bank runs.</p>
+      </div>
+
+      <!-- GATE QUESTION: DI or Non-DI -->
+      <div class="survey-section" id="surveyGateSection">
+        <div class="survey-question">
+          <p class="survey-question-text">Q1. Are you a deposit insurer or a non-deposit insurer?</p>
+          <div class="radio-group" id="gate-options">
+            <div class="radio-option" id="gate-di" onclick="selectGate('DI')">
+              <input type="radio" id="gate-radio-di" name="gate" value="DI">
+              <label for="gate-radio-di">🏛️ &nbsp;<strong>Deposit Insurer</strong></label>
+            </div>
+            <div class="radio-option" id="gate-ndi" onclick="selectGate('NDI')">
+              <input type="radio" id="gate-radio-ndi" name="gate" value="NDI">
+              <label for="gate-radio-ndi">👤 &nbsp;<strong>Non-Deposit Insurer</strong></label>
+            </div>
+          </div>
+          <div class="validation-message" id="gate-validation">
+            Please select your respondent type to continue.
+          </div>
+        </div>
+      </div>
+
+      <!-- Navigation: Back & Continue (no back once gate selected) -->
+      <div class="nav-container">
+        <button class="nav-btn nav-btn-back" onclick="navigateToPage(4)">
+          ← Back
+        </button>
+        <button class="nav-btn nav-btn-forward" id="page6-forward" onclick="navigateToPage(9)" disabled>
+          Continue →
+        </button>
+      </div>
+    </div>
+
+    <!-- ============================================
+         PAGE 9: Survey Q1 (Track A or B)
+         ============================================ -->
+    <div class="page" id="page9">
+      <div class="survey-header">
+        <h1>Short Survey</h1>
+        <p id="page9-track-label"></p>
+      </div>
+
+      <!-- Track A Q1 -->
+      <div id="page9-trackA" style="display:none;">
+        <div class="survey-section" style="border-left: 4px solid #1e3a6e; padding-left: 20px;">
+          <p style="font-size: 0.85rem; color: #6b7280; margin: 0 0 16px 0; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;">Track A — Deposit Insurer</p>
+          <div class="survey-question">
+            <p class="survey-question-text">Q1. In your jurisdiction, which events are most likely to trigger depositors to withdraw their deposits? <span style="font-size: 0.85rem; color: #6b7280;">(select all that apply)</span></p>
+            <div class="checkbox-group" id="qa1-options"></div>
+            <div class="validation-message" id="qa1-validation">Please select at least one option.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Track B Q1 -->
+      <div id="page9-trackB" style="display:none;">
+        <div class="survey-section" style="border-left: 4px solid #3b82f6; padding-left: 20px;">
+          <p style="font-size: 0.85rem; color: #6b7280; margin: 0 0 16px 0; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;">Track B — Non-Deposit Insurer</p>
+          <div class="survey-question">
+            <p class="survey-question-text">Q1. Which events would make <em>you</em> consider withdrawing your deposits? <span style="font-size: 0.85rem; color: #6b7280;">(select all that apply)</span></p>
+            <div class="checkbox-group" id="qb1-options"></div>
+            <div class="validation-message" id="qb1-validation">Please select at least one option.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Navigation -->
+      <div class="nav-container">
+        <button class="nav-btn nav-btn-back" onclick="navigateToPage(6)">← Back</button>
+        <button class="nav-btn nav-btn-forward" id="page9-forward" onclick="navigateToPage(10)" disabled>
+          Continue →
+        </button>
+      </div>
+    </div>
+
+    <!-- ============================================
+         PAGE 10: Survey Q2 (Track A or B)
+         ============================================ -->
+    <div class="page" id="page10">
+      <div class="survey-header">
+        <h1>Short Survey</h1>
+        <p id="page10-track-label"></p>
+      </div>
+
+      <!-- Track A Q2 -->
+      <div id="page10-trackA" style="display:none;">
+        <div class="survey-section" style="border-left: 4px solid #1e3a6e; padding-left: 20px;">
+          <p style="font-size: 0.85rem; color: #6b7280; margin: 0 0 16px 0; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;">Track A — Deposit Insurer</p>
+          <div class="survey-question">
+            <p class="survey-question-text">Q2. If depositors were to move their money during a period of stress, where are they most likely to place it?</p>
+            <div class="radio-group" id="qa2-options"></div>
+            <div class="validation-message" id="qa2-validation">Please select an answer to continue.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Track B Q2 -->
+      <div id="page10-trackB" style="display:none;">
+        <div class="survey-section" style="border-left: 4px solid #3b82f6; padding-left: 20px;">
+          <p style="font-size: 0.85rem; color: #6b7280; margin: 0 0 16px 0; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;">Track B — Non-Deposit Insurer</p>
+          <div class="survey-question">
+            <p class="survey-question-text">Q2. If you were to move your money, where would you be most likely to place it?</p>
+            <div class="radio-group" id="qb2-options"></div>
+            <div class="validation-message" id="qb2-validation">Please select an answer to continue.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Navigation -->
+      <div class="nav-container">
+        <button class="nav-btn nav-btn-back" onclick="navigateToPage(9)">← Back</button>
+        <button class="nav-btn nav-btn-forward" id="page10-forward" onclick="navigateToPage(11)" disabled>
+          Continue →
+        </button>
+      </div>
+    </div>
+
+    <!-- ============================================
+         PAGE 11: Survey Q3 + Submit (Track A or B)
+         ============================================ -->
+    <div class="page" id="page11">
+      <div class="survey-header">
+        <h1>Short Survey</h1>
+        <p id="page11-track-label"></p>
+      </div>
+
+      <!-- Track A Q3 -->
+      <div id="page11-trackA" style="display:none;">
+        <div class="survey-section" style="border-left: 4px solid #1e3a6e; padding-left: 20px;">
+          <p style="font-size: 0.85rem; color: #6b7280; margin: 0 0 16px 0; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;">Track A — Deposit Insurer</p>
+          <div class="survey-question">
+            <p class="survey-question-text">Q3. Which actions or communications are most effective in reassuring depositors and preventing unnecessary withdrawals? <span style="font-size: 0.85rem; color: #6b7280;">(select all that apply)</span></p>
+            <div class="checkbox-group" id="qa3-options"></div>
+            <div class="validation-message" id="qa3-validation">Please select at least one option.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Track B Q3 -->
+      <div id="page11-trackB" style="display:none;">
+        <div class="survey-section" style="border-left: 4px solid #3b82f6; padding-left: 20px;">
+          <p style="font-size: 0.85rem; color: #6b7280; margin: 0 0 16px 0; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;">Track B — Non-Deposit Insurer</p>
+          <div class="survey-question">
+            <p class="survey-question-text">Q3. Which of these would make you feel reassured enough to keep your deposits? <span style="font-size: 0.85rem; color: #6b7280;">(select all that apply)</span></p>
+            <div class="checkbox-group" id="qb3-options"></div>
+            <div class="validation-message" id="qb3-validation">Please select at least one option.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Navigation -->
+      <div class="nav-container">
+        <button class="nav-btn nav-btn-back" onclick="navigateToPage(10)">← Back</button>
+        <button class="nav-btn nav-btn-submit" id="page11-submit" onclick="submitBehaviouralSurvey()" disabled>
+          Submit Survey ✓
+        </button>
+      </div>
+    </div>
+
+    <!-- ============================================
+         PAGE 7: Transition (Survey submitted → Family Scenario)
+         ============================================ -->
+    <div class="page" id="page7">
+      <div class="transition-page">
+        <div class="transition-icon">🎉</div>
+        <h2 class="transition-title">Thank you!</h2>
+        <p class="transition-message">
+          Your responses have been recorded. Thank you for contributing to APRC 2026 research on deposit insurance awareness.<br><br>
+          Now let's explore deposit coverage for your family — specifically in Malaysia, where PIDM provides protection.
+        </p>
+        <button class="transition-continue-btn" onclick="navigateToPage(8)">
+          Continue →
+        </button>
+      </div>
+    </div>
+
+    <!-- ============================================
+         PAGE 8: Malaysia Deep Dive (Family Scenario)
+         ============================================ -->
+    <div class="page" id="page8">
+      <div class="page-header">
+        <h1>👨‍👩‍👧‍👦 Let's travel back to Malaysia</h1>
+        <p style="color: #666; margin: 10px 0 0 0;">Exploring deposit insurance coverage by PIDM for your family with <strong id="familyAmountDisplay">MYR 0.00</strong></p>
+      </div>
+
+      <!-- Step 1 Card -->
+      <div class="scenario-step" id="step1Card">
+        <div class="summary-card" style="max-width: none; text-align: left; padding: 25px;">
+          <div class="summary-icon" style="float: left; margin-right: 15px; margin-bottom: 0;">🌺</div>
+          <div class="scenario-content">
+            <h3 style="margin: 0 0 15px 0; color: #333; font-size: 18px;">Step 1: </h3>
+            <p style="margin: 0; font-size: 16px; line-height: 1.6; color: #555;">
+              You're now in Malaysia. You have <strong style="color: #3b82f6;" id="familyAmount">MYR 0.00</strong> and planning to save in PIDM's member banks.
+            </p>
+          </div>
+        </div>
+        <div style="text-align: center; margin-top: 20px;">
+          <button onclick="showStep2()" style="background: linear-gradient(135deg, #3b82f6, #1d4ed8); color: white; border: none; padding: 12px 24px; border-radius: 25px; font-size: 16px; font-weight: 600; cursor: pointer; transition: all 0.3s ease; box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);">
+            Continue to Step 2 →
+          </button>
+        </div>
+      </div>
+
+      <!-- Step 2 Card -->
+      <div class="scenario-step" id="step2Card" style="display: none;">
+        <div class="summary-card" style="max-width: none; text-align: left; padding: 25px;">
+          <div class="summary-icon" style="float: left; margin-right: 15px; margin-bottom: 0;">👥</div>
+          <div class="scenario-content">
+            <h3 style="margin: 0 0 15px 0; color: #333; font-size: 18px;">Step 2: Family Size</h3>
+            <p style="margin: 0 0 20px 0; font-size: 16px; line-height: 1.6; color: #555;">
+              How many family members do you have in your household, excluding yourself?
+            </p>
+            <div class="form-group" style="margin-bottom: 0;">
+              <select id="householdMembers" style="width: 100%; padding: 12px; border-radius: 10px; border: 2px solid #e2e8f0; font-size: 16px; background: white; transition: border-color 0.3s ease;">
+                <option value="">Select number of family members</option>
+                <option value="1">1 family member</option>
+                <option value="2">2 family members</option>
+                <option value="3">3 family members</option>
+              </select>
+            </div>
+          </div>
+        </div>
+        <div style="text-align: center; margin-top: 20px;">
+          <button id="step2Continue" onclick="showStep3()" disabled style="background: #9ca3af; color: white; border: none; padding: 12px 24px; border-radius: 25px; font-size: 16px; font-weight: 600; cursor: not-allowed; transition: all 0.3s ease; box-shadow: 0 4px 12px rgba(156, 163, 175, 0.3);">
+            Continue to Step 3 →
+          </button>
+        </div>
+      </div>
+
+      <!-- Step 3 Card -->
+      <div class="scenario-step" id="step3Card" style="display: none;">
+        <div class="summary-card" style="max-width: none; text-align: left; padding: 25px;">
+          <div class="summary-icon" style="float: left; margin-right: 15px; margin-bottom: 0;">🤝</div>
+          <div class="scenario-content">
+            <h3 style="margin: 0 0 15px 0; color: #333; font-size: 18px;">Step 3: Joint Account Preference</h3>
+            <p style="margin: 0 0 20px 0; font-size: 16px; line-height: 1.6; color: #555;">
+              Would you like to open a joint account with each of your family members?
+            </p>
+            <div class="form-group" style="margin-bottom: 0;">
+              <select id="jointAccountChoice" style="width: 100%; padding: 12px; border-radius: 10px; border: 2px solid #e2e8f0; font-size: 16px; background: white; transition: border-color 0.3s ease;">
+                <option value="">Select your preference</option>
+                <option value="Yes">Yes</option>
+                <option value="No">No</option>
+              </select>
+            </div>
+          </div>
+        </div>
+        <div style="text-align: center; margin-top: 20px;">
+          <button id="step3Continue" onclick="showStep4()" disabled style="background: #9ca3af; color: white; border: none; padding: 12px 24px; border-radius: 25px; font-size: 16px; font-weight: 600; cursor: not-allowed; transition: all 0.3s ease; box-shadow: 0 4px 12px rgba(156, 163, 175, 0.3);">
+            Continue to Step 4 →
+          </button>
+        </div>
+      </div>
+
+      <!-- Step 4 Card -->
+      <div class="scenario-step" id="step4Card" style="display: none;">
+        <div id="step4PathA" class="summary-card" style="max-width: none; text-align: left; padding: 25px; display: none;">
+          <div class="summary-icon" style="float: left; margin-right: 15px; margin-bottom: 0;">💳</div>
+          <div class="scenario-content">
+            <h3 style="margin: 0 0 15px 0; color: #333; font-size: 18px;">Step 4: No Joint Accounts</h3>
+            <p style="margin: 0 0 20px 0; font-size: 16px; line-height: 1.6; color: #555;" id="step4PathAText">
+              You decided not to open joint accounts.
+            </p>
+          </div>
+          <div style="text-align: center; margin-top: 20px;">
+            <button onclick="showStep6()" style="background: linear-gradient(135deg, #3b82f6, #1d4ed8); color: white; border: none; padding: 12px 24px; border-radius: 25px; font-size: 16px; font-weight: 600; cursor: pointer; transition: all 0.3s ease; box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);">
+              View Summary →
+            </button>
+          </div>
+        </div>
+        <div id="step4PathB" class="summary-card" style="max-width: none; text-align: left; padding: 25px; display: none;">
+          <div class="summary-icon" style="float: left; margin-right: 15px; margin-bottom: 0;">⚖️</div>
+          <div class="scenario-content">
+            <h3 style="margin: 0 0 15px 0; color: #333; font-size: 18px;">Step 4: Split Method</h3>
+            <p style="margin: 0 0 20px 0; font-size: 16px; line-height: 1.6; color: #555;">
+              Would you like to split the deposit amount equally across all joint accounts?
+            </p>
+            <div class="form-group" style="margin-bottom: 0;">
+              <select id="equalSplitChoice" style="width: 100%; padding: 12px; border-radius: 10px; border: 2px solid #e2e8f0; font-size: 16px; background: white; transition: border-color 0.3s ease;">
+                <option value="">Select your preference</option>
+                <option value="Yes">Yes</option>
+                <option value="No">No</option>
+              </select>
+            </div>
+          </div>
+          <div style="text-align: center; margin-top: 20px;">
+            <button id="step4Continue" onclick="showStep5()" disabled style="background: #9ca3af; color: white; border: none; padding: 12px 24px; border-radius: 25px; font-size: 16px; font-weight: 600; cursor: not-allowed; transition: all 0.3s ease; box-shadow: 0 4px 12px rgba(156, 163, 175, 0.3);">
+              Continue to Step 5 →
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Step 5 Card -->
+      <div class="scenario-step" id="step5Card" style="display: none;">
+        <div id="step5PathC" class="summary-card" style="max-width: none; text-align: left; padding: 25px; display: none;">
+          <div class="summary-icon" style="float: left; margin-right: 15px; margin-bottom: 0;">⚖️</div>
+          <div class="scenario-content">
+            <h3 style="margin: 0 0 15px 0; color: #333; font-size: 18px;">Step 5: Equal Split Analysis</h3>
+            <p style="margin: 0 0 20px 0; font-size: 16px; line-height: 1.6; color: #555;" id="equalSplitSummaryText">
+              You decided to open joint accounts and equally split the deposit amount with each of them.
+            </p>
+            <div class="summary-dashboard" style="margin-top: 20px;">
+              <div class="dashboard-header">
+                <h4 style="margin: 0; color: #333;">Deposit Insurance Coverage: Joint Account</h4>
+              </div>
+              <div id="equalSplitResults" class="summary-grid"></div>
+            </div>
+          </div>
+          <div style="text-align: center; margin-top: 20px;">
+            <button onclick="showStep6()" style="background: linear-gradient(135deg, #3b82f6, #1d4ed8); color: white; border: none; padding: 12px 24px; border-radius: 25px; font-size: 16px; font-weight: 600; cursor: pointer; transition: all 0.3s ease; box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);">
+              Continue to Step 6 →
+            </button>
+          </div>
+        </div>
+
+        <div id="step5PathD" class="summary-card" style="max-width: none; text-align: left; padding: 25px; display: none;">
+          <div class="summary-icon" style="float: left; margin-right: 15px; margin-bottom: 0;">📊</div>
+          <div class="scenario-content">
+            <h3 style="margin: 0 0 15px 0; color: #333; font-size: 18px;">Step 5: Custom Split Allocation</h3>
+            <p style="margin: 0 0 20px 0; font-size: 16px; line-height: 1.6; color: #555;">
+              Enter the percentage of deposit amount to be placed into each joint account. The total must equal 100%.
+            </p>
+            <div id="percentageInputs" style="margin-bottom: 20px;"></div>
+            <div style="text-align: center; font-size: 14px; color: #666; margin-bottom: 15px;">
+              Total: <span id="totalPercentage" style="font-weight: bold; color: #333;">0%</span>
+              <span id="percentageStatus" style="margin-left: 10px;"></span>
+            </div>
+            <div id="unequalSplitResults" style="display: none;">
+              <p style="margin: 0 0 20px 0; font-size: 16px; line-height: 1.6; color: #555;" id="unequalSplitSummaryText"></p>
+              <div class="summary-dashboard">
+                <div class="dashboard-header">
+                  <h4 style="margin: 0; color: #333;">Deposit Insurance Coverage: Joint Account</h4>
+                </div>
+                <div id="unequalSplitResultsGrid" class="summary-grid"></div>
+                <div class="detail-card" style="margin-top: 15px; max-width: 300px; margin-left: auto; margin-right: auto;">
+                  <div class="detail-icon">⚠️</div>
+                  <div class="detail-label">Total Uninsured Amount</div>
+                  <div class="detail-value" id="totalUninsuredAmount">MYR 0.00</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div style="text-align: center; margin-top: 20px;">
+            <button id="step5Continue" onclick="showStep6()" disabled style="background: #9ca3af; color: white; border: none; padding: 12px 24px; border-radius: 25px; font-size: 16px; font-weight: 600; cursor: not-allowed; transition: all 0.3s ease; box-shadow: 0 4px 12px rgba(156, 163, 175, 0.3);">
+              Continue to Step 6 →
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Step 6 Card: Final Summary -->
+      <div class="scenario-step" id="step6Card" style="display: none;">
+        <div class="summary-card" style="max-width: none; text-align: center; padding: 35px;">
+          <h3 style="margin: 0 0 25px 0; color: #333; font-size: 24px;">Step 6: Family Deposit Coverage Summary</h3>
+
+          <div class="summary-dashboard" style="margin-bottom: 30px; text-align: left;">
+            <div class="dashboard-header">
+              <h4 style="margin: 0; color: #333;">📋 Your Deposit Strategy</h4>
+            </div>
+            <div style="padding: 20px; background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); border-radius: 12px;">
+              <div style="margin-bottom: 15px;"><strong>💰 Total Deposit Amount:</strong> <span id="finalDepositAmount" style="color: #3b82f6;">MYR 0.00</span></div>
+              <div style="margin-bottom: 15px;"><strong>👥 Family Members:</strong> <span id="finalFamilyMembers">0</span></div>
+              <div style="margin-bottom: 15px;"><strong>📈 Account Strategy:</strong> <span id="finalAccountStrategy">-</span></div>
+              <div style="margin-bottom: 0;"><strong>📊 Distribution Method:</strong> <span id="finalDistribution">-</span></div>
+            </div>
+          </div>
+
+          <div class="summary-dashboard" style="margin-bottom: 30px; text-align: left;">
+            <div class="dashboard-header">
+              <h4 style="margin: 0; color: #333;">🛡️ Deposit insurance coverage for your family fund</h4>
+            </div>
+            <div class="summary-grid">
+              <div class="summary-card" style="background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);">
+                <div class="summary-icon" style="color: #10b981;">✅</div>
+                <div class="summary-label">Total Protected</div>
+                <div class="summary-value" id="finalProtectedAmount">MYR 0.00</div>
+              </div>
+              <div class="summary-card" style="background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%);">
+                <div class="summary-icon" style="color: #f59e0b;">⚠️</div>
+                <div class="summary-label">Total Uninsured</div>
+                <div class="summary-value" id="finalUninsuredAmount">MYR 0.00</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="summary-dashboard" style="margin-bottom: 30px; text-align: left;">
+            <div class="dashboard-header">
+              <h4 style="margin: 0; color: #333;">💡 Key Insights</h4>
+            </div>
+            <div id="finalInsights" style="padding: 20px; background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 12px; color: #333; text-align: justify;">
+            </div>
+          </div>
+
+          <div style="margin-bottom: 30px; padding: 15px; background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%); border-radius: 12px; border-left: 4px solid #3b82f6;">
+            <p style="margin: 0; font-size: 14px; color: #555;">
+              📚 For more information, please visit us at our booth at the APRC 2026 event or <a href="https://www.pidm.gov.my" target="_blank" style="color: #3b82f6; text-decoration: none; font-weight: 600;">www.pidm.gov.my</a>
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Navigation: Back to Results & Forward to Survey -->
+      <div class="nav-container" id="page8-nav" style="display:none;">
+        <button class="nav-btn nav-btn-reset" onclick="resetCalculator()" style="background: linear-gradient(135deg, #1e3a6e, #3b82f6); color: white; border: none; padding: 14px 32px; border-radius: 50px; font-size: 1rem; font-weight: 700; cursor: pointer; box-shadow: 0 4px 15px rgba(30,58,110,0.3); transition: all 0.3s ease;">
+          Start Over
+        </button>
+      </div>
+    </div>
+
+
+  </div>
+
+  <script>
+    /* ============================================
+       USER & SESSION TRACKING
+       ============================================ */
+
+    /**
+     * Get or create persistent User ID
+     * Stored in localStorage for cross-session tracking
+     */
+    function getUserId() {
+      let userId = localStorage.getItem('depositCalcUserId');
+      if (!userId) {
+        userId = 'user_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+        localStorage.setItem('depositCalcUserId', userId);
+      }
+      return userId;
+    }
+
+    /**
+     * Generate new Session ID per page load
+     */
+    function generateSessionId() {
+      return 'session_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+    }
+
+    // Initialize tracking IDs on page load
+    const userId = getUserId();
+    const sessionId = generateSessionId();
+
+    /* ============================================
+       GLOBAL VARIABLES & STATE
+       ============================================ */
+
+    // Current page tracking (0-5)
+    let currentPage = 0;
+
+    // Survey answers storage
+    const surveyAnswers = {
+      age: null,            // Demographics Q1: age group
+      respondentType: null, // Gate: 'DI' or 'NDI'
+      // Track A (Deposit Insurer)
+      a_q1: [],             // multi-select (withdrawal triggers)
+      a_q2: null,           // single-select (where to move money)
+      a_q3: [],             // multi-select (reassurance factors)
+      // Track B (Non-Deposit Insurer)
+      b_q1: [],             // multi-select (depositor withdrawal triggers)
+      b_q2: null,           // single-select (where depositors move money)
+      b_q3: []              // multi-select (effective communications)
+    };
+
+    // Selected jurisdiction storage
+    let selectedJurisdiction = null;
+
+    // DOM element references
+    const amountInput = document.getElementById('amount');
+    const summaryAmount = document.getElementById('summaryAmount');
+    const summaryCountry = document.getElementById('summaryCountry');
+    const summaryThreshold = document.getElementById('summaryThreshold');
+    const summaryConverted = document.getElementById('summaryConverted');
+    const coverageLimit = document.getElementById('coverageLimit');
+    const coverageBadge = document.getElementById('coverageBadge');
+    const coverageMainCard = document.getElementById('coverageMainCard');
+    const progressBar = document.getElementById('progressBar');
+    const uncoveredAmount = document.getElementById('uncoveredAmount');
+    const coverageBox = document.getElementById('coverageBox');
+    const regionalCoverage = document.getElementById('regionalCoverage');
+    const regionalResults = document.getElementById('regionalResults');
+
+    /* ============================================
+       COUNTRIES DATA & EXCHANGE RATES
+       ============================================ */
+
+    // APRC 2026 — 22 jurisdictions (alphabetical order)
+    const countries = [
+      { name: 'Australia',         flag: '🇦🇺', limit: 250000,     currency: 'AUD', code: 'AU', insurer: 'Australian Prudential Regulation Authority' },
+      { name: 'Azerbaijan',        flag: '🇦🇿', limit: 100000,     currency: 'AZN', code: 'AZ', insurer: 'Azerbaijan Deposit Insurance Fund' },
+      { name: 'Bangladesh',        flag: '🇧🇩', limit: 100000,     currency: 'BDT', code: 'BD', insurer: 'Deposit Insurance Department, Bangladesh Bank' },
+      { name: 'Brunei Darussalam', flag: '🇧🇳', limit: 50000,      currency: 'BND', code: 'BN', insurer: 'Brunei Darussalam Deposit Protection Corporation' },
+      { name: 'Chinese Taipei',    flag: '🇹🇼', limit: 3000000,    currency: 'TWD', code: 'TW', insurer: 'Central Deposit Insurance Corporation' },
+      { name: 'Hong Kong',         flag: '🇭🇰', limit: 800000,     currency: 'HKD', code: 'HK', insurer: 'Hong Kong Deposit Protection Board' },
+      { name: 'India',             flag: '🇮🇳', limit: 500000,     currency: 'INR', code: 'IN', insurer: 'Deposit Insurance and Credit Guarantee Corporation' },
+      { name: 'Indonesia',         flag: '🇮🇩', limit: 2000000000, currency: 'IDR', code: 'ID', insurer: 'Indonesia Deposit Insurance Corporation' },
+      { name: 'Japan',             flag: '🇯🇵', limit: 10000000,   currency: 'JPY', code: 'JP', insurer: 'Deposit Insurance Corporation of Japan' },
+      { name: 'Kazakhstan',        flag: '🇰🇿', limit: 20000000,   currency: 'KZT', code: 'KZ', insurer: 'Kazakhstan Deposit Insurance Fund' },
+      { name: 'Kyrgyz Republic',   flag: '🇰🇬', limit: 1000000,    currency: 'KGS', code: 'KG', insurer: 'Deposit Protection Agency of the Kyrgyz Republic' },
+      { name: 'Lao PDR',           flag: '🇱🇦', limit: 100000000,  currency: 'LAK', code: 'LA', insurer: 'Deposit Protection Office' },
+      { name: 'Malaysia',          flag: '🇲🇾', limit: 250000,     currency: 'MYR', code: 'MY', insurer: 'Malaysia Deposit Insurance Corporation (PIDM)' },
+      { name: 'Mongolia',          flag: '🇲🇳', limit: 20000000,   currency: 'MNT', code: 'MN', insurer: 'Deposit Insurance Corporation of Mongolia' },
+      { name: 'New Zealand',       flag: '🇳🇿', limit: 100000,     currency: 'NZD', code: 'NZ', insurer: 'Reserve Bank of New Zealand' },
+      { name: 'Pakistan',          flag: '🇵🇰', limit: 1000000,    currency: 'PKR', code: 'PK', insurer: 'Deposit Protection Corporation' },
+      { name: 'Philippines',       flag: '🇵🇭', limit: 1000000,    currency: 'PHP', code: 'PH', insurer: 'Philippine Deposit Insurance Corporation' },
+      { name: 'People\'s Republic of China', flag: '🇨🇳', limit: 500000,     currency: 'CNY', code: 'CN', insurer: 'China Deposit Insurance Corporation' },
+      { name: 'Republic of Korea', flag: '🇰🇷', limit: 50000000,   currency: 'KRW', code: 'KR', insurer: 'Korea Deposit Insurance Corporation' },
+      { name: 'Thailand',          flag: '🇹🇭', limit: 1000000,    currency: 'THB', code: 'TH', insurer: 'Deposit Protection Agency' },
+      { name: 'Uzbekistan',        flag: '🇺🇿', limit: 200000000,  currency: 'UZS', code: 'UZ', insurer: 'Deposit Guarantee Agency' },
+      { name: 'Viet Nam',          flag: '🇻🇳', limit: 350000000,  currency: 'VND', code: 'VN', insurer: 'Deposit Insurance of Vietnam' }
+    ];
+
+    // Exchange rates to MYR (base currency) — as of April 2026 (1 USD = 3.9548 MYR)
+    const exchangeRates = {
+      'MYR': 1,
+      'AUD': 0.353,    // Australia
+      'AZN': 0.4259,    // Azerbaijan
+      'BDT': 31.09,     // Bangladesh
+      'BND': 0.3214,    // Brunei Darussalam
+      'CNY': 1.724,    // Republic of China
+      'TWD': 7.98,      // Chinese Taipei
+      'HKD': 1.98,     // Hong Kong
+      'INR': 23.586,     // India
+      'IDR': 4334.68,     // Indonesia
+      'JPY': 40.21,     // Japan
+      'KZT': 119.85,    // Kazakhstan
+      'KGS': 22.114,     // Kyrgyz Republic
+      'LAK': 5572,     // Lao PDR
+      'MNT': 908.06,      // Mongolia
+      'NZD': 0.427,    // New Zealand
+      'PKR': 70.524,     // Pakistan
+      'PHP': 15.189,     // Philippines
+      'KRW': 372.86,      // Republic of Korea
+      'THB': 8.094,      // Thailand
+      'UZS': 3075.96,     // Uzbekistan
+      'VND': 6654.35      // Viet Nam
+    };
+
+    /* ============================================
+       SURVEY QUESTIONS DATA
+       ============================================ */
+
+    // Q1: Age group options (APRC 2026)
+    const q1Options = [
+      { value: 'a', label: '19 years old and below' },
+      { value: 'b', label: '20 - 29 years old' },
+      { value: 'c', label: '30 - 39 years old' },
+      { value: 'd', label: '40 - 49 years old' },
+      { value: 'e', label: '50 - 59 years old' },
+      { value: 'f', label: '60 years old and above' }
+    ];
+
+    // Shared options: Q1 withdrawal triggers (used by both Track A and B)
+    const withdrawalTriggers = [
+      { value: 'a', label: 'Mobile or online banking disruptions' },
+      { value: 'b', label: 'News of financial losses or signs of distress of a bank' },
+      { value: 'c', label: 'Cases of bank failures in other jurisdictions' },
+      { value: 'd', label: 'Negative social media rumors' },
+      { value: 'e', label: 'Long waiting times or queues at bank branches' },
+      { value: 'f', label: 'None of the above' }
+    ];
+
+    // Shared options: Q2 where to move money (used by both Track A and B)
+    const moneyDestinations = [
+      { value: 'a', label: 'Another domestic bank protected by a deposit insurance scheme' },
+      { value: 'b', label: 'Foreign bank with a higher coverage limit where I already have an overseas account' },
+      { value: 'c', label: 'Cash at home' },
+      { value: 'd', label: 'E-wallets' },
+      { value: 'e', label: 'Investment (e.g. gold, investment account, crypto, unit trust)' }
+    ];
+
+    // Shared options: Q3 reassurance factors (used by both Track A and B)
+    const reassuranceFactors = [
+      { value: 'a', label: 'Clear and regular public statements issued by the affected bank' },
+      { value: 'b', label: 'Statements or official communication from regulators (e.g. Ministry of Finance, central bank, deposit insurer)' },
+      { value: 'c', label: 'Mainstream media clarification' },
+      { value: 'd', label: 'Social media posting by key opinion leaders or influencers' },
+      { value: 'e', label: 'Seeing others remain calm' },
+      { value: 'f', label: 'My deposits are fully protected by a deposit insurance scheme' }
+    ];
+
+    /* ============================================
+       UTILITY FUNCTIONS
+       ============================================ */
+
+    /**
+     * Format a number as currency with specified currency code
+     */
+    function formatCurrency(value, currency = 'MYR') {
+      return currency + ' ' + parseFloat(value).toLocaleString(undefined, {
+        minimumFractionDigits: 0,
+        maximumFractionDigits: 2
+      });
+    }
+
+    /* ============================================
+       PAGE NAVIGATION FUNCTIONS
+       ============================================ */
+
+    /**
+     * Navigate to a specific page (0-5)
+     * Handles validation before allowing forward navigation
+     */
+    function navigateToPage(pageNum) {
+      // Validate before allowing forward navigation
+      if (pageNum > currentPage) {
+        if (!validateCurrentPage()) {
+          return;
+        }
+      }
+
+      // Hide current page
+      document.getElementById('page' + currentPage).classList.remove('active');
+
+      // Show target page
+      document.getElementById('page' + pageNum).classList.add('active');
+
+      // Update current page tracker
+      currentPage = pageNum;
+
+      // Scroll to top smoothly
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+
+      // Page-specific setup
+      if (pageNum === 4) {
+        updateCoverageDisplay();
+        logDccInteraction();
+      } else if (pageNum === 6) {
+        // Initialise behavioural survey gate
+        initializeBehaviouralSurvey();
+      } else if (pageNum === 9) {
+        // Q1 page — show correct track panel
+        showSurveyTrackPanel(9);
+      } else if (pageNum === 10) {
+        // Q2 page — show correct track panel
+        showSurveyTrackPanel(10);
+      } else if (pageNum === 11) {
+        // Q3 page — show correct track panel
+        showSurveyTrackPanel(11);
+      } else if (pageNum === 7) {
+        // Transition page - no special setup
+      } else if (pageNum === 8) {
+        // Setup family scenario page
+        setupFamilyScenarioPage();
+      }
+    }
+
+    /**
+     * Validate current page before allowing forward navigation
+     */
+    function validateCurrentPage() {
+      switch (currentPage) {
+        case 1:
+          // Page 1: Must select age group
+          if (!surveyAnswers.age) {
+            document.getElementById('q1-validation').classList.add('show');
+            return false;
+          }
+          document.getElementById('q1-validation').classList.remove('show');
+          return true;
+
+        case 2:
+          // Page 2: Must enter amount only
+          const amount = parseFloat(amountInput.value);
+          if (!amount || amount <= 0) {
+            document.getElementById('page2-validation').classList.add('show');
+            return false;
+          }
+          document.getElementById('page2-validation').classList.remove('show');
+          return true;
+
+        case 3:
+          // Page 3: Must select jurisdiction
+          if (!selectedJurisdiction) {
+            document.getElementById('page3-validation').classList.add('show');
+            return false;
+          }
+          document.getElementById('page3-validation').classList.remove('show');
+          return true;
+
+        case 5:
+          // Page 5: Family scenario — no blocking validation required
+          return true;
+
+        case 6:
+          // Gate: must select DI or NDI
+          if (!surveyAnswers.respondentType) {
+            document.getElementById('gate-validation').classList.add('show');
+            return false;
+          }
+          document.getElementById('gate-validation').classList.remove('show');
+          return true;
+
+        case 9:
+          // Q1: must select at least one checkbox
+          if (surveyAnswers.respondentType === 'DI') {
+            if (surveyAnswers.a_q1.length === 0) { document.getElementById('qa1-validation').classList.add('show'); return false; }
+            document.getElementById('qa1-validation').classList.remove('show');
+          } else {
+            if (surveyAnswers.b_q1.length === 0) { document.getElementById('qb1-validation').classList.add('show'); return false; }
+            document.getElementById('qb1-validation').classList.remove('show');
+          }
+          return true;
+
+        case 10:
+          // Q2: must select one radio
+          if (surveyAnswers.respondentType === 'DI') {
+            if (!surveyAnswers.a_q2) { document.getElementById('qa2-validation').classList.add('show'); return false; }
+            document.getElementById('qa2-validation').classList.remove('show');
+          } else {
+            if (!surveyAnswers.b_q2) { document.getElementById('qb2-validation').classList.add('show'); return false; }
+            document.getElementById('qb2-validation').classList.remove('show');
+          }
+          return true;
+
+        case 11:
+          // Q3: must select at least one checkbox
+          if (surveyAnswers.respondentType === 'DI') {
+            if (surveyAnswers.a_q3.length === 0) { document.getElementById('qa3-validation').classList.add('show'); return false; }
+            document.getElementById('qa3-validation').classList.remove('show');
+          } else {
+            if (surveyAnswers.b_q3.length === 0) { document.getElementById('qb3-validation').classList.add('show'); return false; }
+            document.getElementById('qb3-validation').classList.remove('show');
+          }
+          return true;
+
+        default:
+          return true;
+      }
+    }
+
+    /**
+     * Update forward button state based on validation
+     */
+    function updateForwardButtonState(pageNum) {
+      let buttonId, isValid;
+
+      switch (pageNum) {
+        case 1:
+          buttonId = 'page1-forward';
+          isValid = surveyAnswers.age !== null;
+          break;
+        case 2:
+          buttonId = 'page2-forward';
+          const amtVal = parseFloat(amountInput.value);
+          isValid = amtVal > 0;
+          break;
+        case 3:
+          buttonId = 'page3-forward';
+          isValid = selectedJurisdiction !== null;
+          break;
+        case 6:
+          buttonId = 'page6-forward';
+          isValid = !!surveyAnswers.respondentType;
+          break;
+        case 9:
+          buttonId = 'page9-forward';
+          isValid = surveyAnswers.respondentType === 'DI'
+            ? surveyAnswers.a_q1.length > 0
+            : surveyAnswers.b_q1.length > 0;
+          break;
+        case 10:
+          buttonId = 'page10-forward';
+          isValid = surveyAnswers.respondentType === 'DI'
+            ? surveyAnswers.a_q2 !== null
+            : surveyAnswers.b_q2 !== null;
+          break;
+        case 11:
+          buttonId = 'page11-submit';
+          isValid = surveyAnswers.respondentType === 'DI'
+            ? surveyAnswers.a_q3.length > 0
+            : surveyAnswers.b_q3.length > 0;
+          break;
+        default:
+          return;
+      }
+
+      const button = document.getElementById(buttonId);
+      if (button) {
+        button.disabled = !isValid;
+      }
+    }
+
+    /**
+     * Start the tool from landing page
+     */
+    function startTool() {
+      navigateToPage(1);
+    }
+
+    /**
+     * Reset calculator and return to landing page
+     */
+    function resetCalculator() {
+      // Reset all state
+      surveyAnswers.age = null;
+      surveyAnswers.respondentType = null;
+      surveyAnswers.a_q1 = []; surveyAnswers.a_q2 = null; surveyAnswers.a_q3 = [];
+      surveyAnswers.b_q1 = []; surveyAnswers.b_q2 = null; surveyAnswers.b_q3 = [];
+      selectedJurisdiction = null;
+      window.depositAmount = null;
+      window.householdMembers = null;
+      window.jointAccountChoice = null;
+      window.equalSplitChoice = null;
+      window.customPercentages = null;
+
+      // Reset form inputs
+      if (amountInput) amountInput.value = '';
+
+      // Reset jurisdiction dropdown (Step 2)
+      const jurisdictionSelect = document.getElementById('jurisdictionSelect');
+      if (jurisdictionSelect) jurisdictionSelect.value = '';
+      selectedJurisdiction = null;
+      // Also reset page3-forward button
+      const p3fwd = document.getElementById('page3-forward');
+      if (p3fwd) p3fwd.disabled = true;
+
+      // Reset summary displays (hidden state holders on page3)
+      if (summaryAmount) summaryAmount.textContent = 'MYR 0.00';
+      if (summaryCountry) summaryCountry.textContent = '-';
+      if (summaryConverted) summaryConverted.textContent = '-';
+      if (summaryThreshold) summaryThreshold.textContent = '-';
+      // Reset visible summary cards on page4
+      const dispAmount = document.getElementById('summaryAmountDisplay');
+      const dispCountry = document.getElementById('summaryCountryDisplay');
+      const dispConverted = document.getElementById('summaryConvertedDisplay');
+      const dispThreshold = document.getElementById('summaryThresholdDisplay');
+      if (dispAmount) dispAmount.textContent = 'MYR 0.00';
+      if (dispCountry) dispCountry.textContent = '-';
+      if (dispConverted) dispConverted.textContent = '-';
+      if (dispThreshold) dispThreshold.textContent = '-';
+
+      // Reset radio button selections
+      document.querySelectorAll('.radio-option').forEach(el => el.classList.remove('selected'));
+      document.querySelectorAll('.radio-option input[type="radio"]').forEach(el => el.checked = false);
+
+      // Reset validation messages
+      document.querySelectorAll('.validation-message').forEach(el => el.classList.remove('show'));
+
+      // Reset forward buttons
+      document.getElementById('page1-forward').disabled = true;
+      document.getElementById('page2-forward').disabled = true;
+      if (document.getElementById('page3-forward')) document.getElementById('page3-forward').disabled = true;
+      // Reset all survey page forward/submit buttons
+      ['page6-forward','page9-forward','page10-forward','page11-submit'].forEach(id => {
+        const el = document.getElementById(id); if (el) el.disabled = true;
+      });
+      // Reset gate and tracks
+      ['trackA','trackB'].forEach(id => { const el = document.getElementById(id); if(el) el.style.display='none'; });
+      behaviouralSurveyInitialised = false;
+      document.querySelectorAll('#gate-options .radio-option').forEach(el => el.classList.remove('selected'));
+      const nav = document.querySelector('#page6 .nav-container'); if(nav) nav.style.display='flex';
+      const p8nav = document.getElementById('page8-nav'); if(p8nav) p8nav.style.display='none';
+
+      // Reset family scenario steps
+      resetFamilyScenarioSteps();
+
+      // Navigate to landing page
+      document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+      document.getElementById('page0').classList.add('active');
+      currentPage = 0;
+
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    /* ============================================
+       SURVEY RENDERING & HANDLING
+       ============================================ */
+
+    /**
+     * Render radio button options for a survey question
+     */
+    function renderRadioOptions(containerId, options, questionKey) {
+      const container = document.getElementById(containerId);
+      if (!container) return;
+
+      container.innerHTML = '';
+
+      options.forEach(option => {
+        const radioDiv = document.createElement('div');
+        radioDiv.className = 'radio-option';
+        radioDiv.innerHTML = `
+          <input type="radio" id="${questionKey}-${option.value}" name="${questionKey}" value="${option.value}">
+          <label for="${questionKey}-${option.value}">${option.label}</label>
+        `;
+
+        // Add click handler for the entire option div
+        radioDiv.addEventListener('click', function() {
+          // Update visual selection
+          container.querySelectorAll('.radio-option').forEach(el => el.classList.remove('selected'));
+          radioDiv.classList.add('selected');
+
+          // Check the radio button
+          const radio = radioDiv.querySelector('input[type="radio"]');
+          radio.checked = true;
+
+          // Store the answer
+          surveyAnswers[questionKey] = option.value;
+
+          // Update button state
+          if (questionKey === 'age') {
+            updateForwardButtonState(1);
+            document.getElementById('q1-validation').classList.remove('show');
+          } else if (['a_q2','b_q2'].includes(questionKey)) {
+            // Q2 single-select — update page10 forward button
+            const valId = questionKey === 'a_q2' ? 'qa2-validation' : 'qb2-validation';
+            document.getElementById(valId).classList.remove('show');
+            updateForwardButtonState(10);
+          }
+        });
+
+        container.appendChild(radioDiv);
+      });
+    }
+
+    /**
+     * Initialize demographics Q1 on page load
+     */
+    function initializeSurveyQuestions() {
+      renderRadioOptions('q1-options', q1Options, 'age');
+    }
+
+    /**
+     * Gate selection handler
+     */
+    function selectGate(type) {
+      surveyAnswers.respondentType = type;
+      document.querySelectorAll('#gate-options .radio-option').forEach(el => el.classList.remove('selected'));
+      document.getElementById('gate-' + (type === 'DI' ? 'di' : 'ndi')).classList.add('selected');
+      document.getElementById('gate-radio-' + (type === 'DI' ? 'di' : 'ndi')).checked = true;
+      document.getElementById('gate-validation').classList.remove('show');
+      // Enable the Continue button on page6
+      const p6fwd = document.getElementById('page6-forward');
+      if (p6fwd) p6fwd.disabled = false;
+    }
+
+    /**
+     * Render checkbox options (multi-select) for behavioural survey
+     */
+    function renderCheckboxOptions(containerId, options, answerKey, hasNoneOption) {
+      // hasNoneOption: true only for Q1 (withdrawal triggers) where 'f' = "None of the above"
+      const container = document.getElementById(containerId);
+      if (!container) return;
+      container.innerHTML = '';
+      options.forEach(option => {
+        const div = document.createElement('div');
+        div.className = 'checkbox-option';
+        div.innerHTML = `<input type="checkbox" id="${containerId}-${option.value}" name="${containerId}" value="${option.value}">
+          <label for="${containerId}-${option.value}">${option.label}</label>`;
+        div.addEventListener('click', function(e) {
+          const cb = div.querySelector('input[type="checkbox"]');
+          if (e.target !== cb) cb.checked = !cb.checked;
+          if (hasNoneOption) {
+            // "None of the above" exclusivity — only applies to Q1
+            if (option.value === 'f' && cb.checked) {
+              container.querySelectorAll('input[type="checkbox"]').forEach(c => {
+                if (c !== cb) { c.checked = false; c.closest('.checkbox-option').classList.remove('selected'); }
+              });
+            } else if (cb.checked) {
+              const noneCheckbox = document.getElementById(`${containerId}-f`);
+              if (noneCheckbox) { noneCheckbox.checked = false; noneCheckbox.closest('.checkbox-option').classList.remove('selected'); }
+            }
+          }
+          div.classList.toggle('selected', cb.checked);
+          surveyAnswers[answerKey] = Array.from(container.querySelectorAll('input:checked')).map(c => c.value);
+          updateBehaviouralSubmitButton();
+        });
+        container.appendChild(div);
+      });
+    }
+
+    // Flag to track if behavioural survey has been rendered
+    let behaviouralSurveyInitialised = false;
+
+    /**
+     * Initialise behavioural survey question rendering (called when entering page 5)
+     * Only renders questions once; subsequent entries restore visibility state only.
+     */
+    /**
+     * Show the correct track panel on survey Q pages (9, 10, 11)
+     * and set the track label subtitle
+     */
+    function showSurveyTrackPanel(pageNum) {
+      const rt = surveyAnswers.respondentType;
+      if (!rt) return;
+      const isDI = rt === 'DI';
+      const trackLabel = isDI ? 'Track A — Deposit Insurer' : 'Track B — Non-Deposit Insurer';
+
+      // Show/hide track panels
+      const trackA = document.getElementById('page' + pageNum + '-trackA');
+      const trackB = document.getElementById('page' + pageNum + '-trackB');
+      if (trackA) trackA.style.display = isDI ? 'block' : 'none';
+      if (trackB) trackB.style.display = isDI ? 'none' : 'block';
+
+      // Update forward/submit button state for this page
+      updateForwardButtonState(pageNum);
+    }
+
+    function initializeBehaviouralSurvey() {
+      if (!behaviouralSurveyInitialised) {
+        // First time — render all question options
+        renderCheckboxOptions('qa1-options', withdrawalTriggers, 'a_q1', true);
+        renderRadioOptions('qa2-options', moneyDestinations, 'a_q2');
+        renderCheckboxOptions('qa3-options', reassuranceFactors, 'a_q3', false);
+        renderCheckboxOptions('qb1-options', withdrawalTriggers, 'b_q1', true);
+        renderRadioOptions('qb2-options', moneyDestinations, 'b_q2');
+        renderCheckboxOptions('qb3-options', reassuranceFactors, 'b_q3', false);
+        behaviouralSurveyInitialised = true;
+      }
+      // Restore gate section visibility
+      const gateSection = document.getElementById('surveyGateSection');
+      if (gateSection) gateSection.style.display = 'block';
+      // Restore gate radio visual selection if previously selected
+      if (surveyAnswers.respondentType) {
+        const gateEl = document.getElementById('gate-' + (surveyAnswers.respondentType === 'DI' ? 'di' : 'ndi'));
+        if (gateEl) gateEl.classList.add('selected');
+        // Re-enable Continue button
+        const p6fwd = document.getElementById('page6-forward');
+        if (p6fwd) p6fwd.disabled = false;
+      }
+    }
+
+    /**
+     * Update submit button state for page 5
+     */
+    function updateBehaviouralSubmitButton() {
+      // Update each survey page's forward/submit button independently
+      const rt = surveyAnswers.respondentType;
+      // Gate page (page6)
+      const p6fwd = document.getElementById('page6-forward');
+      if (p6fwd) p6fwd.disabled = !rt;
+      // Q1 page (page9)
+      const p9fwd = document.getElementById('page9-forward');
+      if (p9fwd) p9fwd.disabled = !(rt === 'DI' ? surveyAnswers.a_q1.length > 0 : surveyAnswers.b_q1.length > 0);
+      // Q2 page (page10)
+      const p10fwd = document.getElementById('page10-forward');
+      if (p10fwd) p10fwd.disabled = !(rt === 'DI' ? surveyAnswers.a_q2 !== null : surveyAnswers.b_q2 !== null);
+      // Q3/Submit page (page11)
+      const p11sub = document.getElementById('page11-submit');
+      if (p11sub) p11sub.disabled = !(rt === 'DI' ? surveyAnswers.a_q3.length > 0 : surveyAnswers.b_q3.length > 0);
+    }
+
+    /* ============================================
+       GOOGLE SHEETS SUBMISSION
+       ============================================ */
+
+    /**
+     * Log a DCC tool interaction to the Interactions tab in Google Sheets.
+     * Fired once when the user reaches Page 4 (Regional Coverage Comparison).
+     */
+    function logDccInteraction() {
+      const webhookUrl = 'https://script.google.com/macros/s/AKfycby3vodPKIVEyYSwdYiDp-w2auK4BF-oOU8vT5W2I6LbQCguhRdXeS0BRBdQOfmW2W52/exec';
+
+      const now = new Date();
+      const ts = now.getFullYear().toString()
+        + String(now.getMonth() + 1).padStart(2, '0')
+        + String(now.getDate()).padStart(2, '0')
+        + '-'
+        + String(now.getHours()).padStart(2, '0')
+        + String(now.getMinutes()).padStart(2, '0');
+
+      fetch(webhookUrl, {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          eventType: 'dcc_interaction',
+          timestamp: ts,
+          tool: 'APRC2026-DCC'
+        })
+      }).catch(function(err) {
+        console.error('Failed to log DCC interaction:', err);
+      });
+    }
+
+    /**
+     * Submit all survey data to Google Sheets webhook (APRC 2026)
+     * Sends both demographics + behavioural track answers
+     */
+    async function submitBehaviouralSurveyData() {
+      // TODO: Update webhook URL when new APRC2026 Google Sheet is set up
+      const webhookUrl = 'https://script.google.com/macros/s/AKfycby3vodPKIVEyYSwdYiDp-w2auK4BF-oOU8vT5W2I6LbQCguhRdXeS0BRBdQOfmW2W52/exec';
+
+      const track = surveyAnswers.respondentType;
+      const payload = {
+        userId: userId,
+        sessionId: sessionId,
+        timestamp: (() => {
+          const now = new Date();
+          return now.getFullYear().toString()
+            + '-' + String(now.getMonth() + 1).padStart(2, '0')
+            + '-' + String(now.getDate()).padStart(2, '0')
+            + ' ' + String(now.getHours()).padStart(2, '0')
+            + ':' + String(now.getMinutes()).padStart(2, '0')
+            + ':' + String(now.getSeconds()).padStart(2, '0');
+        })(),
+        tool: 'APRC2026-DCC',
+        age: surveyAnswers.age,
+        jurisdiction: selectedJurisdiction ? selectedJurisdiction.code : null,
+        respondentType: track,
+        // Track answers (only the relevant track will have values)
+        q1_triggers: track === 'DI' ? surveyAnswers.a_q1.join(',') : surveyAnswers.b_q1.join(','),
+        q2_destination: track === 'DI' ? surveyAnswers.a_q2 : surveyAnswers.b_q2,
+        q3_reassurance: track === 'DI' ? surveyAnswers.a_q3.join(',') : surveyAnswers.b_q3.join(',')
+      };
+
+      try {
+        await fetch(webhookUrl, {
+          method: 'POST',
+          mode: 'no-cors',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+        console.log('APRC 2026 survey data submitted:', payload);
+      } catch (error) {
+        console.error('Failed to submit survey data:', error);
+      }
+    }
+
+    /**
+     * Submit behavioural survey and show thank-you panel
+     */
+    async function submitBehaviouralSurvey() {
+      if (!validateCurrentPage()) return;
+      // Submit data non-blocking
+      submitBehaviouralSurveyData();
+      // Navigate to transition page
+      navigateToPage(7);
+    }
+
+    /* ============================================
+       COUNTRY GRID & SELECTION
+       ============================================ */
+
+    /**
+     * Render the jurisdiction dropdown on Page 3 (Step 2)
+     */
+    function renderJurisdictionDropdown() {
+      const sel = document.getElementById('jurisdictionSelect');
+      if (!sel) return;
+      countries.forEach(country => {
+        const opt = document.createElement('option');
+        opt.value = country.code;
+        opt.textContent = country.name;
+        sel.appendChild(opt);
+      });
+    }
+
+    /**
+     * Handle country selection from dropdown (Step 2)
+     */
+    function selectCountryFromDropdown(code) {
+      if (!code) {
+        selectedJurisdiction = null;
+        updateForwardButtonState(3);
+        return;
+      }
+      const country = countries.find(c => c.code === code);
+      if (!country) return;
+      selectCountry(country, null);
+    }
+
+    /**
+     * Handle country selection (shared logic)
+     */
+    function renderCountryGrid() {
+      // Grid removed — jurisdictions now use dropdown on page 3
+    }
+
+    /**
+     * Handle country selection
+     */
+    function selectCountry(country, element) {
+      // Update visual selection (grid mode only; element is null for dropdown)
+      if (element) {
+        document.querySelectorAll('.country-option').forEach(el => el.classList.remove('selected'));
+        element.classList.add('selected');
+      }
+
+      // Store selected jurisdiction
+      selectedJurisdiction = country;
+
+      const amount = parseFloat(amountInput.value);
+      if (!amount) {
+        // Update summary even without amount
+        summaryCountry.textContent = country.name;
+        summaryThreshold.textContent = formatCurrency(country.limit, country.currency);
+        updateForwardButtonState(3);
+        return;
+      }
+
+      // Calculate and display summary
+      const convertedAmount = amount * exchangeRates[country.currency];
+      summaryAmount.textContent = formatCurrency(amount, 'MYR');
+      summaryCountry.textContent = country.name;
+      summaryThreshold.textContent = formatCurrency(country.limit, country.currency);
+      summaryConverted.textContent = formatCurrency(convertedAmount, country.currency);
+
+      // Hide validation message
+      document.getElementById('page3-validation').classList.remove('show');
+
+      // Update forward button state
+      updateForwardButtonState(3);
+    }
+
+    /**
+     * Core display function — updates the top section (summary cards + coverage box)
+     * for any given country and MYR amount. Does NOT mutate selectedJurisdiction.
+     * isOriginalSelection: true when showing the user's originally chosen jurisdiction.
+     */
+    function displayCoverageForCountry(country, amount, isOriginalSelection) {
+      // Populate Deposit Summary cards on Page 4
+      const dispAmount = document.getElementById('summaryAmountDisplay');
+      const dispCountry = document.getElementById('summaryCountryDisplay');
+      const dispConverted = document.getElementById('summaryConvertedDisplay');
+      const dispThreshold = document.getElementById('summaryThresholdDisplay');
+      const dispCountryLabel = document.getElementById('summaryCountryLabel');
+
+      if (dispAmount) dispAmount.textContent = formatCurrency(amount, 'MYR');
+      if (dispCountry) dispCountry.textContent = country.name;
+      if (dispThreshold) dispThreshold.textContent = formatCurrency(country.limit, country.currency);
+      const convertedForDisplay = amount * exchangeRates[country.currency];
+      if (dispConverted) dispConverted.textContent = formatCurrency(convertedForDisplay, country.currency);
+
+      // Update jurisdiction label to distinguish exploring vs original selection
+      if (dispCountryLabel) {
+        dispCountryLabel.textContent = isOriginalSelection ? 'Selected Jurisdiction' : 'Viewing Jurisdiction';
+      }
+
+      const limit = country.limit;
+      const limitInMYR = country.currency === 'MYR' ? limit : limit / exchangeRates[country.currency];
+
+      const coverageTitle = document.querySelector('.coverage-title');
+      if (coverageTitle) {
+        coverageTitle.textContent = `🛡️ Deposit Insurance Coverage - ${country.name}`;
+      }
+
+      const actualCoverage = Math.min(amount, limitInMYR);
+      const isFullyCovered = amount <= limitInMYR;
+      const coveragePercentage = Math.min(100, (limitInMYR / amount) * 100);
+
+      // Update coverage limit display
+      if (country.currency === 'MYR') {
+        coverageLimit.textContent = formatCurrency(limitInMYR, 'MYR');
+      } else {
+        coverageLimit.textContent = `${formatCurrency(limitInMYR, 'MYR')} (${formatCurrency(limit, country.currency)})`;
+      }
+
+      // Update coverage badge and card styling
+      if (actualCoverage === 0) {
+        coverageBadge.textContent = '⛔ No Coverage';
+        coverageBadge.className = 'coverage-badge badge-no-coverage';
+        coverageMainCard.className = 'coverage-main-card no-coverage';
+        progressBar.style.width = '0%';
+      } else if (isFullyCovered) {
+        coverageBadge.textContent = '✅ Fully Covered';
+        coverageBadge.className = 'coverage-badge badge-covered';
+        coverageMainCard.className = 'coverage-main-card fully-covered';
+        progressBar.className = 'progress-bar progress-covered';
+        progressBar.style.width = '100%';
+      } else {
+        coverageBadge.textContent = '⚠️ Partially Covered';
+        coverageMainCard.className = 'coverage-main-card partially-covered';
+        progressBar.className = 'progress-bar progress-partial';
+        progressBar.style.width = coveragePercentage + '%';
+      }
+
+      // Calculate and display uninsured amount
+      const uninsuredMYR = amount - actualCoverage;
+      const uninsuredLocal = uninsuredMYR * exchangeRates[country.currency];
+
+      if (country.currency === 'MYR') {
+        uncoveredAmount.textContent = formatCurrency(uninsuredMYR);
+      } else {
+        uncoveredAmount.textContent = `${formatCurrency(uninsuredMYR)} (${formatCurrency(uninsuredLocal, country.currency)})`;
+      }
+    }
+
+    /**
+     * Called when a user taps a jurisdiction card in the Regional Coverage grid.
+     * Updates the top section without changing selectedJurisdiction.
+     */
+    function selectRegionalJurisdiction(country, element) {
+      const amount = parseFloat(amountInput.value);
+      if (!amount) return;
+
+      // Update active highlight on grid cards
+      document.querySelectorAll('#regionalResults .country-option').forEach(el => {
+        el.classList.remove('active-region');
+      });
+      if (element) element.classList.add('active-region');
+
+      const isOriginalSelection = selectedJurisdiction && country.code === selectedJurisdiction.code;
+      displayCoverageForCountry(country, amount, isOriginalSelection);
+
+      // Scroll smoothly to top of the results page
+      document.getElementById('page4').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    /**
+     * Update coverage display on Page 4 — called on initial page load.
+     * Delegates rendering to displayCoverageForCountry, then builds the grid.
+     */
+    function updateCoverageDisplay() {
+      if (!selectedJurisdiction) return;
+
+      const amount = parseFloat(amountInput.value);
+      if (!amount) return;
+
+      displayCoverageForCountry(selectedJurisdiction, amount, true);
+
+      // Render regional comparison grid
+      renderRegionalComparison(amount);
+    }
+
+    /**
+     * Render regional coverage comparison grid
+     */
+    function renderRegionalComparison(amount) {
+      if (!regionalResults) return;
+
+      regionalResults.innerHTML = '';
+
+      const gridContainer = document.createElement('div');
+      gridContainer.className = 'country-grid';
+      gridContainer.style.marginTop = '15px';
+
+      countries.forEach(country => {
+        const limitInMYR = country.currency === 'MYR' ? country.limit : country.limit / exchangeRates[country.currency];
+        const isFullyCovered = amount <= limitInMYR;
+        const isSelected = selectedJurisdiction && country.code === selectedJurisdiction.code;
+
+        const gridItem = document.createElement('div');
+        gridItem.className = 'country-option' + (isSelected ? ' active-region' : '');
+        gridItem.style.cursor = 'pointer';
+        gridItem.style.border = isFullyCovered ? '2px solid #10b981' : '2px solid #f59e0b';
+        gridItem.style.backgroundColor = isFullyCovered ? '#f0fdf4' : '#fffbeb';
+        gridItem.setAttribute('data-country-code', country.code);
+
+        const statusIcon = isFullyCovered ? '✅' : '🟡';
+        const statusText = isFullyCovered ? 'Fully Covered' : 'Partially Covered';
+
+        gridItem.innerHTML = `
+          <div style="font-weight: bold; margin-bottom: 8px; font-size: 14px;">${country.name}</div>
+          <div style="font-size: 12px; color: ${isFullyCovered ? '#10b981' : '#f59e0b'}; font-weight: 600;">
+            ${statusIcon} ${statusText}
+          </div>
+        `;
+
+        gridItem.addEventListener('click', function() {
+          selectRegionalJurisdiction(country, gridItem);
+        });
+
+        gridContainer.appendChild(gridItem);
+      });
+
+      regionalResults.appendChild(gridContainer);
+    }
+
+    /* ============================================
+       FAMILY SCENARIO (PAGE 5) FUNCTIONS
+       ============================================ */
+
+    /**
+     * Setup family scenario page with deposit amount
+     */
+    function setupFamilyScenarioPage() {
+      const amount = parseFloat(amountInput.value) || 0;
+      window.depositAmount = amount;
+
+      document.getElementById('familyAmount').textContent = formatCurrency(amount, 'MYR');
+      document.getElementById('familyAmountDisplay').textContent = formatCurrency(amount, 'MYR');
+    }
+
+    /**
+     * Reset family scenario steps to initial state
+     */
+    function resetFamilyScenarioSteps() {
+      const page4Nav = document.getElementById('page8-nav');
+      if (page4Nav) page4Nav.style.display = 'none';
+      document.getElementById('step1Card').style.display = 'block';
+      document.getElementById('step2Card').style.display = 'none';
+      document.getElementById('step3Card').style.display = 'none';
+      document.getElementById('step4Card').style.display = 'none';
+      document.getElementById('step5Card').style.display = 'none';
+      document.getElementById('step6Card').style.display = 'none';
+
+      const householdSelect = document.getElementById('householdMembers');
+      if (householdSelect) householdSelect.value = '';
+
+      const jointSelect = document.getElementById('jointAccountChoice');
+      if (jointSelect) jointSelect.value = '';
+
+      const equalSplitSelect = document.getElementById('equalSplitChoice');
+      if (equalSplitSelect) equalSplitSelect.value = '';
+    }
+
+    function showStep2() {
+      document.getElementById('step1Card').style.display = 'none';
+      document.getElementById('step2Card').style.display = 'block';
+
+      const householdSelect = document.getElementById('householdMembers');
+      householdSelect.replaceWith(householdSelect.cloneNode(true));
+
+      document.getElementById('householdMembers').addEventListener('change', function() {
+        const step2Button = document.getElementById('step2Continue');
+        if (this.value) {
+          step2Button.disabled = false;
+          step2Button.style.background = 'linear-gradient(135deg, #3b82f6, #1d4ed8)';
+          step2Button.style.cursor = 'pointer';
+          step2Button.style.boxShadow = '0 4px 12px rgba(59, 130, 246, 0.3)';
+        } else {
+          step2Button.disabled = true;
+          step2Button.style.background = '#9ca3af';
+          step2Button.style.cursor = 'not-allowed';
+          step2Button.style.boxShadow = '0 4px 12px rgba(156, 163, 175, 0.3)';
+        }
+      });
+    }
+
+    function showStep3() {
+      const householdMembers = document.getElementById('householdMembers').value;
+      if (!householdMembers) {
+        alert('Please select the number of family members first.');
+        return;
+      }
+
+      window.householdMembers = parseInt(householdMembers);
+      document.getElementById('step2Card').style.display = 'none';
+      document.getElementById('step3Card').style.display = 'block';
+
+      const jointSelect = document.getElementById('jointAccountChoice');
+      if (jointSelect) {
+        jointSelect.replaceWith(jointSelect.cloneNode(true));
+
+        document.getElementById('jointAccountChoice').addEventListener('change', function() {
+          const step3Button = document.getElementById('step3Continue');
+          if (this.value) {
+            step3Button.disabled = false;
+            step3Button.style.background = 'linear-gradient(135deg, #3b82f6, #1d4ed8)';
+            step3Button.style.cursor = 'pointer';
+            step3Button.style.boxShadow = '0 4px 12px rgba(59, 130, 246, 0.3)';
+          } else {
+            step3Button.disabled = true;
+            step3Button.style.background = '#9ca3af';
+            step3Button.style.cursor = 'not-allowed';
+            step3Button.style.boxShadow = '0 4px 12px rgba(156, 163, 175, 0.3)';
+          }
+        });
+      }
+    }
+
+    function showStep4() {
+      const jointAccountChoice = document.getElementById('jointAccountChoice').value;
+      if (!jointAccountChoice) return;
+
+      window.jointAccountChoice = jointAccountChoice;
+
+      document.getElementById('step3Card').style.display = 'none';
+      document.getElementById('step4Card').style.display = 'block';
+
+      if (jointAccountChoice === 'No') {
+        document.getElementById('step4PathA').style.display = 'block';
+        document.getElementById('step4PathB').style.display = 'none';
+
+        const depositAmount = window.depositAmount || 0;
+        const householdMembers = window.householdMembers || 0;
+        const malaysiaLimit = 250000;
+
+        const protectedAmount = Math.min(depositAmount, malaysiaLimit);
+        const uninsuredAmount = Math.max(0, depositAmount - malaysiaLimit);
+
+        document.getElementById('individualSummaryText').innerHTML =
+          'You have <strong style="color: #3b82f6;">' + formatCurrency(depositAmount, 'MYR') + '</strong> and <strong>' + householdMembers + '</strong> family member' + (householdMembers > 1 ? 's' : '') + '. You decided NOT to open joint accounts with them, instead you open your own deposit account.';
+
+        document.getElementById('protectedAmount').textContent = formatCurrency(protectedAmount, 'MYR');
+        document.getElementById('uninsuredAmount').textContent = formatCurrency(uninsuredAmount, 'MYR');
+
+      } else {
+        document.getElementById('step4PathA').style.display = 'none';
+        document.getElementById('step4PathB').style.display = 'block';
+
+        const equalSplitSelect = document.getElementById('equalSplitChoice');
+        equalSplitSelect.replaceWith(equalSplitSelect.cloneNode(true));
+
+        document.getElementById('equalSplitChoice').addEventListener('change', function() {
+          const step4Button = document.getElementById('step4Continue');
+          if (this.value) {
+            step4Button.disabled = false;
+            step4Button.style.background = 'linear-gradient(135deg, #3b82f6, #1d4ed8)';
+            step4Button.style.cursor = 'pointer';
+            step4Button.style.boxShadow = '0 4px 12px rgba(59, 130, 246, 0.3)';
+          } else {
+            step4Button.disabled = true;
+            step4Button.style.background = '#9ca3af';
+            step4Button.style.cursor = 'not-allowed';
+            step4Button.style.boxShadow = '0 4px 12px rgba(156, 163, 175, 0.3)';
+          }
+        });
+      }
+    }
+
+    function showStep5() {
+      if (window.jointAccountChoice === 'Yes') {
+        const equalSplitElement = document.getElementById('equalSplitChoice');
+        if (!equalSplitElement || !equalSplitElement.value) {
+          alert('Please select your equal split preference first.');
+          return;
+        }
+        window.equalSplitChoice = equalSplitElement.value;
+      }
+
+      document.getElementById('step4Card').style.display = 'none';
+      document.getElementById('step5Card').style.display = 'block';
+
+      const depositAmount = window.depositAmount || 0;
+      const householdMembers = window.householdMembers || 0;
+      const malaysiaLimit = 250000;
+
+      if (window.jointAccountChoice === 'No') {
+        showStep6();
+        return;
+      } else if (window.equalSplitChoice === 'Yes') {
+        document.getElementById('step5PathC').style.display = 'block';
+        document.getElementById('step5PathD').style.display = 'none';
+
+        const summaryText = document.getElementById('equalSplitSummaryText');
+        if (summaryText) {
+          summaryText.innerHTML =
+            'You have <strong style="color: #3b82f6;">' + formatCurrency(depositAmount, 'MYR') + '</strong> and <strong>' + householdMembers + '</strong> family member' + (householdMembers > 1 ? 's' : '') + '. You decided to open joint accounts with each of them, and equally split the deposit amount with each of them.';
+        }
+
+        const amountPerAccount = depositAmount / householdMembers;
+        const resultsContainer = document.getElementById('equalSplitResults');
+        if (resultsContainer) {
+          resultsContainer.innerHTML = '';
+
+          for (let i = 1; i <= householdMembers; i++) {
+            const depositedAmount = amountPerAccount;
+            const protectedAmount = Math.min(amountPerAccount, malaysiaLimit);
+            const isFullyCovered = depositedAmount <= malaysiaLimit;
+            const coveragePercentage = (protectedAmount / depositedAmount) * 100;
+            const coverageStatus = isFullyCovered ? 'Fully Covered (100%)' : `Partially Covered (${coveragePercentage.toFixed(1)}%)`;
+
+            const cardDiv = document.createElement('div');
+            cardDiv.className = 'summary-card';
+            cardDiv.innerHTML = '<div class="summary-icon">👥</div><div class="summary-label">Joint Account ' + i + '</div><div style="font-size: 14px; color: #555; margin-bottom: 4px;"><strong>Deposited:</strong> ' + formatCurrency(depositedAmount, 'MYR') + '</div><div style="font-size: 14px; color: #10b981; margin-bottom: 4px;"><strong>Protected:</strong> ' + formatCurrency(protectedAmount, 'MYR') + '</div><div style="font-size: 12px; color: ' + (isFullyCovered ? '#10b981' : '#f59e0b') + '; font-weight: 600;">' + coverageStatus + '</div>';
+            resultsContainer.appendChild(cardDiv);
+          }
+        }
+
+      } else {
+        document.getElementById('step5PathC').style.display = 'none';
+        document.getElementById('step5PathD').style.display = 'block';
+
+        const inputsContainer = document.getElementById('percentageInputs');
+        if (inputsContainer) {
+          inputsContainer.innerHTML = '';
+
+          for (let i = 1; i <= householdMembers; i++) {
+            const inputDiv = document.createElement('div');
+            inputDiv.style.marginBottom = '15px';
+            inputDiv.innerHTML = '<label style="display: block; margin-bottom: 5px; font-weight: 600; color: #555;">Joint Account ' + i + ' (%)</label><input type="number" id="percentage' + i + '" min="0" max="100" step="0.1" placeholder="Enter percentage" style="width: 100%; padding: 10px; border-radius: 8px; border: 2px solid #e2e8f0; font-size: 14px;" />';
+            inputsContainer.appendChild(inputDiv);
+          }
+
+          setTimeout(() => {
+            for (let i = 1; i <= householdMembers; i++) {
+              const input = document.getElementById('percentage' + i);
+              if (input) {
+                input.addEventListener('input', updatePercentageTotal);
+              }
+            }
+          }, 100);
+        }
+      }
+    }
+
+    function updatePercentageTotal() {
+      const householdMembers = window.householdMembers || 0;
+      let total = 0;
+      let allFilled = true;
+
+      for (let i = 1; i <= householdMembers; i++) {
+        const input = document.getElementById('percentage' + i);
+        if (input) {
+          const value = parseFloat(input.value) || 0;
+          total += value;
+          if (!input.value) allFilled = false;
+        }
+      }
+
+      const totalSpan = document.getElementById('totalPercentage');
+      if (totalSpan) {
+        totalSpan.textContent = total.toFixed(1) + '%';
+      }
+
+      const statusSpan = document.getElementById('percentageStatus');
+      const continueButton = document.getElementById('step5Continue');
+
+      if (total === 100 && allFilled) {
+        if (statusSpan) statusSpan.innerHTML = '<span style="color: #10b981;">✅ Valid</span>';
+        if (continueButton) {
+          continueButton.disabled = false;
+          continueButton.style.background = 'linear-gradient(135deg, #3b82f6, #1d4ed8)';
+          continueButton.style.cursor = 'pointer';
+          continueButton.style.boxShadow = '0 4px 12px rgba(59, 130, 246, 0.3)';
+        }
+
+        showUnequalSplitResults();
+      } else if (total > 100) {
+        if (statusSpan) statusSpan.innerHTML = '<span style="color: #ef4444;">❌ Too high</span>';
+        if (continueButton) {
+          continueButton.disabled = true;
+          continueButton.style.background = '#9ca3af';
+          continueButton.style.cursor = 'not-allowed';
+          continueButton.style.boxShadow = '0 4px 12px rgba(156, 163, 175, 0.3)';
+        }
+        const resultsDiv = document.getElementById('unequalSplitResults');
+        if (resultsDiv) resultsDiv.style.display = 'none';
+      } else {
+        if (statusSpan) statusSpan.innerHTML = '<span style="color: #f59e0b;">⏳ Incomplete</span>';
+        if (continueButton) {
+          continueButton.disabled = true;
+          continueButton.style.background = '#9ca3af';
+          continueButton.style.cursor = 'not-allowed';
+          continueButton.style.boxShadow = '0 4px 12px rgba(156, 163, 175, 0.3)';
+        }
+        const resultsDiv = document.getElementById('unequalSplitResults');
+        if (resultsDiv) resultsDiv.style.display = 'none';
+      }
+    }
+
+    function showUnequalSplitResults() {
+      const depositAmount = window.depositAmount || 0;
+      const householdMembers = window.householdMembers || 0;
+      const malaysiaLimit = 250000;
+
+      const percentages = [];
+      for (let i = 1; i <= householdMembers; i++) {
+        const input = document.getElementById('percentage' + i);
+        if (input) {
+          percentages.push(parseFloat(input.value));
+        }
+      }
+
+      const percentageText = percentages.map((p, i) => 'Joint Account ' + (i + 1) + ': ' + p + '%').join(', ');
+      const summaryTextElement = document.getElementById('unequalSplitSummaryText');
+      if (summaryTextElement) {
+        summaryTextElement.innerHTML =
+          'You have <strong style="color: #3b82f6;">' + formatCurrency(depositAmount, 'MYR') + '</strong> and <strong>' + householdMembers + '</strong> family member' + (householdMembers > 1 ? 's' : '') + '. You decided to open joint accounts with each of them, and the ratios are: ' + percentageText + '.';
+      }
+
+      const resultsContainer = document.getElementById('unequalSplitResultsGrid');
+      if (resultsContainer) {
+        resultsContainer.innerHTML = '';
+        let totalUninsured = 0;
+
+        for (let i = 0; i < householdMembers; i++) {
+          const accountAmount = (depositAmount * percentages[i]) / 100;
+          const protectedAmount = Math.min(accountAmount, malaysiaLimit);
+          const uninsuredAmount = Math.max(0, accountAmount - malaysiaLimit);
+          const isFullyCovered = accountAmount <= malaysiaLimit;
+          const coveragePercentage = (protectedAmount / accountAmount) * 100;
+          const coverageStatus = isFullyCovered ? 'Fully Covered (100%)' : `Partially Covered (${coveragePercentage.toFixed(1)}%)`;
+          totalUninsured += uninsuredAmount;
+
+          const cardDiv = document.createElement('div');
+          cardDiv.className = 'summary-card';
+          cardDiv.innerHTML = '<div class="summary-icon">👥</div><div class="summary-label">Joint Account ' + (i + 1) + '</div><div style="font-size: 14px; color: #555; margin-bottom: 4px;"><strong>Deposited:</strong> ' + formatCurrency(accountAmount, 'MYR') + '</div><div style="font-size: 14px; color: #10b981; margin-bottom: 4px;"><strong>Protected:</strong> ' + formatCurrency(protectedAmount, 'MYR') + '</div><div style="font-size: 12px; color: ' + (isFullyCovered ? '#10b981' : '#f59e0b') + '; font-weight: 600;">' + coverageStatus + '</div>';
+          resultsContainer.appendChild(cardDiv);
+        }
+
+        const totalUninsuredElement = document.getElementById('totalUninsuredAmount');
+        if (totalUninsuredElement) {
+          totalUninsuredElement.textContent = formatCurrency(totalUninsured, 'MYR');
+        }
+      }
+
+      const resultsDiv = document.getElementById('unequalSplitResults');
+      if (resultsDiv) {
+        resultsDiv.style.display = 'block';
+      }
+    }
+
+    function showStep6() {
+      if (window.jointAccountChoice === 'Yes' && window.equalSplitChoice === 'No') {
+        const householdMembers = window.householdMembers || 0;
+        const percentages = [];
+        for (let i = 1; i <= householdMembers; i++) {
+          const input = document.getElementById('percentage' + i);
+          if (input) {
+            percentages.push(parseFloat(input.value));
+          }
+        }
+        window.customPercentages = percentages;
+      }
+
+      const currentCards = ['step4Card', 'step5Card'];
+      currentCards.forEach(cardId => {
+        const card = document.getElementById(cardId);
+        if (card) card.style.display = 'none';
+      });
+
+      const step6Card = document.getElementById('step6Card');
+      if (step6Card) {
+        step6Card.style.display = 'block';
+      }
+      // Reveal bottom nav only at Step 6
+      const page4Nav = document.getElementById('page8-nav');
+      if (page4Nav) page4Nav.style.display = 'flex';
+
+      const depositAmount = window.depositAmount || 0;
+      const householdMembers = window.householdMembers || 0;
+      const malaysiaLimit = 250000;
+
+      document.getElementById('finalDepositAmount').textContent = formatCurrency(depositAmount, 'MYR');
+      document.getElementById('finalFamilyMembers').textContent = householdMembers;
+
+      let accountStrategy, distributionMethod, totalProtected = 0, totalUninsured = 0, insights = '';
+
+      if (window.jointAccountChoice === 'No') {
+        accountStrategy = 'Individual deposit account';
+        distributionMethod = 'Single account ownership';
+        totalProtected = Math.min(depositAmount, malaysiaLimit);
+        totalUninsured = Math.max(0, depositAmount - malaysiaLimit);
+
+        insights = `You selected to keep your MYR ${depositAmount.toLocaleString()} in an individual account. ` +
+                  (totalUninsured > 0 ?
+                    `While MYR ${totalProtected.toLocaleString()} is protected under PIDM coverage, MYR ${totalUninsured.toLocaleString()} exceeded coverage limit.` :
+                    `Your entire deposit is fully protected under PIDM coverage.`);
+
+      } else if (window.equalSplitChoice === 'Yes') {
+        accountStrategy = `${householdMembers} joint accounts with family members`;
+        distributionMethod = 'Equal split distribution';
+
+        const amountPerAccount = depositAmount / householdMembers;
+        for (let i = 0; i < householdMembers; i++) {
+          const protected = Math.min(amountPerAccount, malaysiaLimit);
+          const uninsured = Math.max(0, amountPerAccount - malaysiaLimit);
+          totalProtected += protected;
+          totalUninsured += uninsured;
+        }
+
+        insights = `You distributed MYR ${depositAmount.toLocaleString()} equally across ${householdMembers} joint accounts (${formatCurrency(amountPerAccount, 'MYR')} each). ` + (totalUninsured > 0 ?
+                    `Each account has MYR ${Math.min(amountPerAccount, malaysiaLimit).toLocaleString()} protected, with ${formatCurrency(totalUninsured/householdMembers, 'MYR')} uninsured per account.` :
+                    `All joint accounts are fully protected under PIDM coverage. `);
+
+      } else {
+        accountStrategy = `${householdMembers} joint accounts with family members`;
+        const percentageText = window.customPercentages.map((p, i) => `${p}%`).join(', ');
+        distributionMethod = `Custom split (${percentageText})`;
+
+        for (let i = 0; i < householdMembers; i++) {
+          const accountAmount = (depositAmount * window.customPercentages[i]) / 100;
+          const protected = Math.min(accountAmount, malaysiaLimit);
+          const uninsured = Math.max(0, accountAmount - malaysiaLimit);
+          totalProtected += protected;
+          totalUninsured += uninsured;
+        }
+
+        insights = `You created a custom distribution across ${householdMembers} joint accounts with ratios of ${percentageText}. ` +
+                  (totalUninsured > 0 ?
+                    `Your total protected deposit amount is MYR ${totalProtected.toLocaleString()}, with MYR ${totalUninsured.toLocaleString()} exceeded coverage limit.` :
+                    `All your joint accounts are fully protected under PIDM coverage.`);
+      }
+
+      document.getElementById('finalAccountStrategy').textContent = accountStrategy;
+      document.getElementById('finalDistribution').textContent = distributionMethod;
+      document.getElementById('finalProtectedAmount').textContent = formatCurrency(totalProtected, 'MYR');
+      document.getElementById('finalUninsuredAmount').textContent = formatCurrency(totalUninsured, 'MYR');
+      document.getElementById('finalInsights').textContent = insights;
+    }
+
+    /* ============================================
+       INITIALIZATION
+       ============================================ */
+
+    // Initialize jurisdiction dropdown (Step 2)
+    renderJurisdictionDropdown();
+
+    // Initialize survey questions
+    initializeSurveyQuestions();
+
+    // Add event listener for amount input
+    if (amountInput) {
+      amountInput.addEventListener('input', function() {
+        const amount = parseFloat(this.value);
+        if (amount && amount > 0) {
+          summaryAmount.textContent = formatCurrency(amount, 'MYR');
+
+          // Update converted amount if country is selected
+          if (selectedJurisdiction) {
+            const convertedAmount = amount * exchangeRates[selectedJurisdiction.currency];
+            summaryConverted.textContent = formatCurrency(convertedAmount, selectedJurisdiction.currency);
+          }
+
+          // Hide validation message
+          document.getElementById('page2-validation').classList.remove('show');
+        } else {
+          summaryAmount.textContent = 'MYR 0.00';
+          summaryConverted.textContent = '-';
+        }
+
+        // Update forward button state (page 2 = amount step)
+        updateForwardButtonState(2);
+      });
+    }
+
+    // Log initialization
+    console.log('APRC 2026 Deposit Coverage Calculator v99 initialized');
+    console.log('User ID:', userId);
+    console.log('Session ID:', sessionId);
+  </script>
+</body>
+</html>
