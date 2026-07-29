@@ -31,6 +31,11 @@ live for reference and will be revived for a future event.
 
 ## Ops notes
 
+- **Mirror / corporate record:** GitHub (`Piperzero/APRC2026`) is the working
+  origin and deploys via Pages. A full-history mirror is maintained in PIDM's
+  Azure DevOps (cloud) as the corporate system of record. It was seeded by
+  Azure Repos' *Import repository* from this GitHub URL; refresh it by
+  re-importing or by pushing from a machine with Azure DevOps access.
 - **Hosting:** GitHub Pages from `main`. Deploying = pushing to `main`.
 - **Apps Script ownership:** the webhook script and response Sheet are owned
   solely by a personal Google account (anaz.shazlan@gmail.com). The `.gs`
